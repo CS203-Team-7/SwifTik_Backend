@@ -1,0 +1,18 @@
+spring:
+    datasource:
+        url: jdbc:postgresql://localhost:5432/swiftik
+        username: zj
+        password: postgres
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        show-sql: true
+        hibernate:
+            ddl-auto: create-drop
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+                format_sql: true
+twilio:
+    AccountSID: AC7e30e0b3774db2aa0a854f617b79c5a4
+    AuthToken: de64a0c10f1c3c7814050100d6a03bf3
+    phoneNumber: +12512377009
