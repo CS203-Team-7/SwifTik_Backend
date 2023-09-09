@@ -25,6 +25,7 @@ public class User {
     private String email;
     private String password;
     private Date dateOfBirth;
+    private String phoneNumber;
 
     // Roles to set for security:
     // private Set<Role> roles;
