@@ -1,4 +1,4 @@
-package com.swiftyticket.otpApp.dto;
+package com.swiftyticket.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

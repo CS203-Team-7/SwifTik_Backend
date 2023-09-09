@@ -1,4 +1,4 @@
-package com.swiftyticket.otpApp.controller;
+package com.swiftyticket.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.swiftyticket.otpApp.dto.OtpRequest;
-import com.swiftyticket.otpApp.dto.OtpResponseDto;
-import com.swiftyticket.otpApp.dto.OtpValidationRequest;
-import com.swiftyticket.otpApp.service.SmsService;
+import com.swiftyticket.dto.OtpRequest;
+import com.swiftyticket.dto.OtpResponseDto;
+import com.swiftyticket.dto.OtpValidationRequest;
+import com.swiftyticket.services.SmsService;
 
 import lombok.extern.slf4j.Slf4j;
 

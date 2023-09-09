@@ -1,4 +1,4 @@
-package com.swiftyticket.otpApp.config;
+package com.swiftyticket.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

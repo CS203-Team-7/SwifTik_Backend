@@ -1,4 +1,4 @@
-package com.swiftyticket.otpApp.service;
+package com.swiftyticket.services;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -7,12 +7,11 @@ import java.security.SecureRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.swiftyticket.otpApp.config.TwilioConfig;
-import com.swiftyticket.otpApp.dto.OtpRequest;
-import com.swiftyticket.otpApp.dto.OtpResponseDto;
-import com.swiftyticket.otpApp.dto.OtpStatus;
-import com.swiftyticket.otpApp.dto.OtpValidationRequest;
-
+import com.swiftyticket.config.TwilioConfig;
+import com.swiftyticket.dto.OtpRequest;
+import com.swiftyticket.dto.OtpResponseDto;
+import com.swiftyticket.dto.OtpStatus;
+import com.swiftyticket.dto.OtpValidationRequest;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
