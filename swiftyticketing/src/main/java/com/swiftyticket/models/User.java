@@ -28,19 +28,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "_user")
-public class User implements UserDetails{
+// We implement UserDetails from Spring Security to match all the requirements we need for authenticatons purposes
+public class User implements UserDetails { 
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private Integer userId;
+    // We should set this to only unique values to avoid duplicate email accounts being formed:
     @Column(unique = true)
     private String email;
     private String password;
     private Date dateOfBirth;
     private String phoneNumber;
+    // Since we need to assign certain roles to the users that login, we use ENUMS for ease of access:
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    // Below are all the methods that need to be implemented for Spring Security to actually be able to authorize this User:
 
     @Override
     public String getUsername() {
@@ -52,6 +57,7 @@ public class User implements UserDetails{
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
+    // For now I've set these to true but later we can add the necessary business logic if need be:
     @Override
     public boolean isAccountNonExpired() {
         return true;
