@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.swiftyticket.config.TwilioConfig;
-import com.swiftyticket.dto.OtpRequest;
-import com.swiftyticket.dto.OtpResponseDto;
-import com.swiftyticket.dto.OtpStatus;
-import com.swiftyticket.dto.OtpValidationRequest;
+import com.swiftyticket.dto.otp.OtpRequest;
+import com.swiftyticket.dto.otp.OtpResponseDto;
+import com.swiftyticket.dto.otp.OtpStatus;
+import com.swiftyticket.dto.otp.OtpValidationRequest;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;

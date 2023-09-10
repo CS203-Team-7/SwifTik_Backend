@@ -1,4 +1,4 @@
-package com.swiftyticket.dto;
+package com.swiftyticket.dto.otp;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OtpValidationRequest {
+public class OtpRequest {
 	private String username;
-	private String otpNumber;
+    private String phoneNumber;
+
 }
+

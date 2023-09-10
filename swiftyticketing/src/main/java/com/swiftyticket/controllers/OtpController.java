@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.swiftyticket.dto.OtpRequest;
-import com.swiftyticket.dto.OtpResponseDto;
-import com.swiftyticket.dto.OtpValidationRequest;
+import com.swiftyticket.dto.otp.OtpRequest;
+import com.swiftyticket.dto.otp.OtpResponseDto;
+import com.swiftyticket.dto.otp.OtpValidationRequest;
 import com.swiftyticket.services.SmsService;
 
 import lombok.extern.slf4j.Slf4j;
