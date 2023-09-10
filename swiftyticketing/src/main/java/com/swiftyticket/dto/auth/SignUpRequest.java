@@ -16,4 +16,5 @@ public class SignUpRequest {
     private String email;
     private String password;
     private Date dateOfBirth;
+    private Long phoneNumber;
 }
