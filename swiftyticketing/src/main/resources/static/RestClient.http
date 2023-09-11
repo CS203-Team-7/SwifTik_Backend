@@ -1,0 +1,28 @@
+# REST test cases for tickets
+
+###
+GET http://localhost:8080/tickets
+
+### ([PROBLEM] TicketNotFound error messgaes not showing up)
+GET http://localhost:8080/tickets/2
+
+
+###
+POST http://localhost:8080/tickets
+Content-Type: application/json
+
+{
+    "ticketPrice": 3000
+}
+
+### ([PROBLEM] TicketNotFound error messgaes not showing up)
+PUT http://localhost:8080/tickets/2
+Content-Type: application/json
+
+{
+    "ticketPrice": 6969
+}
+
+###
+DELETE http://localhost:8080/tickets/2
+
