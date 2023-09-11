@@ -8,5 +8,5 @@ public interface JwtService {
     // We need to generate a new token everytime a user logs in:
     String generateToken(UserDetails userDetails);
     // We also need to check the validity of the token in use:
-    String isTokenValid(String token, UserDetails userDetails);
+    boolean isTokenValid(String token, UserDetails userDetails);
 }

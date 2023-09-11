@@ -36,7 +36,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     // This function is to extract a particular claim from all claims:
-    private String extractClaim(String token, Function<Claims, T> claimsResolvers) {
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
         // This is to specify which particular claims are wanted:
         final Claims claims = extractAllClaims(token);
         return claimsResolvers.apply(claims);
@@ -63,7 +63,7 @@ public class JwtServiceImpl implements JwtService {
 
     // This is to check expiration date: so we get the expiration from the claims:
     @Override
-    public String isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         return extractExpiration(token).before(new Date());
     }
 
