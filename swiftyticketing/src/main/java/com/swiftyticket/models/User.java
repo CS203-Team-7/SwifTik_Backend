@@ -2,7 +2,6 @@ package com.swiftyticket.models;
 
 import java.util.Collection;
 import java.util.Date;
-// import java.util.Set;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -40,7 +39,7 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private Date dateOfBirth;
-    private String phoneNumber;
+    private Long phoneNumber;
     // Since we need to assign certain roles to the users that login, we use ENUMS for ease of access:
     @Enumerated(EnumType.STRING)
     private Role role;
