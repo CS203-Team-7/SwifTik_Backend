@@ -39,6 +39,8 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private Date dateOfBirth;
+    //make sure one user one account through the use of phone number by making it unique.
+    @Column(unique = true)
     private Long phoneNumber;
     // Since we need to assign certain roles to the users that login, we use ENUMS for ease of access:
     @Enumerated(EnumType.STRING)
