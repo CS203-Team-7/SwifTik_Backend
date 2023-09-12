@@ -26,3 +26,43 @@ Content-Type: application/json
 ###
 DELETE http://localhost:8080/tickets/2
 
+
+
+#USER TEST
+
+###
+GET http://localhost:8080/users
+
+
+###
+GET http://localhost:8080/users/3
+
+
+### This one still needs debugging 
+GET http://localhost:8080/users?email=bla1@gmail.com
+
+###
+DELETE http://localhost:8080/users/2
+
+
+###
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+    "email": "bla@gmail.com",
+    "age": "14",
+    "phoneNum": "1231231231",
+    "password": "ok"
+}
+
+###
+PUT http://localhost:8080/users/1
+Content-Type: application/json
+
+{
+    "email": "bla1@gmail.com",
+    "age": "14",
+    "phoneNum": "01234567891",
+    "password": "ok"
+}
