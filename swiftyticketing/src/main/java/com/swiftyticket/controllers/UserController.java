@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,20 +28,9 @@ public class UserController {
     public List<User> getUsers() {
         return userService.listUsers();
     }
-    
-    //using userID, can be removed if not needed
-    @GetMapping("/users/{userID}")
-    public User findUser(@PathVariable Integer userID) {
-        User user = userService.getUser(userID);
 
-        if (user == null) throw new UserNotFoundException(userID);
-        return user;
-    }
-
-    //using email
-    //still broken, I'll debug later
-    @GetMapping(value = "/users/{email}", params = "email")
-    public User findUser(@RequestParam(value="email") String email) {
+    @GetMapping("/users/{email}")
+    public User findUser(@PathVariable String email) {
         User user = userService.getUserByEmail(email);
 
         if (user == null) throw new UserNotFoundException(email);
@@ -55,31 +43,22 @@ public class UserController {
         userService.addUser(user);
     }
 
-    //using UserID, can be removed if not needed
-    @PutMapping("/users/{userID}")
-    public User updateUser(@PathVariable Integer userID, @RequestBody User newUserInfo) throws UserNotFoundException{
-        User user = userService.updateUser(userID, newUserInfo);
-        if(user == null) throw new UserNotFoundException(userID);
-        
-        return user;
-    }
-
-    @PutMapping(value = "/users/{email}", params = "email")
-    public User updateUser(@RequestParam(value="email") String email, @RequestBody User newUserInfo) throws UserNotFoundException{
+    @PutMapping("/users/{email}")
+    public User updateUser(@PathVariable String email, @RequestBody User newUserInfo) throws UserNotFoundException{
         User user = userService.updateUser(email, newUserInfo);
         if(user == null) throw new UserNotFoundException(email);
         
         return user;
     }
 
-    @DeleteMapping("/users/{userID}")
-    public String deleteUser(@PathVariable Integer userID){
+    @DeleteMapping("/users/{email}")
+    public String deleteUser(@PathVariable String email){
         try {
-            userService.deleteUser(userID);
+            userService.deleteUser(email);
         } catch(EmptyResultDataAccessException e) {
-            throw new UserNotFoundException(userID);
+            throw new UserNotFoundException(email);
         }
-        return "User "+ userID + " deleted.";
+        return "The account for "+ email + " has been deleted.";
     }
 
 
