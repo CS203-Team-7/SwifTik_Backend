@@ -3,7 +3,6 @@
 ###
 GET http://localhost:8080/tickets
 
-### ([PROBLEM] TicketNotFound error messgaes not showing up)
 GET http://localhost:8080/tickets/2
 
 
@@ -15,7 +14,6 @@ Content-Type: application/json
     "ticketPrice": 3000
 }
 
-### ([PROBLEM] TicketNotFound error messgaes not showing up)
 PUT http://localhost:8080/tickets/2
 Content-Type: application/json
 
@@ -29,11 +27,9 @@ DELETE http://localhost:8080/tickets/2
 
 
 #USER TEST
+###
 GET http://localhost:8080/users
 
-
-###
-GET http://localhost:8080/users/3
 
 ###
 GET http://localhost:8080/users/blank@gmail.com
@@ -49,8 +45,9 @@ Content-Type: application/json
 {
     "email": "blank@gmail.com",
     "age": "18",
-    "phoneNum": "1231231291",
-    "password": "lel"
+    "phoneNumber": "1231231291",
+    "password": "lel",
+    "role": "USER"
 }
 
 ###
@@ -60,6 +57,7 @@ Content-Type: application/json
 {
     "email": "blal@gmail.com",
     "age": "14",
-    "phoneNum": "01234567891",
-    "password": "ok"
+    "phoneNumber": "01234567891",
+    "password": "ok",
+    "role": "USER"
 }
