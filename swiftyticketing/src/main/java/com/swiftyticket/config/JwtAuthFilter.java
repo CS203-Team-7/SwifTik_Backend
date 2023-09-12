@@ -2,6 +2,7 @@ package com.swiftyticket.config;
 
 import java.io.IOException;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -38,7 +40,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 final String userEmail;
                 // Here we have to check if the there is no authorization token or if it isn't a jwt token (JWT Tokens start with Bearer ):
                 // If it is true, then there is no filtering necessary from the JWT:
-                if(authHeader == null || !authHeader.substring(0, 7).equals("Bearer")){
+                if(authHeader == null || !authHeader.startsWith("Bearer ")){
                     filterChain.doFilter(request, response);
                     return;
                 }
@@ -58,6 +60,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         context.setAuthentication(authToken);
                         SecurityContextHolder.setContext(context);
+                        log.info("" + context);
                     }
                 }
                 // Then finally we go back to the security filterchain since it has been authorized here:

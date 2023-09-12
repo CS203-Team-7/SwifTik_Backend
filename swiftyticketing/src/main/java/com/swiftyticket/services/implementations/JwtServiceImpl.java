@@ -64,7 +64,7 @@ public class JwtServiceImpl implements JwtService {
     // This is to check expiration date: so we get the expiration from the claims:
     @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        return extractExpiration(token).before(new Date());
+        return extractExpiration(token).after(new Date());
     }
 
     // Function to actually extract the expiration date from the token:
