@@ -31,12 +31,14 @@ public class SecurityConfiguration {
     // This is the main function that we can use to set which parts of the controllers are accessible to which roles: Filtering user access
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request.requestMatchers("/auth/**") // As of now it is permitting anyone to use paths under '/'
                     .permitAll().anyRequest().authenticated())
-                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
-                    jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                    jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
         return http.build();
     }
 

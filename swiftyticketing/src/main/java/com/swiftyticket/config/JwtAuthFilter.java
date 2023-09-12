@@ -19,9 +19,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -34,11 +36,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         
                 // First of all we need to get the token from the request:
                 final String authHeader = request.getHeader("Authorization");
-                final String jwtToken;
+                String jwtToken;
                 final String userEmail;
                 // Here we have to check if the there is no authorization token or if it isn't a jwt token (JWT Tokens start with Bearer ):
                 // If it is true, then there is no filtering necessary from the JWT:
-                if(authHeader == null || !authHeader.substring(0, 7).equals("Bearer")){
+                if(authHeader == null || !authHeader.substring(0, 7).equals("Bearer ")){
+                    log.info(authHeader);
                     filterChain.doFilter(request, response);
                     return;
                 }
