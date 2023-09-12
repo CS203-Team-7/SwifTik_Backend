@@ -1,7 +1,7 @@
 package com.swiftyticket.models;
 
 import java.util.Collection;
-import java.util.Date;
+//import java.util.Date;
 // import java.util.Set;
 import java.util.List;
 
@@ -38,9 +38,11 @@ public class User implements UserDetails {
     // We should set this to only unique values to avoid duplicate email accounts being formed:
     @Column(unique = true)
     private String email;
-    private String password;
-    private Date dateOfBirth;
+    private int age;
+    //ask if we should use dob instead of age
+    //private Date dateOfBirth;
     private String phoneNumber;
+    private String password;
     // Since we need to assign certain roles to the users that login, we use ENUMS for ease of access:
     @Enumerated(EnumType.STRING)
     private Role role;
