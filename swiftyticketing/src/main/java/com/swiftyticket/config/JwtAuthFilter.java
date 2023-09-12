@@ -38,7 +38,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 final String userEmail;
                 // Here we have to check if the there is no authorization token or if it isn't a jwt token (JWT Tokens start with Bearer ):
                 // If it is true, then there is no filtering necessary from the JWT:
-                if(authHeader.isEmpty() || !authHeader.substring(0, 7).equals("Bearer")){
+                if(authHeader == null || !authHeader.substring(0, 7).equals("Bearer")){
                     filterChain.doFilter(request, response);
                     return;
                 }
