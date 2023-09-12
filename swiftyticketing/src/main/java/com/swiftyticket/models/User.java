@@ -8,6 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -38,10 +40,11 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
     private String password;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date dateOfBirth;
     //make sure one user one account through the use of phone number by making it unique.
     @Column(unique = true)
-    private long phoneNumber;
+    private String phoneNumber;
     // Since we need to assign certain roles to the users that login, we use ENUMS for ease of access:
     @Enumerated(EnumType.STRING)
     private Role role;
