@@ -16,3 +16,7 @@ twilio:
     AccountSID: AC7e30e0b3774db2aa0a854f617b79c5a4
     AuthToken: de64a0c10f1c3c7814050100d6a03bf3
     phoneNumber: +12512377009
+
+server:
+    error:
+        include-message: always
