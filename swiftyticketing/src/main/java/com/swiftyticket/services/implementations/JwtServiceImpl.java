@@ -31,7 +31,7 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String extractUserName(String token){
-        // To actually get to the username from the raw token we need to extract the claims:
+        // To actually get to the username/email from the raw token we need to extract the claims:
         return extractClaim(token, Claims::getSubject);
     }
 
