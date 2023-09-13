@@ -26,14 +26,17 @@ public class AuthServiceImpl implements AuthService{
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public JwtAuthResponse signup(SignUpRequest request) {
+    public String signup(SignUpRequest request) {
         // Creating a new user in the DB and making a JWT Token for them:
         var user = User.builder().dateOfBirth(request.getDateOfBirth()).phoneNumber(request.getPhoneNumber())
                         .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
                         .role(Role.USER).verified(false).build();
         userRepository.save(user);
+        /*
         var jwtToken = jwtService.generateToken(user);
         return JwtAuthResponse.builder().token(jwtToken).build();
+        */
+        return "sign up successful, please check the phone number to verify the account in order to access it";
     }
 
     @Override
