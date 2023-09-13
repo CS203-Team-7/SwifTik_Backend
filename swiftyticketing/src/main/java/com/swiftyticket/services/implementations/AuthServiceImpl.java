@@ -13,6 +13,8 @@ import com.swiftyticket.models.User;
 import com.swiftyticket.repositories.UserRepository;
 import com.swiftyticket.services.AuthService;
 import com.swiftyticket.services.JwtService;
+import com.swiftyticket.dto.otp.OtpRequest;
+import com.swiftyticket.services.SmsService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +26,7 @@ public class AuthServiceImpl implements AuthService{
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final SmsService smsServ;
 
     @Override
     public String signup(SignUpRequest request) {
@@ -36,6 +39,12 @@ public class AuthServiceImpl implements AuthService{
         var jwtToken = jwtService.generateToken(user);
         return JwtAuthResponse.builder().token(jwtToken).build();
         */
+
+        //create OTP request object to send the SMS
+        OtpRequest otpReq = new OtpRequest( request.getEmail(), request.getPhoneNumber() );
+        smsServ.sendSMS(otpReq);
+
+
         return "sign up successful, please check the phone number to verify the account in order to access it";
     }
 
