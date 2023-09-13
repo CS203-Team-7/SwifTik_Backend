@@ -33,7 +33,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/auth/**") // As of now it is permitting anyone to use paths under '/'
+                .authorizeHttpRequests(request -> request.requestMatchers("/auth/**","/otp/*") // As of now it is permitting anyone to use paths under '/'
                     .permitAll().anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                     jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

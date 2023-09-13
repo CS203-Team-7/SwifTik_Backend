@@ -17,9 +17,11 @@ import com.swiftyticket.dto.otp.OtpRequest;
 import com.swiftyticket.services.SmsService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService{
 
     private final UserRepository userRepository;
@@ -35,6 +37,8 @@ public class AuthServiceImpl implements AuthService{
                         .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
                         .role(Role.USER).verified(false).build();
         userRepository.save(user);
+        
+        //old code used to generate a token upon sign up. 
         /*
         var jwtToken = jwtService.generateToken(user);
         return JwtAuthResponse.builder().token(jwtToken).build();
