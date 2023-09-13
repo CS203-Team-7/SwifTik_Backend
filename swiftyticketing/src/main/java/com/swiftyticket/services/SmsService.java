@@ -83,7 +83,7 @@ public class SmsService {
 
 			//set the user to verified
 			userRepo.enableAppUser(otpValidationRequest.getEmail());
-            return "Success! You may log into your account now";
+            return "OTP verified! You can log into your account now";
         } else {
             return "OTP is invalid! Please try again, or request for a new OTP";
         }

@@ -1,7 +1,7 @@
 spring:
     datasource:
         url: jdbc:postgresql://localhost:5432/swiftik
-        username: zj
+        username: dhruv
         password: postgres
         driver-class-name: org.postgresql.Driver
     jpa:

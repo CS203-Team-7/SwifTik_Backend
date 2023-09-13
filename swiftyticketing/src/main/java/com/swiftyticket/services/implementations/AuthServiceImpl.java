@@ -38,10 +38,10 @@ public class AuthServiceImpl implements AuthService{
                         .role(Role.USER).verified(false).build();
         userRepository.save(user);
         
-        //old code used to generate a token upon sign up. 
+        //Old code used to generate a token upon sign up.
         /*
-        var jwtToken = jwtService.generateToken(user);
-        return JwtAuthResponse.builder().token(jwtToken).build();
+            var jwtToken = jwtService.generateToken(user);
+            return JwtAuthResponse.builder().token(jwtToken).build();
         */
 
         //create OTP request object to send the SMS
@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService{
         smsServ.sendSMS(otpReq);
 
 
-        return "sign up successful, please check the phone number to verify the account in order to access it";
+        return "Please verify phone number, an OTP has been sent";
     }
 
     @Override
