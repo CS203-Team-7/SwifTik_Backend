@@ -48,6 +48,8 @@ public class User implements UserDetails {
     // Since we need to assign certain roles to the users that login, we use ENUMS for ease of access:
     @Enumerated(EnumType.STRING)
     private Role role;
+    //lock users until they verify with OTP
+    private boolean verified;
 
     // Below are all the methods that need to be implemented for Spring Security to actually be able to authorize this User:
 
@@ -69,7 +71,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return verified;
     }
     
     @Override

@@ -30,7 +30,7 @@ public class AuthServiceImpl implements AuthService{
         // Creating a new user in the DB and making a JWT Token for them:
         var user = User.builder().dateOfBirth(request.getDateOfBirth()).phoneNumber(request.getPhoneNumber())
                         .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
-                        .role(Role.USER).build();
+                        .role(Role.USER).verified(false).build();
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
         return JwtAuthResponse.builder().token(jwtToken).build();
