@@ -13,27 +13,43 @@ import com.swiftyticket.models.User;
 import com.swiftyticket.repositories.UserRepository;
 import com.swiftyticket.services.AuthService;
 import com.swiftyticket.services.JwtService;
+import com.swiftyticket.dto.otp.OtpRequest;
+import com.swiftyticket.services.SmsService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService{
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final SmsService smsServ;
 
     @Override
-    public JwtAuthResponse signup(SignUpRequest request) {
+    public String signup(SignUpRequest request) {
         // Creating a new user in the DB and making a JWT Token for them:
         var user = User.builder().dateOfBirth(request.getDateOfBirth()).phoneNumber(request.getPhoneNumber())
                         .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
-                        .role(Role.USER).build();
+                        .role(Role.USER).verified(false).build();
         userRepository.save(user);
+        
+        //old code used to generate a token upon sign up. 
+        /*
         var jwtToken = jwtService.generateToken(user);
         return JwtAuthResponse.builder().token(jwtToken).build();
+        */
+
+        //create OTP request object to send the SMS
+        OtpRequest otpReq = new OtpRequest( request.getEmail(), request.getPhoneNumber() );
+        smsServ.sendSMS(otpReq);
+
+
+        return "sign up successful, please check the phone number to verify the account in order to access it";
     }
 
     @Override

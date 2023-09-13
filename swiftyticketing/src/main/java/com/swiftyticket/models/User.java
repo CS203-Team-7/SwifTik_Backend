@@ -8,6 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -38,11 +40,16 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
     private String password;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date dateOfBirth;
-    private Long phoneNumber;
+    //make sure one user one account through the use of phone number by making it unique.
+    @Column(unique = true)
+    private String phoneNumber;
     // Since we need to assign certain roles to the users that login, we use ENUMS for ease of access:
     @Enumerated(EnumType.STRING)
     private Role role;
+    //lock users until they verify with OTP
+    private boolean verified;
 
     // Below are all the methods that need to be implemented for Spring Security to actually be able to authorize this User:
 
@@ -64,7 +71,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return verified;
     }
     
     @Override

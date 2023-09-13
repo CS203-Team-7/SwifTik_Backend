@@ -11,6 +11,7 @@ import com.swiftyticket.dto.auth.SignInRequest;
 import com.swiftyticket.dto.auth.SignUpRequest;
 import com.swiftyticket.services.AuthService;
 
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -23,7 +24,7 @@ public class AuthController {
 
     // Sign up endpoint:
     @PostMapping("/signup")
-    public ResponseEntity<JwtAuthResponse> signup(@RequestBody SignUpRequest signUpRequest){
+    public ResponseEntity<String> signup(@RequestBody SignUpRequest signUpRequest){
         return ResponseEntity.ok(authService.signup(signUpRequest));
     }
 
