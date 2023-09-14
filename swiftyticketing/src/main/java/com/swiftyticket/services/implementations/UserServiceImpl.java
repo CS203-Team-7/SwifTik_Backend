@@ -1,10 +1,15 @@
 package com.swiftyticket.services.implementations;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.swiftyticket.exceptions.UserNotFoundException;
+import com.swiftyticket.models.User;
 import com.swiftyticket.repositories.UserRepository;
 import com.swiftyticket.services.UserService;
 
@@ -16,6 +21,43 @@ public class UserServiceImpl implements UserService {
 
     // We are going to need the repository methods here:
     private final UserRepository userRepository;
+
+    @Override
+    public List<User> listUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User getUserByEmail(String email){
+        return userRepository.findByEmail(email).map(user -> {
+            return user;
+        }).orElse(null);
+    }
+
+    @Override
+    public User addUser(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User updateUser(String email, User newUserInfo) {
+        return userRepository.findByEmail(email).map(user -> {
+            user.setAge(newUserInfo.getAge());
+            user.setEmail(newUserInfo.getEmail());
+            user.setPassword(newUserInfo.getPassword());
+            user.setPhoneNumber(newUserInfo.getPhoneNumber());
+            return userRepository.save(user);
+        }).orElse(null);
+    }
+
+    @Override
+    public void deleteUser(String email){
+        Optional<User> u = userRepository.findByEmail(email);
+        if (u == null) throw new UserNotFoundException(email);
+
+        User user = u.get();
+        userRepository.deleteById(user.getUserId());
+    }
 
     // Also implement the UserDetailsService for Spring security:
     @Override

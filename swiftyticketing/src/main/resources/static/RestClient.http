@@ -1,0 +1,104 @@
+# REST test cases for tickets
+
+###
+GET http://localhost:8080/tickets
+
+###
+GET http://localhost:8080/tickets/2
+
+###
+POST http://localhost:8080/tickets
+Content-Type: application/json
+
+{
+    "ticketPrice": 3000
+}
+
+###
+PUT http://localhost:8080/tickets/2
+Content-Type: application/json
+
+{
+    "ticketPrice": 6969
+}
+
+###
+DELETE http://localhost:8080/tickets/2
+
+
+
+#USER TEST
+###
+GET http://localhost:8080/users
+
+
+###
+GET http://localhost:8080/users/blank@gmail.com
+
+###
+DELETE http://localhost:8080/users/blank@gmail.com
+
+
+###
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+    "email": "blank@gmail.com",
+    "age": "18",
+    "phoneNumber": "1231231291",
+    "password": "lel",
+    "role": "USER"
+}
+
+###
+PUT http://localhost:8080/users/blal@gmail.com
+Content-Type: application/json
+
+{
+    "email": "blal@gmail.com",
+    "age": "14",
+    "phoneNumber": "01234567891",
+    "password": "ok",
+    "role": "USER"
+}
+
+### Event test ###
+GET http://localhost:8080/events
+
+###
+GET http://localhost:8080/events/1
+
+// [PROBLEM] need to input LocalDate from JSON input
+###
+POST http://localhost:8080/events
+Content-Type: application/json
+
+{
+    "eventName": "Eras Tour",
+    "artists": ["Taylor Swift, Sabrina Carpenter"],
+    "dates": [{
+        "year" : 2022,
+        "month" : "SEPTEMBER",
+        "era" : "CE",
+        "dayOfMonth" : 20,
+        "dayOfWeek" : "TUESDAY",
+        "dayOfYear" : 263,
+        "leapYear" : false,
+        "monthValue" : 9,
+        "chronology" : {
+        "id" : "ISO",
+        "calendarType" : "iso8601"
+        }
+    }],
+    "venue": "Grandma Toilet",
+    "venueCapacity": 5
+}
+
+###
+PUT http://localhost:8080/events/1
+// updatedEventDetails here
+// placeholder first since localDate class not working
+
+###
+DELETE http://localhost:8080/events/1

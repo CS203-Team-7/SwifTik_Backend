@@ -40,11 +40,9 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
     private String password;
-    @JsonFormat(pattern="yyyy-MM-dd")
     private Date dateOfBirth;
-    //make sure one user one account through the use of phone number by making it unique.
-    @Column(unique = true)
     private String phoneNumber;
+    private String password;
     // Since we need to assign certain roles to the users that login, we use ENUMS for ease of access:
     @Enumerated(EnumType.STRING)
     private Role role;
