@@ -1,12 +1,15 @@
 package com.swiftyticket.services.implementations;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.swiftyticket.exceptions.TicketNotFoundException;
 import com.swiftyticket.models.Ticket;
 import com.swiftyticket.repositories.TicketRepository;
 import com.swiftyticket.services.TicketService;
+
 
 @Service
 public class TicketServiceImpl implements TicketService {
@@ -43,6 +46,10 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public void deleteTicket(Integer id) {
-        ticketRepo.deleteById(id);
+        Optional<Ticket> t = ticketRepo.findById(id);
+        if (t == null) throw new TicketNotFoundException(id);
+
+        Ticket ticket = t.get();
+        ticketRepo.deleteById(ticket.getTicketId());
     }
 }

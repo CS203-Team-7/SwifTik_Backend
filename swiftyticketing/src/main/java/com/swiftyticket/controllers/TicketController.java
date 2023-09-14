@@ -36,7 +36,6 @@ public class TicketController {
     public Ticket findTicket(@PathVariable Integer id) {
         Ticket ticket = ticketService.getTicket(id);
 
-        // [PROBLEM] Can't get error message to show up when testing with RestClient
         if (ticket == null) throw new TicketNotFoundException(id);
         return ticket;
     }
@@ -48,9 +47,8 @@ public class TicketController {
     }
     
     @PutMapping("/tickets/{id}")
-    public Ticket updateTicket(@PathVariable Integer id, @RequestBody Ticket newTicket) {
+    public Ticket updateTicket(@PathVariable Integer id, @RequestBody Ticket newTicket) throws TicketNotFoundException {
         Ticket ticket = ticketService.updateTicket(id, newTicket);
-        // [PROBLEM] Can't get error message to show up when testing with RestClient
         if (ticket == null) throw new TicketNotFoundException(id);
         return ticket;
     }
