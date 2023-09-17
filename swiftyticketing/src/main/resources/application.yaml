@@ -1,8 +1,8 @@
 spring:
     datasource:
         url: jdbc:postgresql://localhost:5432/swiftik
-        username: zj
-        password: postgres
+        username: ${PG_ID}
+        password: ${PG_PW}
         driver-class-name: org.postgresql.Driver
     jpa:
         show-sql: true
@@ -13,10 +13,9 @@ spring:
                 dialect: org.hibernate.dialect.PostgreSQLDialect
                 format_sql: true
 twilio:
-    AccountSID: AC7e30e0b3774db2aa0a854f617b79c5a4
-    AuthToken: de64a0c10f1c3c7814050100d6a03bf3
-    phoneNumber: +12512377009
-<<<<<<< HEAD
+    AccountSID: ${TW_SID}
+    AuthToken: ${TW_AUTHTOKEN}
+    phoneNumber: ${TW_PHONENUMBER}
 token:
     signing:
         key: 413F4428472B4B6250655368566D5970337336763979244226452948404D6351
