@@ -22,5 +22,8 @@ public interface UserRepository  extends JpaRepository<User, Integer>{
             "SET a.verified = TRUE WHERE a.email = ?1")
     int enableAppUser(String email);
 
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM User a WHERE a.email = ?1")
     void deleteByEmail(String email);
 }
