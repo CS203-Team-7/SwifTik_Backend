@@ -21,4 +21,6 @@ public interface UserRepository  extends JpaRepository<User, Integer>{
     @Query("UPDATE User a " +
             "SET a.verified = TRUE WHERE a.email = ?1")
     int enableAppUser(String email);
+
+    void deleteByEmail(String email);
 }
