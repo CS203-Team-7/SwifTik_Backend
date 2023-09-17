@@ -1,7 +1,6 @@
 package com.swiftyticket.models;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -22,7 +21,6 @@ import lombok.NonNull;
 @AllArgsConstructor
 @Entity
 @Table(name = "events")
-
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,7 +42,7 @@ public class Event {
     // how to incorporate time? cant just make a list of time because the a specific time should be linked to specific date
     @NonNull
     @Column(name = "event_dates")
-    private List<LocalDate> dates;
+    private List<Date> dates;
 
     @NonNull
     @Column(name = "venue")

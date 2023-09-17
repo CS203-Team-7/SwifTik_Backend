@@ -1,5 +1,7 @@
 package com.swiftyticket.controllers;
 
+import jakarta.annotation.Nonnull;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,13 +26,13 @@ public class AuthController {
 
     // Sign up endpoint:
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignUpRequest signUpRequest){
+    public ResponseEntity<String> signup(@Nonnull @Valid @RequestBody SignUpRequest signUpRequest){
         return ResponseEntity.ok(authService.signup(signUpRequest));
     }
 
     // Sign in endpoint:
     @PostMapping("/signin")
-    public ResponseEntity<JwtAuthResponse> signIn(@RequestBody SignInRequest signInRequest){
+    public ResponseEntity<JwtAuthResponse> signIn(@Nonnull @Valid @RequestBody SignInRequest signInRequest){
         return ResponseEntity.ok(authService.signIn(signInRequest));
     }
 }

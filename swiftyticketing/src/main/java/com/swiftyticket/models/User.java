@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.validation.constraints.Pattern;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,7 +41,9 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
     private String password;
+    @Column(name = "date_of_birth")
     private Date dateOfBirth;
+    @Column(name = "phone_number")
     private String phoneNumber;
     // Since we need to assign certain roles to the users that login, we use ENUMS for ease of access:
     @Enumerated(EnumType.STRING)
