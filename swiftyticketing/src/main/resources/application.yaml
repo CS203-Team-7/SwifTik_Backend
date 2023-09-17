@@ -1,8 +1,8 @@
 spring:
     datasource:
         url: jdbc:postgresql://localhost:5432/swiftik
-        username: postgres
-        password: password
+        username: zj
+        password: postgres
         driver-class-name: org.postgresql.Driver
     jpa:
         show-sql: true
@@ -23,9 +23,3 @@ token:
 #logging:
 #    level:
 #        org.springframework.security: TRACE
-=======
-
-server:
-    error:
-        include-message: always
->>>>>>> origin/database
