@@ -1,11 +1,9 @@
 package com.swiftyticket.services.implementations;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.swiftyticket.exceptions.UserNotFoundException;
@@ -24,13 +22,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        List<User> usersList = userRepository.findAll();
+        if(usersList.isEmpty()) throw new UserNotFoundException("No users found");
+        else return usersList;
     }
 
     @Override
     public User getUserByEmail(String email){
         return userRepository.findByEmail(email)
-                .orElse(null);
+                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(newUserInfo.getPassword());
             user.setPhoneNumber(newUserInfo.getPhoneNumber());
             return userRepository.save(user);
-        }).orElse(null);
+        }).orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
             @Override
             public UserDetails loadUserByUsername(String username) {
                 return userRepository.findByEmail(username)
-                                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                                        .orElseThrow(() -> new UserNotFoundException("User not found"));
             }
         };
     }

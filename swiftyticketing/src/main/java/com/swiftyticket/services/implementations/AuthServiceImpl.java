@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService{
         smsServ.sendSMS(otpReq);
 
 
-        return "sign up successful, please check the phone number to verify the account in order to access it";
+        return "Sign up successful, please check your phone for the OTP code.";
     }
 
     @Override
