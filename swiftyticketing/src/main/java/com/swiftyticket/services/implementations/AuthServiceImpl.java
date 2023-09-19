@@ -1,5 +1,6 @@
 package com.swiftyticket.services.implementations;
 
+import com.swiftyticket.exceptions.IncorrectUserPasswordException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,7 +53,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public JwtAuthResponse signIn(SignInRequest request) {
+    public JwtAuthResponse signIn(SignInRequest request) throws IncorrectUserPasswordException {
         // First we check if the username and password actually match:
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         // Once authenticated: create JWT Token and then send response
