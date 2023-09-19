@@ -1,4 +1,4 @@
-package com.swiftyticket.services;
+package com.swiftyticket.services.implementations;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class SmsService {
+public class SmsServiceImpl {
 	private final UserRepository userRepo;
 
 	@Autowired
@@ -38,7 +38,7 @@ public class SmsService {
 	}
 
 	//we use decimal format to makesure the generated number is always 6 digits (will front fill 0's)
-	private String generateOTP() {
+    public String generateOTP() {
         return new DecimalFormat("000000")
                 .format(new SecureRandom().nextInt(999999));
     }
@@ -71,8 +71,8 @@ public class SmsService {
 		}
 		return otpResponseDto;
 	}
-	
-	public String validateOtp(OtpValidationRequest otpValidationRequest) {
+
+    public String validateOtp(OtpValidationRequest otpValidationRequest) {
 		//get corresponding given otp for username trying to verify
 		String username = otpValidationRequest.getEmail();
 		String given_otp = otpMap.get(username);

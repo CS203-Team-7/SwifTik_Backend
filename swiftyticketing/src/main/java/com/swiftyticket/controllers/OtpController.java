@@ -1,5 +1,6 @@
 package com.swiftyticket.controllers;
 
+import com.swiftyticket.services.implementations.SmsServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.swiftyticket.dto.otp.OtpRequest;
 import com.swiftyticket.dto.otp.OtpResponseDto;
 import com.swiftyticket.dto.otp.OtpValidationRequest;
-import com.swiftyticket.services.SmsService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OtpController {
 
 	@Autowired
-	private SmsService smsService;
+	private SmsServiceImpl smsService;
 	
 	@GetMapping("/process")
 	public String processSMS() {
