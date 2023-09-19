@@ -42,7 +42,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(String email, User newUserInfo) {
         return userRepository.findByEmail(email).map(user -> {
-            user.setAge(newUserInfo.getAge());
             user.setEmail(newUserInfo.getEmail());
             user.setPassword(newUserInfo.getPassword());
             user.setPhoneNumber(newUserInfo.getPhoneNumber());

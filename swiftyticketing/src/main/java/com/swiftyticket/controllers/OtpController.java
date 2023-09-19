@@ -29,16 +29,16 @@ public class OtpController {
 		return "SMS sent";
 	}
 
-	@PostMapping("/send-otp")
+	@PostMapping("/send")
 	public ResponseEntity<OtpResponseDto> sendOtp(@RequestBody OtpRequest otpRequest) {
 		//log will print to console when this command is executed
-		log.info("inside sendOtp to "+otpRequest.getUsername());
+		log.info("inside sendOtp to "+otpRequest.getEmail());
 		return new ResponseEntity<OtpResponseDto>(smsService.sendSMS(otpRequest), HttpStatus.OK);
 	}
 	
-	@PostMapping("/validate-otp")
+	@PostMapping("/validate")
     public ResponseEntity<String> validateOtp(@RequestBody OtpValidationRequest otpValidationRequest) {
-		log.info("inside validateOtp :: "+otpValidationRequest.getUsername()+" "+otpValidationRequest.getOtpNumber());
+		log.info("inside validateOtp :: "+otpValidationRequest.getEmail()+" "+otpValidationRequest.getOtpNumber());
 		return new ResponseEntity<String>(smsService.validateOtp(otpValidationRequest), HttpStatus.OK);
     }
 	

@@ -1,13 +1,14 @@
 package com.swiftyticket.models;
 
 import java.util.Collection;
-//import java.util.Date;
-// import java.util.Set;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,14 +39,14 @@ public class User implements UserDetails {
     // We should set this to only unique values to avoid duplicate email accounts being formed:
     @Column(unique = true)
     private String email;
-    private int age;
-    //ask if we should use dob instead of age
-    //private Date dateOfBirth;
-    private String phoneNumber;
     private String password;
+    private Date dateOfBirth;
+    private String phoneNumber;
     // Since we need to assign certain roles to the users that login, we use ENUMS for ease of access:
     @Enumerated(EnumType.STRING)
     private Role role;
+    //lock users until they verify with OTP
+    private boolean verified;
 
     // Below are all the methods that need to be implemented for Spring Security to actually be able to authorize this User:
 
@@ -67,7 +68,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return verified;
     }
     
     @Override
