@@ -1,5 +1,6 @@
 package com.swiftyticket.controllers;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException e){
+    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException e){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
