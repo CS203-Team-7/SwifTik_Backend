@@ -18,19 +18,14 @@ public class UserController {
 
     private final UserService userService;
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUsers() throws UserNotFoundException {
-        return ResponseEntity.ok(userService.getAllUsers());
+        return new ResponseEntity<List<User>>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @GetMapping("/{email}")
     public ResponseEntity<User> getUserByEmail(@Nonnull @PathVariable String email) throws UserNotFoundException {
-        return ResponseEntity.ok(userService.getUserByEmail(email));
+        return new ResponseEntity<User>(userService.getUserByEmail(email), HttpStatus.OK);
     }
 
     @PutMapping("/update/{email}")
