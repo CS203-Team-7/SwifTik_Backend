@@ -33,7 +33,7 @@ public class OtpController {
 	public ResponseEntity<OtpResponseDto> sendOtp(@RequestBody OtpRequest otpRequest) {
 		//log will print to console when this command is executed
 		log.info("inside sendOtp to "+otpRequest.getEmail());
-		return new ResponseEntity<OtpResponseDto>(smsService.sendSMS(otpRequest), HttpStatus.OK);
+		return new ResponseEntity<OtpResponseDto>(smsService.sendSMS(otpRequest), HttpStatus.CREATED);
 	}
 	
 	@PostMapping("/validate")

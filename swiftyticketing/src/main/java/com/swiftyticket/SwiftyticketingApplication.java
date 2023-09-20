@@ -17,7 +17,7 @@ public class SwiftyticketingApplication {
 
 	@GetMapping
 	public String hello(){
-		return "Hello there user";
+		return "Hello there user, Welcome to SwiftiK";
 	}
 
 }
