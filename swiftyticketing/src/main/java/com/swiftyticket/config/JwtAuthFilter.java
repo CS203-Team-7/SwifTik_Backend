@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.swiftyticket.exceptions.JWTExpiredException;
 import com.swiftyticket.services.JwtService;
 import com.swiftyticket.services.UserService;
 
@@ -61,6 +62,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         context.setAuthentication(authToken);
                         SecurityContextHolder.setContext(context);
                         log.info("" + context);
+                    } else {
+                        throw new JWTExpiredException(userEmail + " token has expired, Please login again");
                     }
                 }
                 // Then finally we go back to the security filterchain since it has been authorized here:

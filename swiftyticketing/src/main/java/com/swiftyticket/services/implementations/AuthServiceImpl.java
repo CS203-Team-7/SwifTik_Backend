@@ -35,15 +35,8 @@ public class AuthServiceImpl implements AuthService {
                         .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
                         .role(Role.USER).verified(false).build();
         userRepository.save(user);
-        
-        
-        //old code used to generate a token upon sign up. 
-        /*
-        var jwtToken = jwtService.generateToken(user);
-        return JwtAuthResponse.builder().token(jwtToken).build();
-        */
 
-        //create OTP request object to send the SMS
+        // Create OTP request object to send the SMS
         OtpRequest otpReq = new OtpRequest( request.getEmail(), request.getPhoneNumber() );
         smsServ.sendSMS(otpReq);
 
