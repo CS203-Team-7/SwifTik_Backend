@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class IncorrectUserPasswordException extends RuntimeException{
-    public IncorrectUserPasswordException() {
-        super("Password is incorrect");
+    public IncorrectUserPasswordException(String message) {
+        super(message);
     }
 }

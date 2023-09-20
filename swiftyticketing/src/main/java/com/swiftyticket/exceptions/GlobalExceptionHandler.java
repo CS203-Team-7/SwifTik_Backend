@@ -18,4 +18,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         return new ResponseEntity<>("Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character", HttpStatus.BAD_REQUEST);
     } 
+
+    @ExceptionHandler(IncorrectUserPasswordException.class)
+    public ResponseEntity<Object> handleIncorrectUserPasswordException(IncorrectUserPasswordException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 }
