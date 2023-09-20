@@ -17,11 +17,9 @@ import com.swiftyticket.services.JwtService;
 import com.swiftyticket.dto.otp.OtpRequest;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class AuthServiceImpl implements AuthService{
 
     private final UserRepository userRepository;

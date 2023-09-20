@@ -15,13 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.swiftyticket.exceptions.EventNotFoundException;
 import com.swiftyticket.models.Event;
-import com.swiftyticket.models.User;
 import com.swiftyticket.services.EventService;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @RestController
 public class EventController {

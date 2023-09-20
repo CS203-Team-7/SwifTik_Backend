@@ -1,7 +1,6 @@
 package com.swiftyticket.controllers;
-import java.util.List;
-import java.util.Objects;
 
+import java.util.List;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,17 +19,17 @@ public class UserController {
     private final UserService userService;
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException e){
+    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<User>> getAllUsers() throws UserNotFoundException{
-      return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<List<User>> getAllUsers() throws UserNotFoundException {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<User> getUserByEmail(@Nonnull @PathVariable String email) throws UserNotFoundException{
+    public ResponseEntity<User> getUserByEmail(@Nonnull @PathVariable String email) throws UserNotFoundException {
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 
@@ -42,7 +41,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{email}")
-    public ResponseEntity<String> deleteUser(@Nonnull @PathVariable String email) throws UserNotFoundException{
+    public ResponseEntity<String> deleteUser(@Nonnull @PathVariable String email) throws UserNotFoundException {
         userService.deleteUser(email);
         return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
     }

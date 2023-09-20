@@ -30,39 +30,41 @@ public class SmsServiceImpl {
 
 	@Autowired
 	private TwilioConfig twilioConfig;
-    Map<String, String> otpMap = new HashMap<>();
+	Map<String, String> otpMap = new HashMap<>();
 
 	@PostConstruct
 	public void setup() {
 		Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
 	}
 
-	//we use decimal format to makesure the generated number is always 6 digits (will front fill 0's)
-    public String generateOTP() {
-        return new DecimalFormat("000000")
-                .format(new SecureRandom().nextInt(999999));
-    }
+	// we use decimal format to makesure the generated number is always 6 digits
+	// (will front fill 0's)
+	public String generateOTP() {
+		return new DecimalFormat("000000")
+				.format(new SecureRandom().nextInt(999999));
+	}
 
 	public OtpResponseDto sendSMS(OtpRequest otpRequest) {
 		OtpResponseDto otpResponseDto = null;
 		try {
-			//get the to and from number for the message function later
-			PhoneNumber to = new PhoneNumber(otpRequest.getPhoneNumber());//to
+			// get the to and from number for the message function later
+			PhoneNumber to = new PhoneNumber(otpRequest.getPhoneNumber());// to
 			PhoneNumber from = new PhoneNumber(twilioConfig.getPhoneNumber()); // from
 
-			//generate OTP&message using the earlier method
+			// generate OTP&message using the earlier method
 			String otp = generateOTP();
-			String otpMessage = "Hi, " + otpRequest.getEmail() +  ", your OTP for verification is: " + otp + "\r\nbeep boop I am a bot please do not reply to this number";
+			String otpMessage = "Hi, " + otpRequest.getEmail() + ", your OTP for verification is: " + otp
+					+ "\r\nbeep boop I am a bot please do not reply to this number";
 
-			//twilio will send the message here, and return a message
-			Message message = Message
-			        .creator(to, from,
-			                otpMessage)
-			        .create();
+			Message
+					.creator(to, from,
+							otpMessage)
+					.create();
 
-			log.info("OTP Sent to "+ otpRequest.getEmail() + ", Otp:" + otp);
+			log.info("OTP Sent to " + otpRequest.getEmail() + ", Otp:" + otp);
 
-			//store in map with username as key, and save response in the DTO so we can access it later back in the controller.
+			// store in map with username as key, and save response in the DTO so we can
+			// access it later back in the controller.
 			otpMap.put(otpRequest.getEmail(), otp);
 			otpResponseDto = new OtpResponseDto(OtpStatus.DELIVERED, otpMessage);
 		} catch (Exception e) {
@@ -72,21 +74,21 @@ public class SmsServiceImpl {
 		return otpResponseDto;
 	}
 
-    public String validateOtp(OtpValidationRequest otpValidationRequest) {
-		//get corresponding given otp for username trying to verify
+	public String validateOtp(OtpValidationRequest otpValidationRequest) {
+		// get corresponding given otp for username trying to verify
 		String username = otpValidationRequest.getEmail();
 		String given_otp = otpMap.get(username);
 		String entered_otp = otpValidationRequest.getOtpNumber();
 
-        if (entered_otp.equals(given_otp)) {
-            otpMap.remove(username,otpValidationRequest.getOtpNumber());
+		if (entered_otp.equals(given_otp)) {
+			otpMap.remove(username, otpValidationRequest.getOtpNumber());
 
-			//set the user to verified
+			// set the user to verified
 			userRepo.enableAppUser(otpValidationRequest.getEmail());
-            return "Success! You may log into your account now";
-        } else {
-            return "OTP is invalid! Please try again, or request for a new OTP";
-        }
+			return "Success! You may log into your account now";
+		} else {
+			return "OTP is invalid! Please try again, or request for a new OTP";
+		}
 	}
 
 }
