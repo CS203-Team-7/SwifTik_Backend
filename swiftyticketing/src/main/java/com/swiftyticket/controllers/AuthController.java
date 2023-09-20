@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ public class AuthController {
 
     // Sign up endpoint:
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@Nonnull @Valid @RequestBody SignUpRequest signUpRequest){
+    public ResponseEntity<String> signup(@Nonnull @Valid @RequestBody SignUpRequest signUpRequest) throws MethodArgumentNotValidException{
         return new ResponseEntity<String>(authService.signup(signUpRequest), HttpStatus.CREATED);
     }
 

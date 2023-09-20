@@ -1,10 +1,12 @@
 package com.swiftyticket.services.implementations;
 
+import com.swiftyticket.exceptions.IllegalSignUpArgumentException;
 import com.swiftyticket.exceptions.IncorrectUserPasswordException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.swiftyticket.dto.auth.JwtAuthResponse;
 import com.swiftyticket.dto.auth.SignInRequest;
@@ -20,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -35,6 +37,7 @@ public class AuthServiceImpl implements AuthService{
                         .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
                         .role(Role.USER).verified(false).build();
         userRepository.save(user);
+        
         
         //old code used to generate a token upon sign up. 
         /*
@@ -53,9 +56,11 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public JwtAuthResponse signIn(SignInRequest request) throws IncorrectUserPasswordException {
         // First we check if the username and password actually match:
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         // Once authenticated: create JWT Token and then send response
-        var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
         var jwtToken = jwtService.generateToken(user);
         return JwtAuthResponse.builder().token(jwtToken).build();
     }
