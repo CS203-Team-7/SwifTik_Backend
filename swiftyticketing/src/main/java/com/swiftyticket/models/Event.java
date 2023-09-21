@@ -1,13 +1,20 @@
 package com.swiftyticket.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,6 +58,21 @@ public class Event {
     @NonNull
     @Column(name = "venue_capacity")
     private Integer venueCapacity;
+
+    @OneToMany(mappedBy = "event",
+                cascade = CascadeType.ALL)
+    private List<Zone> zoneList =  new ArrayList<>();
+
+    public Event(String eventName, List<String> artists, List<Date> dates, String venue, Integer venueCapacity){
+        this.eventName = eventName;
+        this.artists = artists;
+        this.dates = dates;
+        this.venue = venue;
+        this.venueCapacity = venueCapacity;
+    }
+
+    
+
 
     // custom constructor to account for use of LocalDate.of(yyyy, mm, dd) method
     // public Event(Integer eventId, @NonNull List<String> artists,
