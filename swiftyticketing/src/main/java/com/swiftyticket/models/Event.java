@@ -18,12 +18,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -61,7 +62,7 @@ public class Event {
 
     @OneToMany(mappedBy = "event",
                 cascade = CascadeType.ALL)
-    private List<Zone> zoneList =  new ArrayList<>();
+    private List<Zone> zoneList;
 
     public Event(String eventName, List<String> artists, List<Date> dates, String venue, Integer venueCapacity){
         this.eventName = eventName;
@@ -69,6 +70,7 @@ public class Event {
         this.dates = dates;
         this.venue = venue;
         this.venueCapacity = venueCapacity;
+        zoneList = new ArrayList<>();
     }
 
     
