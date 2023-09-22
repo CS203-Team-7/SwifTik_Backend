@@ -3,9 +3,11 @@ package com.swiftyticket.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,8 +25,8 @@ import lombok.Setter;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "zone")
-public class Zone {
+@Table(name = "zones")
+public class Zones {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "zone_id")
@@ -43,12 +45,13 @@ public class Zone {
     private List<User> preRegisteredUsers = new ArrayList<>();
     */
 
-    @ManyToOne
-    @JoinColumn(name = "events_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "events_id", nullable = false)
+    @JsonIgnore
     private Event event;
 
 
-    public Zone(Integer zoneCapacity, String zoneName, Event event){
+    public Zones(Integer zoneCapacity, String zoneName, Event event){
         this.zoneCapacity = zoneCapacity;
         this.zoneName = zoneName;
         this.event = event;

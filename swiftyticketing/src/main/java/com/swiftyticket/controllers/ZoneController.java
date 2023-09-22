@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.swiftyticket.dto.zone.ZoneRequest;
 import com.swiftyticket.models.Event;
-import com.swiftyticket.models.Zone;
+import com.swiftyticket.models.Zones;
 import com.swiftyticket.services.EventService;
 import com.swiftyticket.services.ZoneService;
 
@@ -35,7 +35,7 @@ public class ZoneController {
     }
 
     @GetMapping("/events/{id}/zones")
-    public List<Zone> getZones(@PathVariable Integer id) {
+    public List<Zones> getZones(@PathVariable Integer id) {
         Event event = eventService.getEvent(id);
         return zoneService.listZones(event);
     }
