@@ -57,7 +57,7 @@ public class JwtServiceImpl implements JwtService {
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails){
         return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername()) // Set any extra claims and set the subject as the user's email
                 .setIssuedAt(new Date(System.currentTimeMillis())) // This is the time it was created
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60)) // One day expiration limit for now:
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 600)) // One day expiration limit for now:
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact(); // This is to encrypt the token with the key we are using
     }
 
