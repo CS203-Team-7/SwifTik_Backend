@@ -1,5 +1,6 @@
 package com.swiftyticket.models;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -12,10 +13,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +30,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "_user")
+@Transactional
 // We implement UserDetails from Spring Security to match all the requirements we need for authenticatons purposes
 public class User implements UserDetails { 
 
@@ -47,6 +52,9 @@ public class User implements UserDetails {
     //lock users until they verify with OTP (set it to false)
     private boolean verified;
 
+    @ManyToMany(mappedBy = "preRegisteredUsers4Zone", fetch = FetchType.EAGER)
+    private List<Zones> preRegisteredZones;
+
     // Below are all the methods that need to be implemented for Spring Security to actually be able to authorize this User:
 
     public User (String email, String password, Date dateOfBirth, String phoneNumber, Role role, boolean verified){
@@ -55,8 +63,10 @@ public class User implements UserDetails {
         this.dateOfBirth = dateOfBirth;
         this.phoneNumber = phoneNumber;
         this.role = role;
-
         this.verified = verified;
+
+        this.preRegisteredZones = new ArrayList<>();;
+
     }
 
     @Override

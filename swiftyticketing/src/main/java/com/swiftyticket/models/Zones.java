@@ -12,6 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -39,16 +41,21 @@ public class Zones {
     @NonNull
     @Column(name = "zone_name")
     private String zoneName;
-    
-    /*
-    @Column(name = "preRegistered_users")
-    private List<User> preRegisteredUsers = new ArrayList<>();
-    */
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "events_id", nullable = false)
     @JsonIgnore
     private Event event;
+
+    @ManyToMany
+    @JsonIgnore
+    @JoinTable(name = "zones_users",
+        joinColumns=
+            @JoinColumn(name="zones_id"),
+        inverseJoinColumns=
+            @JoinColumn(name="user_id"))
+    @Column(name = "preRegistered_users")
+    private List<User> preRegisteredUsers4Zone = new ArrayList<>();
 
 
     public Zones(Integer zoneCapacity, String zoneName, Event event){
