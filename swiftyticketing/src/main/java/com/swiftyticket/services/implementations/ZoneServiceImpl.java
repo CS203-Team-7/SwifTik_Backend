@@ -41,6 +41,11 @@ public class ZoneServiceImpl implements ZoneService {
         User joiningUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException("invalid user / token!"));
         Zones joinZone = zoneRepository.findByZoneName(zoneName).orElseThrow(() -> new ZoneNotFoundException("invalid zone!"));
 
+        Event joinEvent = joinZone.getEvent();
+        if(!joinEvent.getOpenStatus()){
+            return "pre-registration has closed, join us next time!";
+        }
+
         joinZone.getPreRegisteredUsers4Zone().add(joiningUser);
         joiningUser.getPreRegisteredZones().add(joinZone);
 

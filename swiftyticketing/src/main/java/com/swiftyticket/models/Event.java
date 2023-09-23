@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,6 +21,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -61,6 +64,9 @@ public class Event {
     @Column(name = "venue_capacity")
     private Integer venueCapacity;
 
+    @Column(name = "open")
+    private boolean open4Registration;
+
     @OneToMany(mappedBy = "event",
                 cascade = CascadeType.ALL)
     private List<Zones> zoneList;
@@ -71,8 +77,21 @@ public class Event {
         this.dates = dates;
         this.venue = venue;
         this.venueCapacity = venueCapacity;
+
         zoneList = new ArrayList<>();
+        open4Registration = true;
     }
+
+
+
+
+
+
+    @JsonIgnore
+    public boolean getOpenStatus(){
+        return this.open4Registration;
+    }
+
 
     
 
