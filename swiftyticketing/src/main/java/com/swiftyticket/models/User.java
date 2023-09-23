@@ -22,7 +22,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -45,10 +44,20 @@ public class User implements UserDetails {
     // Since we need to assign certain roles to the users that login, we use ENUMS for ease of access:
     @Enumerated(EnumType.STRING)
     private Role role;
-    //lock users until they verify with OTP
+    //lock users until they verify with OTP (set it to false)
     private boolean verified;
 
     // Below are all the methods that need to be implemented for Spring Security to actually be able to authorize this User:
+
+    public User (String email, String password, Date dateOfBirth, String phoneNumber, Role role, boolean verified){
+        this.email = email;
+        this.password = password;
+        this.dateOfBirth = dateOfBirth;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+
+        this.verified = verified;
+    }
 
     @Override
     public String getUsername() {
