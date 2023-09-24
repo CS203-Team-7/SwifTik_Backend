@@ -38,8 +38,8 @@ public class SecurityConfiguration {
                     jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/auth/**","/otp/*").permitAll();
-                    request.requestMatchers( "/users/**").hasAuthority("ADMIN");
-                    request.anyRequest().authenticated();
+                    request.requestMatchers( "/users/**").hasAuthority("ADMIN")
+                    .anyRequest().authenticated();
                 })
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

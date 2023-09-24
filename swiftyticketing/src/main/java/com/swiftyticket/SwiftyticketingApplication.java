@@ -29,16 +29,15 @@ public class SwiftyticketingApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		User admin = User.builder()
-		.email("admin@gmail.com")
-		.password(passwordEncoder.encode("Admin123!"))
-		.dateOfBirth(new Date())
-		.phoneNumber("12345678")
-		.role(Role.ADMIN)
-		.verified(true)
-		.build();
+		User admin = new User("admin@gmail.com",
+								   passwordEncoder.encode("Admin123!"),
+								   new Date(),
+								   "12345678",
+								   Role.ADMIN,
+								   true);
+
 		userRepository.save(admin);
 		String token = jwtService.generateToken(admin);
-		log.info(token);
+		log.info("admin token: " + token);
 	}
 }

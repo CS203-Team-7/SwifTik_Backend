@@ -55,7 +55,7 @@ public class EventController {
         return event;
     }
 
-    @DeleteMapping("events/{id}")
+    @DeleteMapping("/events/{id}")
     public String deleteEvent(@PathVariable Integer id) {
         try {
             eventService.deleteEvent(id);
@@ -63,5 +63,15 @@ public class EventController {
             throw new EventNotFoundException(id);
         }
         return "Event #" + id + " has been deleted.";
+    }
+
+    @PutMapping("/events/{id}/close")
+    public void closeRegistration(@PathVariable Integer id) throws EventNotFoundException {
+        eventService.closeEvent(id);
+    }
+
+    @PutMapping("/events/{id}/open")
+    public void openRegistration(@PathVariable Integer id) throws EventNotFoundException {
+        eventService.openEvent(id);
     }
 }

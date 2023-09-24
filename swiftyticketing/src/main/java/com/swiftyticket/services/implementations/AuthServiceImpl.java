@@ -32,9 +32,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String signup(SignUpRequest request) {
         // Creating a new user in the DB and making a JWT Token for them:
-        var user = User.builder().dateOfBirth(request.getDateOfBirth()).phoneNumber(request.getPhoneNumber())
-                        .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
-                        .role(Role.USER).verified(false).build();
+        var user = new User(request.getEmail(),
+                            passwordEncoder.encode(request.getPassword()),
+                            request.getDateOfBirth(),
+                            request.getPhoneNumber(), 
+                            Role.USER,
+                            false);
+
         userRepository.save(user);
 
         // Create OTP request object to send the SMS
