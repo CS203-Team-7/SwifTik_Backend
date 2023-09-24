@@ -16,16 +16,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
@@ -33,6 +34,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "events")
+@Slf4j
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -71,17 +73,32 @@ public class Event {
                 cascade = CascadeType.ALL)
     private List<Zones> zoneList;
 
-    public Event(String eventName, List<String> artists, List<Date> dates, String venue, Integer venueCapacity){
+    @ManyToMany
+    @JsonIgnore
+    @JoinTable(name = "event_users",
+        joinColumns=
+            @JoinColumn(name="event_id"),
+        inverseJoinColumns=
+            @JoinColumn(name="user_id"))
+    @Column(name = "users_preRegistered")
+    private List<User> preRegisteredUsers4Event;
+
+
+    //currently eventController uses requestBody, which doesnt require this constructor. If you wish to change it in the future can use this.
+/* public Event(String eventName, List<String> artists, List<Date> dates, String venue, Integer venueCapacity){
         this.eventName = eventName;
         this.artists = artists;
         this.dates = dates;
         this.venue = venue;
         this.venueCapacity = venueCapacity;
 
-        zoneList = new ArrayList<>();
-        open4Registration = true;
-    }
+        this.zoneList = new ArrayList<>();
+        this.open4Registration = true;
+        this.preRegisteredUsers4Event = new ArrayList<>();
 
+        log.info("event was constructed and the registration boolean is set to: " + this.open4Registration);
+    }
+*/
 
 
 

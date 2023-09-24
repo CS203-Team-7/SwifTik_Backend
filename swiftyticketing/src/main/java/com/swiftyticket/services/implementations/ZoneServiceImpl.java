@@ -11,17 +11,20 @@ import com.swiftyticket.repositories.UserRepository;
 import com.swiftyticket.repositories.ZoneRepository;
 import com.swiftyticket.services.ZoneService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.exceptions.ZoneNotFoundException;
 
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ZoneServiceImpl implements ZoneService {
     private final ZoneRepository zoneRepository;
     private final JwtServiceImpl jwtService;
     private final UserRepository userRepository;
-    //private final EventRepository eventRepository;
+    private final EventRepository eventRepository;
 
     public Zones addZone(ZoneRequest zoneReq, Event event){
         Zones newZone = new Zones(zoneReq.getZoneCapacity(), zoneReq.getZoneName(), event);
@@ -43,11 +46,27 @@ public class ZoneServiceImpl implements ZoneService {
 
         Event joinEvent = joinZone.getEvent();
         if(!joinEvent.getOpenStatus()){
-            return "pre-registration has closed, join us next time!";
+            log.info("user tried to join when pre-registration was closed, denied.");
+            return "pre-registration has not yet opened, or pre-registration has closed, join us next time!";
+        }
+
+        if(joinEvent.getPreRegisteredUsers4Event().contains(joiningUser)){
+            log.info("user tried to join when already pre-registrated, denied.");
+            return "you have already pre-registered for this event!";
+            
         }
 
         joinZone.getPreRegisteredUsers4Zone().add(joiningUser);
+
         joiningUser.getPreRegisteredZones().add(joinZone);
+        joiningUser.getPreRegisteredEvents().add(joinEvent);
+
+        //also add user to event they joined so they cant join other zones with the same event
+        joinEvent.getPreRegisteredUsers4Event().add(joiningUser);
+
+        eventRepository.save(joinEvent);
+        userRepository.save(joiningUser);
+        zoneRepository.save(joinZone);
 
         return "successfully joined the raffle for " + zoneName;
         

@@ -10,6 +10,8 @@ import com.swiftyticket.models.Event;
 import com.swiftyticket.repositories.EventRepository;
 import com.swiftyticket.services.EventService;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 @Service
 public class EventServiceImpl implements EventService{
