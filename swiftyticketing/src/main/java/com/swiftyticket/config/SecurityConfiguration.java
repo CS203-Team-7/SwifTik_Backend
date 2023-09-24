@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/auth/**","/otp/*").permitAll();
                     request.requestMatchers( "/users/**").hasAuthority("ADMIN");
+                    request.anyRequest().authenticated();
                 })
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
