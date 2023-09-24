@@ -23,4 +23,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleIncorrectUserPasswordException(IncorrectUserPasswordException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(AccountNotVerifiedException.class)
+    public ResponseEntity<Object> AccountNotVerifiedException(AccountNotVerifiedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 }
