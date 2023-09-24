@@ -6,7 +6,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.swiftyticket.dto.auth.JwtAuthResponse;
+import com.swiftyticket.dto.auth.AuthResponse;
+import com.swiftyticket.dto.auth.CustomUserDTO;
 import com.swiftyticket.dto.auth.SignInRequest;
 import com.swiftyticket.dto.auth.SignUpRequest;
 import com.swiftyticket.models.Role;
@@ -45,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public JwtAuthResponse signIn(SignInRequest request) throws IncorrectUserPasswordException {
+    public AuthResponse signIn(SignInRequest request) throws IncorrectUserPasswordException {
         // First we check if the username and password actually match:
         try {
             authenticationManager
@@ -58,6 +59,8 @@ public class AuthServiceImpl implements AuthService {
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
         var jwtToken = jwtService.generateToken(user);
-        return JwtAuthResponse.builder().token(jwtToken).build();
+        var customUser = CustomUserDTO.builder().email(user.getEmail()).dateOfBirth(user.getDateOfBirth())
+                .phoneNumber(user.getPhoneNumber()).build();
+        return AuthResponse.builder().token(jwtToken).customUser(customUser).build();
     }
 }

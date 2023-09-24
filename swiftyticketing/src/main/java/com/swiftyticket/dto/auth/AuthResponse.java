@@ -1,6 +1,5 @@
 package com.swiftyticket.dto.auth;
 
-import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JwtAuthResponse {
-    @Nonnull
-    private String token;
+public class AuthResponse {
+    String token;
+    CustomUserDTO customUser;
 }

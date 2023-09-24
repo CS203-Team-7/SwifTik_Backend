@@ -3,6 +3,7 @@ package com.swiftyticket.controllers;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.swiftyticket.dto.auth.JwtAuthResponse;
+import com.swiftyticket.dto.auth.AuthResponse;
 import com.swiftyticket.dto.auth.SignInRequest;
 import com.swiftyticket.dto.auth.SignUpRequest;
 import com.swiftyticket.services.AuthService;
@@ -37,7 +38,8 @@ public class AuthController {
 
     // Sign in endpoint:
     @PostMapping("/signin")
-    public ResponseEntity<JwtAuthResponse> signIn(@Nonnull @Valid @RequestBody SignInRequest signInRequest){
-        return new ResponseEntity<JwtAuthResponse>(authService.signIn(signInRequest), HttpStatus.OK);
+    public ResponseEntity<?> signIn(@Nonnull @Valid @RequestBody SignInRequest signInRequest){
+        AuthResponse response = authService.signIn(signInRequest);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
