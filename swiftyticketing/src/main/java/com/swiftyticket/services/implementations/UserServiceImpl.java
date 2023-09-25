@@ -1,11 +1,9 @@
 package com.swiftyticket.services.implementations;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.swiftyticket.exceptions.UserNotFoundException;
@@ -23,39 +21,32 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public List<User> listUsers() {
-        return userRepository.findAll();
+    public List<User> getAllUsers() {
+        List<User> usersList = userRepository.findAll();
+        if(usersList.isEmpty()) throw new UserNotFoundException("No users found");
+        else return usersList;
     }
 
     @Override
     public User getUserByEmail(String email){
-        return userRepository.findByEmail(email).map(user -> {
-            return user;
-        }).orElse(null);
-    }
-
-    @Override
-    public User addUser(User user) {
-        return userRepository.save(user);
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
     }
 
     @Override
     public User updateUser(String email, User newUserInfo) {
         return userRepository.findByEmail(email).map(user -> {
+            user.setDateOfBirth(newUserInfo.getDateOfBirth());
             user.setEmail(newUserInfo.getEmail());
             user.setPassword(newUserInfo.getPassword());
             user.setPhoneNumber(newUserInfo.getPhoneNumber());
             return userRepository.save(user);
-        }).orElse(null);
+        }).orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
     }
 
     @Override
     public void deleteUser(String email){
-        Optional<User> u = userRepository.findByEmail(email);
-        if (u == null) throw new UserNotFoundException(email);
-
-        User user = u.get();
-        userRepository.deleteById(user.getUserId());
+        userRepository.deleteByEmail(email);
     }
 
     // Also implement the UserDetailsService for Spring security:
@@ -66,7 +57,7 @@ public class UserServiceImpl implements UserService {
             @Override
             public UserDetails loadUserByUsername(String username) {
                 return userRepository.findByEmail(username)
-                                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                                        .orElseThrow(() -> new UserNotFoundException("User does not exist"));
             }
         };
     }

@@ -1,104 +1,542 @@
-# REST test cases for tickets
+# REST test cases
+
+#admin jwt token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU1ODA2MzAsImV4cCI6MTY5NTU4MTIzMH0.FZongotxiVKniDFT64KmljepOH88k_2E5p2RW29Pj1Q
+#user jwt token:  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU1ODA2NjcsImV4cCI6MTY5NTU4MTI2N30.2NbuBXcFylW7yUjeP4QRIkaIueUtlhBTzM8Q_0sLBUE
+###
+#user sign up, invalid password.
 
 ###
-GET http://localhost:8080/tickets
+#admin creates an event
+POST http://localhost:8080/events/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU1MzYsImV4cCI6MTY5NTYzNjEzNn0.i2AuGdRevRo7boIUxrDIxU-DsWWPQs-oltjkobNIrh8
+
+{
+    "eventName": "concert",
+    "artists": ["people", "more people"],
+    "dates": ["2001-05-06"],
+    "venue": "some stage",
+    "venueCapacity": 50
+}
+###
 
 ###
-GET http://localhost:8080/tickets/2
+#admin create a zone for event 1
+POST http://localhost:8080/events/1/createZone
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU1MzYsImV4cCI6MTY5NTYzNjEzNn0.i2AuGdRevRo7boIUxrDIxU-DsWWPQs-oltjkobNIrh8
+
+{
+    "zoneCapacity": 5,
+    "zoneName": "testZone"
+}
+###
+
 
 ###
-POST http://localhost:8080/tickets
+#admin creates another zone for event 1
+POST http://localhost:8080/events/1/createZone
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI2NDEsImV4cCI6MTY5NTYzMzI0MX0.t18lU4Eg7wUMopr8tAKSRZDxagzPiQZGXsCeHu2wcWM
+
+{
+    "zoneCapacity": 10,
+    "zoneName": "testZone2"
+}
+###
+
+
+###
+#admin creates another event
+POST http://localhost:8080/events/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI2NDEsImV4cCI6MTY5NTYzMzI0MX0.t18lU4Eg7wUMopr8tAKSRZDxagzPiQZGXsCeHu2wcWM
+
+{
+    "eventName": "concert2",
+    "artists": ["people", "more people"],
+    "dates": ["2001-05-06"],
+    "venue": "some stage",
+    "venueCapacity": 50
+}
+###
+
+###
+#admin creates a zone for new event
+POST http://localhost:8080/events/2/createZone
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI2NDEsImV4cCI6MTY5NTYzMzI0MX0.t18lU4Eg7wUMopr8tAKSRZDxagzPiQZGXsCeHu2wcWM
+
+{
+    "zoneCapacity": 10,
+    "zoneName": "testZonez"
+}
+###
+
+###
+POST http://localhost:8080/auth/signup
 Content-Type: application/json
 
 {
-    "ticketPrice": 3000
+    "email": "liangzhejun@gmail.com",
+    "password": "pw123",
+    "dateOfBirth": "2001-06-23",
+    "phoneNumber": "+6582887066"
+
 }
+###
 
 ###
-PUT http://localhost:8080/tickets/2
+#user sign up, valid password.
+POST http://localhost:8080/auth/signup
 Content-Type: application/json
 
 {
-    "ticketPrice": 6969
+    "email": "liangzhejun@gmail.com",
+    "password": "Password123!",
+    "dateOfBirth": "2001-06-23",
+    "phoneNumber": "+6582887066"
+
 }
+###
 
 ###
-DELETE http://localhost:8080/tickets/2
-
-
-
-#USER TEST
-###
-GET http://localhost:8080/users
-
-
-###
-GET http://localhost:8080/users/blank@gmail.com
-
-###
-DELETE http://localhost:8080/users/blank@gmail.com
-
-
-###
-POST http://localhost:8080/users
+#user try to sign in, without validating OTP first.
+POST http://localhost:8080/auth/signin
 Content-Type: application/json
 
 {
-    "email": "blank@gmail.com",
-    "age": "18",
-    "phoneNumber": "1231231291",
-    "password": "lel",
-    "role": "USER"
+    "email": "liangzhejun@gmail.com",
+    "password": "Password123!"
 }
+###
 
 ###
-PUT http://localhost:8080/users/blal@gmail.com
+#user key in wrong OTP
+POST http://localhost:8080/otp/validate
 Content-Type: application/json
 
 {
-    "email": "blal@gmail.com",
-    "age": "14",
-    "phoneNumber": "01234567891",
-    "password": "ok",
-    "role": "USER"
+    "email":"liangzhejun@gmail.com",
+    "otpNumber":"0000"
 }
+###
 
-### Event test ###
+###
+#user can request re-send of OTP
+POST http://localhost:8080/otp/send
+Content-Type: application/json
+
+{
+    "email":"liangzhejun@gmail.com",
+    "phoneNumber": "+6582887066"
+}
+###
+
+###
+#user key in right OTP
+POST http://localhost:8080/otp/validate
+Content-Type: application/json
+
+{
+    "email":"liangzhejun@gmail.com",
+    "otpNumber":"968806"
+}
+###
+
+###
+#user try to sign in, with wrong credientials.
+POST http://localhost:8080/auth/signin
+Content-Type: application/json
+
+{
+    "email": "liangzhejun@gmail.com",
+    "password": "pw123"
+}
+###
+
+###
+#user try to sign in, with right credientials, returns a JWT token required to access other items.
+POST http://localhost:8080/auth/signin
+Content-Type: application/json
+
+{
+    "email": "liangzhejun@gmail.com",
+    "password": "Password123!"
+}
+###
+
+###
+#user view available events
 GET http://localhost:8080/events
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+###
 
 ###
-GET http://localhost:8080/events/1
-
-// [PROBLEM] need to input LocalDate from JSON input
 ###
-POST http://localhost:8080/events
+#user view existing zones in an event
+GET http://localhost:8080/events/1/zones
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+###
+
+###
+#user tries to pre-register for a zone when it hasn't been opened.
+PUT http://localhost:8080/events/1/testZone/preRegister
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+
+###
+
+###
+#admin opens the pre-registration for an event.
+PUT http://localhost:8080/events/1/open
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU1MzYsImV4cCI6MTY5NTYzNjEzNn0.i2AuGdRevRo7boIUxrDIxU-DsWWPQs-oltjkobNIrh8
+
+###
+
+###
+#user tries to pre-register for a zone when after it has opened.
+PUT http://localhost:8080/events/1/testZone/preRegister
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+
+###
+
+###
+#user tries to pre-register for another zone when they already joined one, for the same event.
+PUT http://localhost:8080/events/1/testZone2/preRegister
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI1OTMsImV4cCI6MTY5NTYzMzE5M30.un6ifR5ph_4-UCPYWrdhUUQRxp-OXjf-nzL8mqvDonc
+###
+
+###
+#admin tries to open the pre-registration for the other event.
+PUT http://localhost:8080/events/2/open
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI2NDEsImV4cCI6MTY5NTYzMzI0MX0.t18lU4Eg7wUMopr8tAKSRZDxagzPiQZGXsCeHu2wcWM
+
+###
+
+###
+#user tries to pre-register for a zone in another event while pre registered for another. 
+PUT http://localhost:8080/events/2/testZonez/preRegister
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI1OTMsImV4cCI6MTY5NTYzMzE5M30.un6ifR5ph_4-UCPYWrdhUUQRxp-OXjf-nzL8mqvDonc
+
+###
+
+
+
+
+
+
+
+#####################################################################################################################################
+
+###
+POST http://localhost:8080/auth/signup
 Content-Type: application/json
 
 {
-    "eventName": "Eras Tour",
-    "artists": ["Taylor Swift, Sabrina Carpenter"],
-    "dates": [{
-        "year" : 2022,
-        "month" : "SEPTEMBER",
-        "era" : "CE",
-        "dayOfMonth" : 20,
-        "dayOfWeek" : "TUESDAY",
-        "dayOfYear" : 263,
-        "leapYear" : false,
-        "monthValue" : 9,
-        "chronology" : {
-        "id" : "ISO",
-        "calendarType" : "iso8601"
-        }
-    }],
-    "venue": "Grandma Toilet",
-    "venueCapacity": 5
+    "email": "liangzhejun@gmail.com",
+    "password": "pw123",
+    "dateOfBirth": "2001-06-23",
+    "phoneNumber": "+6582887066"
+
 }
+###
 
 ###
-PUT http://localhost:8080/events/1
-// updatedEventDetails here
-// placeholder first since localDate class not working
+#user sign up, valid password.
+POST http://localhost:8080/auth/signup
+Content-Type: application/json
+
+{
+    "email": "liangzhejun@gmail.com",
+    "password": "Password123!",
+    "dateOfBirth": "2001-06-23",
+    "phoneNumber": "+6582887066"
+
+}
+###
 
 ###
-DELETE http://localhost:8080/events/1
+#user try to sign in, without validating OTP first.
+POST http://localhost:8080/auth/signin
+Content-Type: application/json
+
+{
+    "email": "liangzhejun@gmail.com",
+    "password": "Password123!"
+}
+###
+
+###
+#user key in wrong OTP
+POST http://localhost:8080/otp/validate
+Content-Type: application/json
+
+{
+    "email":"liangzhejun@gmail.com",
+    "otpNumber":"0000"
+}
+###
+
+###
+#user can request re-send of OTP
+POST http://localhost:8080/otp/send
+Content-Type: application/json
+
+{
+    "email":"liangzhejun@gmail.com",
+    "phoneNumber": "+6582887066"
+}
+###
+
+###
+#user key in right OTP
+POST http://localhost:8080/otp/validate
+Content-Type: application/json
+
+{
+    "email":"liangzhejun@gmail.com",
+    "otpNumber":"968806"
+}
+###
+
+###
+#user try to sign in, with wrong credientials.
+POST http://localhost:8080/auth/signin
+Content-Type: application/json
+
+{
+    "email": "liangzhejun@gmail.com",
+    "password": "pw123"
+}
+###
+
+###
+#user try to sign in, with right credientials, returns a JWT token required to access other items.
+POST http://localhost:8080/auth/signin
+Content-Type: application/json
+
+{
+    "email": "liangzhejun@gmail.com",
+    "password": "Password123!"
+}
+###
+
+###
+#user view events
+GET http://localhost:8080/events
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+###
+
+
+###
+#user tries to create an event (403)
+POST http://localhost:8080/events/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+
+{
+    "eventName": "concert",
+    "artists": ["people", "more people"],
+    "dates": ["2001-05-06"],
+    "venue": "some stage",
+    "venueCapacity": 50
+}
+###
+
+
+###
+#admin tries to create an event
+POST http://localhost:8080/events/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU1MzYsImV4cCI6MTY5NTYzNjEzNn0.i2AuGdRevRo7boIUxrDIxU-DsWWPQs-oltjkobNIrh8
+
+{
+    "eventName": "concert",
+    "artists": ["people", "more people"],
+    "dates": ["2001-05-06"],
+    "venue": "some stage",
+    "venueCapacity": 50
+}
+###
+
+###
+#user view events (can see that is has been created)
+GET http://localhost:8080/events
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+###
+
+###
+#user view existing zones in an event
+GET http://localhost:8080/events/1/zones
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+###
+
+###
+#user tries to create a zone
+POST http://localhost:8080/events/1/createZone
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+
+{
+    "zoneCapacity": 5,
+    "zoneName": "testZone"
+}
+###
+
+###
+#admin tries to create a zone
+POST http://localhost:8080/events/1/createZone
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU1MzYsImV4cCI6MTY5NTYzNjEzNn0.i2AuGdRevRo7boIUxrDIxU-DsWWPQs-oltjkobNIrh8
+
+{
+    "zoneCapacity": 5,
+    "zoneName": "testZone"
+}
+###
+
+###
+#user view existing zones in an event (show that it has been created)
+GET http://localhost:8080/events/1/zones
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+###
+
+###
+#user tries to pre-register for a zone when it hasn't been opened.
+PUT http://localhost:8080/events/1/testZone/preRegister
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+
+###
+
+###
+#user tries to open the pre-registration for an event. (403)
+PUT http://localhost:8080/events/1/open
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+
+###
+
+###
+#user tries to close the pre-registration for an event.
+PUT http://localhost:8080/events/1/close
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+
+###
+
+
+###
+#admin tries to close the pre-registration for an event.
+PUT http://localhost:8080/events/1/close
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU1MzYsImV4cCI6MTY5NTYzNjEzNn0.i2AuGdRevRo7boIUxrDIxU-DsWWPQs-oltjkobNIrh8
+
+###
+
+
+###
+#admin tries to open the pre-registration for an event.
+PUT http://localhost:8080/events/1/open
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU1MzYsImV4cCI6MTY5NTYzNjEzNn0.i2AuGdRevRo7boIUxrDIxU-DsWWPQs-oltjkobNIrh8
+
+###
+
+###
+#user tries to pre-register for a zone when after it has been opened.
+PUT http://localhost:8080/events/1/testZone/preRegister
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+
+###
+
+###
+#admin creates another zone
+POST http://localhost:8080/events/1/createZone
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI2NDEsImV4cCI6MTY5NTYzMzI0MX0.t18lU4Eg7wUMopr8tAKSRZDxagzPiQZGXsCeHu2wcWM
+
+{
+    "zoneCapacity": 10,
+    "zoneName": "testZone2"
+}
+###
+
+###
+#see all existing zones
+GET http://localhost:8080/events/1/zones
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI2NDEsImV4cCI6MTY5NTYzMzI0MX0.t18lU4Eg7wUMopr8tAKSRZDxagzPiQZGXsCeHu2wcWM
+###
+
+###
+#user tries to pre-register for another zone when they already joined one, for the same event.
+PUT http://localhost:8080/events/1/testZone2/preRegister
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI1OTMsImV4cCI6MTY5NTYzMzE5M30.un6ifR5ph_4-UCPYWrdhUUQRxp-OXjf-nzL8mqvDonc
+###
+
+###
+#admin creates another event
+POST http://localhost:8080/events/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI2NDEsImV4cCI6MTY5NTYzMzI0MX0.t18lU4Eg7wUMopr8tAKSRZDxagzPiQZGXsCeHu2wcWM
+
+{
+    "eventName": "concert2",
+    "artists": ["people", "more people"],
+    "dates": ["2001-05-06"],
+    "venue": "some stage",
+    "venueCapacity": 50
+}
+###
+
+###
+#admin creates a zone for new event
+POST http://localhost:8080/events/2/createZone
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI2NDEsImV4cCI6MTY5NTYzMzI0MX0.t18lU4Eg7wUMopr8tAKSRZDxagzPiQZGXsCeHu2wcWM
+
+{
+    "zoneCapacity": 10,
+    "zoneName": "testZonez"
+}
+###
+
+###
+#user view events (can see that is has been created)
+GET http://localhost:8080/events
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI1OTMsImV4cCI6MTY5NTYzMzE5M30.un6ifR5ph_4-UCPYWrdhUUQRxp-OXjf-nzL8mqvDonc
+###
+
+###
+#admin tries to open the pre-registration for the event.
+PUT http://localhost:8080/events/2/open
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI2NDEsImV4cCI6MTY5NTYzMzI0MX0.t18lU4Eg7wUMopr8tAKSRZDxagzPiQZGXsCeHu2wcWM
+
+###
+
+###
+#user tries to pre-register for a zone when after it has been opened.
+PUT http://localhost:8080/events/2/testZonez/preRegister
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI1OTMsImV4cCI6MTY5NTYzMzE5M30.un6ifR5ph_4-UCPYWrdhUUQRxp-OXjf-nzL8mqvDonc
+
+###
+
+

@@ -10,4 +10,6 @@ public interface EventService {
     Event addEvent(Event event);
     Event updateEvent(Integer id, Event event);
     void deleteEvent(Integer id);
+    public void openEvent(Integer id);
+    public void closeEvent(Integer id);
 }

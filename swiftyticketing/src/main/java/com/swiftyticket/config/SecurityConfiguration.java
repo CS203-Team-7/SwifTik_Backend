@@ -2,6 +2,7 @@ package com.swiftyticket.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+// import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -33,10 +34,15 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/auth/**","/otp/*") // As of now it is permitting anyone to use paths under '/'
-                    .permitAll().anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                     jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(request -> {
+                    request.requestMatchers("/auth/**","/otp/*").permitAll();
+                    request.requestMatchers( "/users/**","/events/*/open",
+                    "/events/*/close","/events/create","/events/{id}/createZone")
+                    .hasAuthority("ADMIN")
+                    .anyRequest().authenticated();
+                })
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();

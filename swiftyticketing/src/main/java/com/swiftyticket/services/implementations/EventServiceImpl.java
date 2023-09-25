@@ -11,6 +11,7 @@ import com.swiftyticket.repositories.EventRepository;
 import com.swiftyticket.services.EventService;
 
 
+
 @Service
 public class EventServiceImpl implements EventService{
     private EventRepository eventRepository;
@@ -56,5 +57,23 @@ public class EventServiceImpl implements EventService{
 
         Event event = e.get();
         eventRepository.deleteById(event.getEventId());
+    }
+
+    public void openEvent(Integer id){
+        Optional<Event> e = eventRepository.findById(id);
+        if (e == null) throw new EventNotFoundException(id);
+
+        Event event = e.get();
+        event.setOpen4Registration(true);
+        eventRepository.save(event);
+    }
+
+    public void closeEvent(Integer id){
+        Optional<Event> e = eventRepository.findById(id);
+        if (e == null) throw new EventNotFoundException(id);
+
+        Event event = e.get();
+        event.setOpen4Registration(false);
+        eventRepository.save(event);
     }
 }
