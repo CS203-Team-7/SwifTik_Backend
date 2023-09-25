@@ -76,21 +76,8 @@ Content-Type: application/json
 
 {
     "eventName": "Eras Tour",
-    "artists": ["Taylor Swift, Sabrina Carpenter"],
-    "dates": [{
-        "year" : 2022,
-        "month" : "SEPTEMBER",
-        "era" : "CE",
-        "dayOfMonth" : 20,
-        "dayOfWeek" : "TUESDAY",
-        "dayOfYear" : 263,
-        "leapYear" : false,
-        "monthValue" : 9,
-        "chronology" : {
-        "id" : "ISO",
-        "calendarType" : "iso8601"
-        }
-    }],
+    "artists": ["Taylor Swift", "Sabrina Carpenter"],
+    "dates": ["2000-12-25", "2001-10-02"],
     "venue": "Grandma Toilet",
     "venueCapacity": 5
 }
