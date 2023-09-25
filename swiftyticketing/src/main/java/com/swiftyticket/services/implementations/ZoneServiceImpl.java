@@ -34,7 +34,8 @@ public class ZoneServiceImpl implements ZoneService {
     }
 
     public List<Zones> listZones(Event event){
-        return zoneRepository.findAll();
+
+        return event.getZoneList();
     }
 
     public String joinRaffle(String bearerToken, Integer id, String zoneName){

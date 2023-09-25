@@ -1,15 +1,14 @@
 # REST test cases
 
-#admin jwt token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU1ODA2MzAsImV4cCI6MTY5NTU4MTIzMH0.FZongotxiVKniDFT64KmljepOH88k_2E5p2RW29Pj1Q
-#user jwt token:  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU1ODA2NjcsImV4cCI6MTY5NTU4MTI2N30.2NbuBXcFylW7yUjeP4QRIkaIueUtlhBTzM8Q_0sLBUE
-###
-#user sign up, invalid password.
+#admin jwt token: 
+#user jwt token:  
+
 
 ###
 #admin creates an event
 POST http://localhost:8080/events/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU1MzYsImV4cCI6MTY5NTYzNjEzNn0.i2AuGdRevRo7boIUxrDIxU-DsWWPQs-oltjkobNIrh8
+Authorization: Bearer 
 
 {
     "eventName": "concert",
@@ -24,7 +23,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #admin create a zone for event 1
 POST http://localhost:8080/events/1/createZone
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU1MzYsImV4cCI6MTY5NTYzNjEzNn0.i2AuGdRevRo7boIUxrDIxU-DsWWPQs-oltjkobNIrh8
+Authorization: Bearer 
 
 {
     "zoneCapacity": 5,
@@ -37,7 +36,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #admin creates another zone for event 1
 POST http://localhost:8080/events/1/createZone
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI2NDEsImV4cCI6MTY5NTYzMzI0MX0.t18lU4Eg7wUMopr8tAKSRZDxagzPiQZGXsCeHu2wcWM
+Authorization: Bearer 
 
 {
     "zoneCapacity": 10,
@@ -50,7 +49,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #admin creates another event
 POST http://localhost:8080/events/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI2NDEsImV4cCI6MTY5NTYzMzI0MX0.t18lU4Eg7wUMopr8tAKSRZDxagzPiQZGXsCeHu2wcWM
+Authorization: Bearer 
 
 {
     "eventName": "concert2",
@@ -65,7 +64,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #admin creates a zone for new event
 POST http://localhost:8080/events/2/createZone
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI2NDEsImV4cCI6MTY5NTYzMzI0MX0.t18lU4Eg7wUMopr8tAKSRZDxagzPiQZGXsCeHu2wcWM
+Authorization: Bearer 
 
 {
     "zoneCapacity": 10,
@@ -140,7 +139,7 @@ Content-Type: application/json
 
 {
     "email":"liangzhejun@gmail.com",
-    "otpNumber":"968806"
+    "otpNumber":"596134"
 }
 ###
 
@@ -170,7 +169,7 @@ Content-Type: application/json
 #user view available events
 GET http://localhost:8080/events
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+Authorization: Bearer 
 ###
 
 ###
@@ -178,14 +177,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb
 #user view existing zones in an event
 GET http://localhost:8080/events/1/zones
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+Authorization: Bearer 
 ###
 
 ###
 #user tries to pre-register for a zone when it hasn't been opened.
 PUT http://localhost:8080/events/1/testZone/preRegister
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+Authorization: Bearer 
 
 ###
 
@@ -193,7 +192,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb
 #admin opens the pre-registration for an event.
 PUT http://localhost:8080/events/1/open
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU1MzYsImV4cCI6MTY5NTYzNjEzNn0.i2AuGdRevRo7boIUxrDIxU-DsWWPQs-oltjkobNIrh8
+Authorization: Bearer 
 
 ###
 
@@ -201,7 +200,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #user tries to pre-register for a zone when after it has opened.
 PUT http://localhost:8080/events/1/testZone/preRegister
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzU0ODksImV4cCI6MTY5NTYzNjA4OX0.pxJn2g07LSg3GNg4eRP50KNng3edPO_zE3WBuPWAZdM
+Authorization: Bearer 
 
 ###
 
@@ -209,14 +208,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb
 #user tries to pre-register for another zone when they already joined one, for the same event.
 PUT http://localhost:8080/events/1/testZone2/preRegister
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI1OTMsImV4cCI6MTY5NTYzMzE5M30.un6ifR5ph_4-UCPYWrdhUUQRxp-OXjf-nzL8mqvDonc
+Authorization: Bearer 
+
 ###
 
 ###
 #admin tries to open the pre-registration for the other event.
 PUT http://localhost:8080/events/2/open
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI2NDEsImV4cCI6MTY5NTYzMzI0MX0.t18lU4Eg7wUMopr8tAKSRZDxagzPiQZGXsCeHu2wcWM
+Authorization: Bearer 
 
 ###
 
@@ -224,7 +224,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #user tries to pre-register for a zone in another event while pre registered for another. 
 PUT http://localhost:8080/events/2/testZonez/preRegister
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb20iLCJpYXQiOjE2OTU2MzI1OTMsImV4cCI6MTY5NTYzMzE5M30.un6ifR5ph_4-UCPYWrdhUUQRxp-OXjf-nzL8mqvDonc
+Authorization: Bearer 
 
 ###
 
