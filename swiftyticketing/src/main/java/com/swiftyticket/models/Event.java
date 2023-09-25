@@ -1,29 +1,34 @@
 package com.swiftyticket.models;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "events")
-
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -54,6 +59,53 @@ public class Event {
     @NonNull
     @Column(name = "venue_capacity")
     private Integer venueCapacity;
+
+    @Column(name = "open")
+    private boolean open4Registration;
+
+    @OneToMany(mappedBy = "event",
+                cascade = CascadeType.ALL)
+    private List<Zones> zoneList;
+
+    @ManyToMany
+    @JsonIgnore
+    @JoinTable(name = "event_users",
+        joinColumns=
+            @JoinColumn(name="event_id"),
+        inverseJoinColumns=
+            @JoinColumn(name="user_id"))
+    @Column(name = "users_preRegistered")
+    private List<User> preRegisteredUsers4Event;
+
+
+    //currently eventController uses requestBody, which doesnt require this constructor. If you wish to change it in the future can use this.
+/* public Event(String eventName, List<String> artists, List<Date> dates, String venue, Integer venueCapacity){
+        this.eventName = eventName;
+        this.artists = artists;
+        this.dates = dates;
+        this.venue = venue;
+        this.venueCapacity = venueCapacity;
+
+        this.zoneList = new ArrayList<>();
+        this.open4Registration = true;
+        this.preRegisteredUsers4Event = new ArrayList<>();
+
+        log.info("event was constructed and the registration boolean is set to: " + this.open4Registration);
+    }
+*/
+
+
+
+
+
+    @JsonIgnore
+    public boolean getOpenStatus(){
+        return this.open4Registration;
+    }
+
+
+    
+
 
     // custom constructor to account for use of LocalDate.of(yyyy, mm, dd) method
     // public Event(Integer eventId, @NonNull List<String> artists,
