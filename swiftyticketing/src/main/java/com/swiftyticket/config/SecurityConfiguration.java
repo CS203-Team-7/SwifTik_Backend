@@ -38,7 +38,9 @@ public class SecurityConfiguration {
                     jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/auth/**","/otp/*").permitAll();
-                    request.requestMatchers( "/users/**").hasAuthority("ADMIN")
+                    request.requestMatchers( "/users/**","/events/*/open",
+                    "/events/*/close","/events/create","/events/{id}/createZone")
+                    .hasAuthority("ADMIN")
                     .anyRequest().authenticated();
                 })
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

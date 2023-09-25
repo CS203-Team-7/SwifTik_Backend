@@ -1,5 +1,6 @@
 package com.swiftyticket.services.implementations;
 
+import com.swiftyticket.exceptions.AccountNotVerifiedException;
 import com.swiftyticket.exceptions.IncorrectUserPasswordException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,8 +51,16 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse signIn(SignInRequest request) throws IncorrectUserPasswordException {
-        // First we check if the username and password actually match:
+    public JwtAuthResponse signIn(SignInRequest request) throws IncorrectUserPasswordException,  AccountNotVerifiedException{
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        //we check if they have verified using OTP yet
+        if(!user.isVerified()){
+            System.out.println("entered here");
+            throw new AccountNotVerifiedException("please verify account with the OTP send to your phone number first");
+        }
+
+        //we check if the username and password actually match:
         try {
             authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
@@ -60,8 +69,7 @@ public class AuthServiceImpl implements AuthService {
         }
         
         // Once authenticated: create JWT Token and then send response
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        
         var jwtToken = jwtService.generateToken(user);
         var customUser = CustomUserDTO.builder().email(user.getEmail()).dateOfBirth(user.getDateOfBirth())
                 .phoneNumber(user.getPhoneNumber()).build();
