@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.swiftyticket.exceptions.EventNotFoundException;
@@ -30,48 +30,49 @@ public class EventController {
     // Possible improvements: get by artist, event name, date, venue, genre (genre would need a new attribute in Event)
 
     @GetMapping("/events")
-    public List<Event> getEvents() {
-        return eventService.listEvents();
+    public ResponseEntity<List<Event>> getEvents() {
+        return new ResponseEntity<List<Event>> (eventService.listEvents(), HttpStatus.OK);
     }
 
     @GetMapping("/events/{id}")
-    public Event findEvent(@PathVariable Integer id) {
+    public ResponseEntity<Event> findEvent(@PathVariable Integer id) {
         Event event = eventService.getEvent(id);
 
         if (event == null) throw new EventNotFoundException(id);
-        return event;
+        return new ResponseEntity<Event> (event, HttpStatus.OK);
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/events/create")
-    public void addEvent(@RequestBody Event event){
-        eventService.addEvent(event);
+    public ResponseEntity<Event> addEvent(@RequestBody Event event){
+        return new ResponseEntity<Event>(eventService.addEvent(event), HttpStatus.CREATED);
     }
 
     @PutMapping("/events/{id}")
-    public Event updateEvent(@PathVariable Integer id, @RequestBody Event newEventInfo) throws EventNotFoundException {
+    public ResponseEntity<Event> updateEvent(@PathVariable Integer id, @RequestBody Event newEventInfo) throws EventNotFoundException {
         Event event = eventService.updateEvent(id, newEventInfo);
         if (event == null) throw new EventNotFoundException(id);
-        return event;
+        return new ResponseEntity<Event>(event, HttpStatus.OK);
     }
 
     @DeleteMapping("/events/{id}")
-    public String deleteEvent(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteEvent(@PathVariable Integer id) {
         try {
             eventService.deleteEvent(id);
         } catch(EmptyResultDataAccessException e) {
             throw new EventNotFoundException(id);
         }
-        return "Event #" + id + " has been deleted.";
+        return new ResponseEntity<String>("Event #" + id + " has been deleted.", HttpStatus.OK);
     }
 
     @PutMapping("/events/{id}/close")
-    public void closeRegistration(@PathVariable Integer id) throws EventNotFoundException {
+    public ResponseEntity<String> closeRegistration(@PathVariable Integer id) throws EventNotFoundException {
         eventService.closeEvent(id);
+        return new ResponseEntity<String>("Event #" + id + "'s registration window has been closed.", HttpStatus.OK);
     }
 
     @PutMapping("/events/{id}/open")
-    public void openRegistration(@PathVariable Integer id) throws EventNotFoundException {
+    public ResponseEntity<String> openRegistration(@PathVariable Integer id) throws EventNotFoundException {
         eventService.openEvent(id);
+        return new ResponseEntity<String>("Event #" + id + "'s registration window has been opened.", HttpStatus.OK);
     }
 }

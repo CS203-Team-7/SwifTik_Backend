@@ -28,7 +28,7 @@ public class ZoneServiceImpl implements ZoneService {
 
     public Zones addZone(ZoneRequest zoneReq, Event event){
         Zones newZone = new Zones(zoneReq.getZoneCapacity(), zoneReq.getZoneName(), event);
-        //add this zone to the event it belongs to
+        // Add this zone to the event it belongs to
         event.getZoneList().add(newZone);
         return zoneRepository.save(newZone);
     }
@@ -40,19 +40,19 @@ public class ZoneServiceImpl implements ZoneService {
     public String joinRaffle(String bearerToken, Integer id, String zoneName){
         String jwtToken = bearerToken.substring(7);
         String userEmail = jwtService.extractUserName(jwtToken);
-        //get user using userEmail
-        User joiningUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException("invalid user / token!"));
-        Zones joinZone = zoneRepository.findByZoneName(zoneName).orElseThrow(() -> new ZoneNotFoundException("invalid zone!"));
+        // Get user using userEmail
+        User joiningUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException("Invalid user / token!"));
+        Zones joinZone = zoneRepository.findByZoneName(zoneName).orElseThrow(() -> new ZoneNotFoundException("Invalid zone!"));
 
         Event joinEvent = joinZone.getEvent();
         if(!joinEvent.getOpenStatus()){
-            log.info("user tried to join when pre-registration was closed, denied.");
-            return "pre-registration has not yet opened, or pre-registration has closed, join us next time!";
+            log.info("User tried to join when pre-registration was closed, Denied.");
+            return "The Pre-egistration has not yet opened, or Pre-registration has closed, join us next time!";
         }
 
         if(joinEvent.getPreRegisteredUsers4Event().contains(joiningUser)){
-            log.info("user tried to join when already pre-registrated, denied.");
-            return "you have already pre-registered for this event!";
+            log.info("User tried to join when already pre-registrated, Denied.");
+            return "You have already pre-registered for this event!";
             
         }
 
@@ -68,7 +68,7 @@ public class ZoneServiceImpl implements ZoneService {
         userRepository.save(joiningUser);
         zoneRepository.save(joinZone);
 
-        return "successfully joined the raffle for " + zoneName;
+        return "Successfully joined the raffle for: " + zoneName;
         
     }
 }

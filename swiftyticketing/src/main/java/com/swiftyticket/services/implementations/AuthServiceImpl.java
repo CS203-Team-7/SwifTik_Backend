@@ -54,13 +54,13 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse signIn(SignInRequest request) throws IncorrectUserPasswordException,  AccountNotVerifiedException{
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
-        //we check if they have verified using OTP yet
+        // We check if they have verified using OTP yet
         if(!user.isVerified()){
-            System.out.println("entered here");
-            throw new AccountNotVerifiedException("please verify account with the OTP send to your phone number first");
+            System.out.println("Entered here");
+            throw new AccountNotVerifiedException("Please verify account with the OTP sent to your phone number before logging in.");
         }
 
-        //we check if the username and password actually match:
+        // We check if the username and password actually match:
         try {
             authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
