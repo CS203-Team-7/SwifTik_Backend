@@ -51,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public JwtAuthResponse signIn(SignInRequest request) throws IncorrectUserPasswordException,  AccountNotVerifiedException{
+    public AuthResponse signIn(SignInRequest request) throws IncorrectUserPasswordException,  AccountNotVerifiedException{
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
         //we check if they have verified using OTP yet
