@@ -9,6 +9,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -54,6 +56,7 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "preRegisteredUsers4Zone", fetch = FetchType.EAGER)
     private List<Zones> preRegisteredZones;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "preRegisteredUsers4Event", fetch = FetchType.EAGER)
     private List<Event> preRegisteredEvents;
 
