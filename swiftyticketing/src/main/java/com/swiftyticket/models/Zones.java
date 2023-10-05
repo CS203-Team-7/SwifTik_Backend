@@ -38,6 +38,9 @@ public class Zones {
     @Column(name = "zone_capacity")
     private Integer zoneCapacity;
 
+    @Column(name = "tickets_left")
+    private Integer ticketsLeft;    
+
     @NonNull
     @Column(name = "zone_name")
     private String zoneName;
@@ -72,5 +75,7 @@ public class Zones {
         this.zoneCapacity = zoneCapacity;
         this.zoneName = zoneName;
         this.event = event;
+        
+        this.ticketsLeft = zoneCapacity;
     }
 }

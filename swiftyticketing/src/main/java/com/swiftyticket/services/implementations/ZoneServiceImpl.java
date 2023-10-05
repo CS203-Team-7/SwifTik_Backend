@@ -1,5 +1,6 @@
 package com.swiftyticket.services.implementations;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import com.swiftyticket.dto.zone.ZoneRequest;
@@ -74,15 +75,47 @@ public class ZoneServiceImpl implements ZoneService {
     }
 
     public void raffle(Zones zone){
+
         //get list of users who have pre registered for this zone
         //record size of the list of users.
         List<User> toRaffle = zone.getPreRegisteredUsers4Zone();
         int toRaffleSize = toRaffle.size();
 
         //get number of tickets/seats available (this is how many winners we will be selecting)
-        int numWinners = zone.getZoneCapacity();
+        int zoneCap = zone.getZoneCapacity();
 
-        //create a for/while loop, each loop will random between 0->(arraysize-1), update array size and array per loop (remove winner and put in another array list)
+        //if zoneCap >= toRaffleSize (means no need to raffle, everyone wins!)
+        if(zoneCap >= toRaffleSize){
+            zone.setZoneWinners(toRaffle);
+            zone.setPreRegisteredUsers4Zone(new ArrayList<User>());
+            zoneRepository.save(zone);
+        }else{
+
+        }
+
+        //get associated event with zone
+        Event event = zone.getEvent();
+
+        for(User u : zone.getZoneWinners()){
+            //remove their pre-registration once they won
+            u.getPreRegisteredEvents().remove(event);
+            u.getPreRegisteredZones().remove(zone);
+
+            //add the zone they won to zoneswon. (to facilitate ticket purchasing later)
+            u.getZonesWon().add(zone);
+
+            userRepository.save(u);
+
+            //remove accordingly from event pre-registration list.
+            event.getPreRegisteredUsers4Event().remove(u);
+            eventRepository.save(event);
+        }
+
+        //remove all winners from 
+
+        //create a for/while loop, each loop will random between 0->(arraysize-1), update array size and array per loop
+        //for each winner, remove them from the preRegistration4Zones, preRegistration4events arrays and update all accordingly.
+        //add them to the winners array, and update their zonesWon element. 
         log.info("raffled!");
         return;
     }

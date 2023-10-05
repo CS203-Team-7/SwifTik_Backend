@@ -84,6 +84,8 @@ public class EventServiceImpl implements EventService{
     }
 
     public void raffle(Integer id){
+        //to do: make sure event is closed before raffle is commenced.
+        
         Optional<Event> e = eventRepository.findById(id);
         if (e == null) throw new EventNotFoundException(id);
         Event event = e.get();
