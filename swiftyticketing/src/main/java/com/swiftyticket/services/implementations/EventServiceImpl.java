@@ -97,6 +97,8 @@ public class EventServiceImpl implements EventService{
         event.setRaffleRound(event.getRaffleRound() + 1);
         log.info("" + event.getRaffleRound());
 
+        eventRepository.save(event);
+
         return;
     }
 }

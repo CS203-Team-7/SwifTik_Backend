@@ -8,7 +8,7 @@
 #admin creates an event
 POST http://localhost:8080/events/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDIxMDMsImV4cCI6MTY5NjUwMjcwM30.eRZZYzRQ4-5Fb6OxATYb5K5zcZgfffPrjRPVsA_LCOQ
+Authorization: Bearer 
 
 {
     "eventName": "concert",
@@ -23,7 +23,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #admin create a zone for event 1
 POST http://localhost:8080/events/1/createZone
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDIxMDMsImV4cCI6MTY5NjUwMjcwM30.eRZZYzRQ4-5Fb6OxATYb5K5zcZgfffPrjRPVsA_LCOQ
+Authorization: Bearer 
 
 {
     "zoneCapacity": 5,
@@ -36,7 +36,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #admin creates another zone for event 1
 POST http://localhost:8080/events/1/createZone
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDIxMDMsImV4cCI6MTY5NjUwMjcwM30.eRZZYzRQ4-5Fb6OxATYb5K5zcZgfffPrjRPVsA_LCOQ
+Authorization: Bearer 
 
 {
     "zoneCapacity": 10,
@@ -48,7 +48,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #admin raffles all the zones in event 1.
 PUT http://localhost:8080/events/1/raffle
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDE4NTUsImV4cCI6MTY5NjUwMjQ1NX0.nIC7gctzOD2-CfC2kNGLlhQ7yyz83D4_ck3cfYNRPHU
+Authorization: Bearer 
 ###
 
 
@@ -176,7 +176,7 @@ Content-Type: application/json
 #user view available events
 GET http://localhost:8080/events
 Content-Type: application/json
-Authorization: Bearer
+Authorization: Bearer 
 ###
 
 ###
