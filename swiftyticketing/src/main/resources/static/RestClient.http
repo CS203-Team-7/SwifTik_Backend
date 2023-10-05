@@ -8,7 +8,7 @@
 #admin creates an event
 POST http://localhost:8080/events/create
 Content-Type: application/json
-Authorization: Bearer 
+Authorization: Bearer
 
 {
     "eventName": "concert",
@@ -23,7 +23,7 @@ Authorization: Bearer
 #admin create a zone for event 1
 POST http://localhost:8080/events/1/createZone
 Content-Type: application/json
-Authorization: Bearer 
+Authorization: Bearer
 
 {
     "zoneCapacity": 5,
@@ -546,4 +546,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb
 
 ###
 
+
+###
+#admin view all users who have signed up
+GET http://localhost:8080/users/all
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDMxMjksImV4cCI6MTY5NjUwMzcyOX0.SDO1uyHSRQyfRp8RNKRn27NGdOW1N7CM9uM7sMKOkYs
+
+###
 

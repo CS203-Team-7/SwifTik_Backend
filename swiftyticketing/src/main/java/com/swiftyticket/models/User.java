@@ -57,6 +57,9 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "preRegisteredUsers4Event", fetch = FetchType.EAGER)
     private List<Event> preRegisteredEvents;
 
+    @ManyToMany(mappedBy = "zoneWinners", fetch = FetchType.EAGER)
+    private List<Zones> zonesWon;
+
     // Below are all the methods that need to be implemented for Spring Security to actually be able to authorize this User:
 
     public User (String email, String password, Date dateOfBirth, String phoneNumber, Role role, boolean verified){

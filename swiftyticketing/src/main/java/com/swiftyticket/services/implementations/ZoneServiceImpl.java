@@ -74,6 +74,15 @@ public class ZoneServiceImpl implements ZoneService {
     }
 
     public void raffle(Zones zone){
+        //get list of users who have pre registered for this zone
+        //record size of the list of users.
+        List<User> toRaffle = zone.getPreRegisteredUsers4Zone();
+        int toRaffleSize = toRaffle.size();
+
+        //get number of tickets/seats available (this is how many winners we will be selecting)
+        int numWinners = zone.getZoneCapacity();
+
+        //create a for/while loop, each loop will random between 0->(arraysize-1), update array size and array per loop (remove winner and put in another array list)
         log.info("raffled!");
         return;
     }

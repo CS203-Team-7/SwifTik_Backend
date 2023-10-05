@@ -57,6 +57,16 @@ public class Zones {
     @Column(name = "preRegistered_users")
     private List<User> preRegisteredUsers4Zone = new ArrayList<>();
 
+    @ManyToMany
+    @JsonIgnore
+    @JoinTable(name = "zonew_users",
+        joinColumns=
+            @JoinColumn(name="zonew_id"),
+        inverseJoinColumns=
+            @JoinColumn(name="userw_id"))
+    @Column(name = "winnerList")
+    private List<User> zoneWinners = new ArrayList<>();
+
 
     public Zones(Integer zoneCapacity, String zoneName, Event event){
         this.zoneCapacity = zoneCapacity;

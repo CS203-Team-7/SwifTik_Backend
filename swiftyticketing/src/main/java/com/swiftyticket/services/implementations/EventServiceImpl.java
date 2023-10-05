@@ -90,12 +90,12 @@ public class EventServiceImpl implements EventService{
 
         for(Zones zone : event.getZoneList()){
             zoneService.raffle(zone);
-            log.info("we were here");
+            //log.info("entered event raffle's for loop");
         }
 
         //increase count for raffle round
         event.setRaffleRound(event.getRaffleRound() + 1);
-        log.info("" + event.getRaffleRound());
+        //log.info("" + event.getRaffleRound());
 
         eventRepository.save(event);
 
