@@ -72,4 +72,9 @@ public class ZoneServiceImpl implements ZoneService {
         return "Successfully joined the raffle for: " + zoneName;
         
     }
+
+    public void raffle(Zones zone){
+        log.info("raffled!");
+        return;
+    }
 }

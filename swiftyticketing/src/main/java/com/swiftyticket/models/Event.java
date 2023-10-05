@@ -77,6 +77,8 @@ public class Event {
     @Column(name = "users_preRegistered")
     private List<User> preRegisteredUsers4Event;
 
+    private Integer raffleRound = 0;
+
 
     //currently eventController uses requestBody, which doesnt require this constructor. If you wish to change it in the future can use this.
 /* public Event(String eventName, List<String> artists, List<Date> dates, String venue, Integer venueCapacity){

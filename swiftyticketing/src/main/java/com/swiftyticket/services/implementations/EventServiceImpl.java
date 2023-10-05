@@ -7,17 +7,23 @@ import org.springframework.stereotype.Service;
 
 import com.swiftyticket.exceptions.EventNotFoundException;
 import com.swiftyticket.models.Event;
+import com.swiftyticket.models.Zones;
 import com.swiftyticket.repositories.EventRepository;
 import com.swiftyticket.services.EventService;
+
+import lombok.extern.slf4j.Slf4j;
 
 
 
 @Service
+@Slf4j
 public class EventServiceImpl implements EventService{
     private EventRepository eventRepository;
+    private ZoneServiceImpl zoneService;
 
-    public EventServiceImpl(EventRepository eventRepository) {
+    public EventServiceImpl(EventRepository eventRepository, ZoneServiceImpl zoneService) {
         this.eventRepository = eventRepository;
+        this.zoneService = zoneService;
     }
 
     @Override
@@ -75,5 +81,22 @@ public class EventServiceImpl implements EventService{
         Event event = e.get();
         event.setOpen4Registration(false);
         eventRepository.save(event);
+    }
+
+    public void raffle(Integer id){
+        Optional<Event> e = eventRepository.findById(id);
+        if (e == null) throw new EventNotFoundException(id);
+        Event event = e.get();
+
+        for(Zones zone : event.getZoneList()){
+            zoneService.raffle(zone);
+            log.info("we were here");
+        }
+
+        //increase count for raffle round
+        event.setRaffleRound(event.getRaffleRound() + 1);
+        log.info("" + event.getRaffleRound());
+
+        return;
     }
 }
