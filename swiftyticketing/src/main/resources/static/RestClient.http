@@ -8,7 +8,7 @@
 #admin creates an event
 POST http://localhost:8080/events/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDQ4MDYsImV4cCI6MTY5NjUwNTQwNn0.mzWlM3XHF6FW_VbQuq36r-t1q_UW2HT4CzoRUmEGFjM
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1NzkyNjksImV4cCI6MTY5NjU3OTg2OX0.Ew7J3L9SlEwwzUDwOzUijFNjTNA4IfKx8NHq3r_tP7Q
 
 {
     "eventName": "concert",
@@ -23,10 +23,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #admin create a zone for event 1
 POST http://localhost:8080/events/1/createZone
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDQ4MDYsImV4cCI6MTY5NjUwNTQwNn0.mzWlM3XHF6FW_VbQuq36r-t1q_UW2HT4CzoRUmEGFjM
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1NzkyNjksImV4cCI6MTY5NjU3OTg2OX0.Ew7J3L9SlEwwzUDwOzUijFNjTNA4IfKx8NHq3r_tP7Q
 
 {
-    "zoneCapacity": 5,
+    "zoneCapacity": 2,
     "zoneName": "testZone"
 }
 ###
@@ -36,7 +36,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #admin creates another zone for event 1
 POST http://localhost:8080/events/1/createZone
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDQ4MDYsImV4cCI6MTY5NjUwNTQwNn0.mzWlM3XHF6FW_VbQuq36r-t1q_UW2HT4CzoRUmEGFjM
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MTAwMzgsImV4cCI6MTY5NjUxMDYzOH0.TDb5Gls2p0rPr-K40gQ2hIFziEeW3xaez85ucB9VL8M
 
 {
     "zoneCapacity": 10,
@@ -48,8 +48,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #admin raffles all the zones in event 1.
 PUT http://localhost:8080/events/1/raffle
 Content-Type: application/json
-Authorization: Bearer 
-###
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1Nzg4NjEsImV4cCI6MTY5NjU3OTQ2MX0.opvmman0d01dRxiIHI4xZwfSAQ3mzbjTiv0vK5eRfuo
 
 
 ###
@@ -176,7 +175,8 @@ Content-Type: application/json
 #user view available events
 GET http://localhost:8080/events
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDQ4MDYsImV4cCI6MTY5NjUwNTQwNn0.mzWlM3XHF6FW_VbQuq36r-t1q_UW2HT4CzoRUmEGFjM
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1NzcyMjMsImV4cCI6MTY5NjU3NzgyM30.dJRYQ4YvPl1mV-ftuwySeqKqobTMOuYWg38DfDG9L-g
+
 ###
 
 ###
@@ -184,14 +184,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #user view existing zones in an event
 GET http://localhost:8080/events/1/zones
 Content-Type: application/json
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1NzcyMjMsImV4cCI6MTY5NjU3NzgyM30.dJRYQ4YvPl1mV-ftuwySeqKqobTMOuYWg38DfDG9L-g
+
 ###
 
 ###
 #user tries to pre-register for a zone when it hasn't been opened.
 PUT http://localhost:8080/events/1/testZone/preRegister
 Content-Type: application/json
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1emVyMkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1NzkyNjksImV4cCI6MTY5NjU3OTg2OX0.JG1QnigvNjTvXDbZv06GopVVFQOrigj_ZPgwSyNZ1Hs
 
 ###
 
@@ -199,7 +200,7 @@ Authorization: Bearer
 #admin opens the pre-registration for an event.
 PUT http://localhost:8080/events/1/open
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDQ4MDYsImV4cCI6MTY5NjUwNTQwNn0.mzWlM3XHF6FW_VbQuq36r-t1q_UW2HT4CzoRUmEGFjM
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1NzkyNjksImV4cCI6MTY5NjU3OTg2OX0.Ew7J3L9SlEwwzUDwOzUijFNjTNA4IfKx8NHq3r_tP7Q
 
 ###
 
@@ -207,7 +208,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #user tries to pre-register for a zone when after it has opened.
 PUT http://localhost:8080/events/1/testZone/preRegister
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDQ4MDYsImV4cCI6MTY5NjUwNTQwNn0.mzWlM3XHF6FW_VbQuq36r-t1q_UW2HT4CzoRUmEGFjM
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1emVyMkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1Nzg4NjEsImV4cCI6MTY5NjU3OTQ2MX0.r0mVw-PNDaZsgTf-p8Ejcg3r60isrlj7hPCOvMWjPlY
 
 ###
 
@@ -417,7 +418,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #user view existing zones in an event (show that it has been created)
 GET http://localhost:8080/events/1/zones
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDUwODksImV4cCI6MTY5NjUwNTY4OX0.YmhflKZ27uNsYl4rmY9ARC1DEteolDGttSu0UTzvrP0
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1NzkyNjksImV4cCI6MTY5NjU3OTg2OX0.Ew7J3L9SlEwwzUDwOzUijFNjTNA4IfKx8NHq3r_tP7Q
 ###
 
 ###
@@ -458,7 +459,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #admin tries to open the pre-registration for an event.
 PUT http://localhost:8080/events/1/open
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDUwODksImV4cCI6MTY5NjUwNTY4OX0.YmhflKZ27uNsYl4rmY9ARC1DEteolDGttSu0UTzvrP0
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDg0MzYsImV4cCI6MTY5NjUwOTAzNn0.hA_C1BSmwk0PTwWKr8VY1EGVg2QJqeS9FxXhn7ccqEw
 
 ###
 
@@ -466,7 +467,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #user tries to pre-register for a zone when after it has been opened.
 PUT http://localhost:8080/events/1/testZone/preRegister
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDUwODksImV4cCI6MTY5NjUwNTY4OX0.YmhflKZ27uNsYl4rmY9ARC1DEteolDGttSu0UTzvrP0
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDg0MzYsImV4cCI6MTY5NjUwOTAzNn0.hA_C1BSmwk0PTwWKr8VY1EGVg2QJqeS9FxXhn7ccqEw
 
 ###
 
@@ -486,7 +487,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpY
 #see all existing zones
 GET http://localhost:8080/events/1/zones
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDUwODksImV4cCI6MTY5NjUwNTY4OX0.YmhflKZ27uNsYl4rmY9ARC1DEteolDGttSu0UTzvrP0
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1Nzg4NjEsImV4cCI6MTY5NjU3OTQ2MX0.opvmman0d01dRxiIHI4xZwfSAQ3mzbjTiv0vK5eRfuo
 
 ###
 #user tries to pre-register for another zone when they already joined one, for the same event.
@@ -550,7 +551,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWFuZ3poZWp1bkBnbWFpbC5jb
 #admin view all users who have signed up
 GET http://localhost:8080/users/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1MDQ4MDYsImV4cCI6MTY5NjUwNTQwNn0.mzWlM3XHF6FW_VbQuq36r-t1q_UW2HT4CzoRUmEGFjM
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY1NzkyNjksImV4cCI6MTY5NjU3OTg2OX0.Ew7J3L9SlEwwzUDwOzUijFNjTNA4IfKx8NHq3r_tP7Q
 
 ###
 

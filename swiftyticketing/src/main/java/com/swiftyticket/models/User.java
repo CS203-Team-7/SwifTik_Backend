@@ -60,8 +60,7 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "preRegisteredUsers4Event", fetch = FetchType.EAGER)
     private List<Event> preRegisteredEvents;
 
-    @ManyToMany(mappedBy = "zoneWinners", fetch = FetchType.EAGER)
-    private List<Zones> zonesWon;
+    private List<Integer> zonesWon;
 
     // Below are all the methods that need to be implemented for Spring Security to actually be able to authorize this User:
 
@@ -75,6 +74,8 @@ public class User implements UserDetails {
 
         this.preRegisteredZones = new ArrayList<>();;
         this.preRegisteredEvents = new ArrayList<>();
+
+        this.zonesWon = new ArrayList<>();
 
     }
 

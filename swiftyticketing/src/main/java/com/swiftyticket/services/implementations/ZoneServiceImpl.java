@@ -2,6 +2,8 @@ package com.swiftyticket.services.implementations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import org.springframework.stereotype.Service;
 import com.swiftyticket.dto.zone.ZoneRequest;
 import com.swiftyticket.models.Event;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.exceptions.ZoneNotFoundException;
+import com.swiftyticket.exceptions.UserNotFoundException;
 
 
 @Service
@@ -29,6 +32,9 @@ public class ZoneServiceImpl implements ZoneService {
 
     public Zones addZone(ZoneRequest zoneReq, Event event){
         Zones newZone = new Zones(zoneReq.getZoneCapacity(), zoneReq.getZoneName(), event);
+        //link zone to ZoneWinners
+        //newZone.setZoneWinners(new ZoneWinners(newZone));
+
         // Add this zone to the event it belongs to
         event.getZoneList().add(newZone);
         return zoneRepository.save(newZone);
@@ -75,34 +81,95 @@ public class ZoneServiceImpl implements ZoneService {
     }
 
     public void raffle(Zones zone){
+        //get associated event with zone
+        Event event = zone.getEvent();
+
+        //if raffle round >= 1, means we have to clear the previous round winners.
+        if(event.getRaffleRound() >= 1){
+            //get previous list of users, clear this zone from their list.
+            List<Integer> previousWinnerId = zone.getWinnerList();  
+            for(Integer prevWinnerId : previousWinnerId){
+                User previousWinner= userRepository.findById(prevWinnerId).orElseThrow(() -> new UserNotFoundException("Invalid user!"));
+                previousWinner.getZonesWon().remove(zone.getZoneId());
+            }
+
+            zone.setWinnerList(new ArrayList<Integer>());
+        }
 
         //get list of users who have pre registered for this zone
         //record size of the list of users.
         List<User> toRaffle = zone.getPreRegisteredUsers4Zone();
         int toRaffleSize = toRaffle.size();
 
+        //store winning user's id
+        List<Integer> winnerList = new ArrayList<>();
+        //store winning users (for use later so we dont have to fetch)
+        List<User> userWinners = new ArrayList<>();
+
         //get number of tickets/seats available (this is how many winners we will be selecting)
-        int zoneCap = zone.getZoneCapacity();
+        int ticketsLeft = zone.getTicketsLeft();
 
-        //if zoneCap >= toRaffleSize (means no need to raffle, everyone wins!)
-        if(zoneCap >= toRaffleSize){
-            zone.setZoneWinners(toRaffle);
+        //if ticketsLeft > toRaffleSize (means no need to raffle, everyone wins!)
+        if(ticketsLeft >= toRaffleSize){
+            //clear the pre-registered user list (since all win)
             zone.setPreRegisteredUsers4Zone(new ArrayList<User>());
-            zoneRepository.save(zone);
-        }else{
+            userWinners = toRaffle;
 
+            //add all user id to a list
+            for(int i = 0; i<toRaffleSize; i++){
+                winnerList.add(toRaffle.get(i).getUserId());
+            }
+
+            zone.setWinnerList(winnerList);
+
+            zoneRepository.save(zone);
+
+            log.info("no raffling was done - all winners!");
+            log.info("" + zone.getWinnerList());
+
+        }else{
+            Random rand = new Random();
+            //count how many people have won so far, once == zoneCap stop. (no more tickets left to raffle!)
+            int count = 0;
+
+            //select winners until there are no tickets left (until ticketsLeft <= count)
+            while(ticketsLeft > count){
+                //this will roll a number between 0 -> (size of arraylist-1)
+                int luckyNumber = rand.nextInt(toRaffle.size());
+                User winner = toRaffle.get(luckyNumber);
+
+                userWinners.add(winner);
+                winnerList.add(winner.getUserId());
+
+                //remove winner from next draw, which will in turn update the size. 
+                toRaffle.remove(winner);
+
+                log.info("raffled!");
+                count++;
+            }
+            //update zone preRegistered user list.
+            zone.setPreRegisteredUsers4Zone(toRaffle);
+            //update zone winnerlist
+            zone.setWinnerList(winnerList);
+
+            zoneRepository.save(zone);
         }
 
-        //get associated event with zone
-        Event event = zone.getEvent();
 
-        for(User u : zone.getZoneWinners()){
+
+        //for all winners, update their user class (and event class) accordingly.
+        //event class -> preRegisteredUsers4Event needs to be updated (remove winners)
+        //user class -> remove their zone and event pre-registration once they have won. 
+
+        //to do: add a field for users to check which zones they won (store zone id)
+
+        for(User u : userWinners){
             //remove their pre-registration once they won
             u.getPreRegisteredEvents().remove(event);
             u.getPreRegisteredZones().remove(zone);
 
             //add the zone they won to zoneswon. (to facilitate ticket purchasing later)
-            u.getZonesWon().add(zone);
+            u.getZonesWon().add(zone.getZoneId());
 
             userRepository.save(u);
 
@@ -111,12 +178,8 @@ public class ZoneServiceImpl implements ZoneService {
             eventRepository.save(event);
         }
 
-        //remove all winners from 
-
-        //create a for/while loop, each loop will random between 0->(arraysize-1), update array size and array per loop
-        //for each winner, remove them from the preRegistration4Zones, preRegistration4events arrays and update all accordingly.
-        //add them to the winners array, and update their zonesWon element. 
-        log.info("raffled!");
+        log.info("ran somehow");
         return;
     }
+    
 }
