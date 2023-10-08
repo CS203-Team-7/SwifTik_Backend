@@ -550,7 +550,7 @@ Authorization: Bearer
 #admin view all users who have signed up
 GET http://localhost:8080/users/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY3NTAzOTAsImV4cCI6MTY5Njc1MDk5MH0.k3vrsCbEX3m58VIaPsiDluhEDxdlyyBYOkaAy1aJSWM
+Authorization: Bearer
 
 ###
 
