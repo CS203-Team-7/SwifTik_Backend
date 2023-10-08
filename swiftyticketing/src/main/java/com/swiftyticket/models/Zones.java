@@ -70,6 +70,7 @@ public class Zones {
     @Column(name = "winning_users")
     private List<User> winnerList;
 
+    @JsonIgnore
     public Zones(Integer zoneCapacity, String zoneName, Event event){
         this.zoneCapacity = zoneCapacity;
         this.zoneName = zoneName;

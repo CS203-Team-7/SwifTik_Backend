@@ -1,5 +1,6 @@
 package com.swiftyticket.services.implementations;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +42,8 @@ public class EventServiceImpl implements EventService{
 
     @Override 
     public Event addEvent(Event event) {
+        event.setZoneList(new ArrayList<>());
+        event.setPreRegisteredUsers4Event(new ArrayList<>());
         return eventRepository.save(event);
     }
 

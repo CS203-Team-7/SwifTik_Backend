@@ -65,6 +65,7 @@ public class User implements UserDetails {
 
     // Below are all the methods that need to be implemented for Spring Security to actually be able to authorize this User:
 
+    @JsonIgnore
     public User (String email, String password, Date dateOfBirth, String phoneNumber, Role role, boolean verified){
         this.email = email;
         this.password = password;
@@ -80,33 +81,39 @@ public class User implements UserDetails {
 
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return email;
     }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     // For now I've set these to true but later we can add the necessary business logic if need be:
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return verified;
     }
     
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }

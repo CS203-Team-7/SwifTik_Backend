@@ -70,7 +70,7 @@ Authorization: Bearer
 #admin creates a zone for new event
 POST http://localhost:8080/events/2/createZone
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY3MTEzNzIsImV4cCI6MTY5NjcxMTk3Mn0.Xw0_V2NoTbJ2XE6j09TQ9STkfiFBdB3z1BQvkPlSqGs
+Authorization: Bearer 
 
 {
     "zoneCapacity": 10,
@@ -232,7 +232,7 @@ Authorization: Bearer
 #user tries to pre-register for a zone in another event while pre registered for another. 
 PUT http://localhost:8080/events/2/testZonez/preRegister
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1emVyMkBnbWFpbC5jb20iLCJpYXQiOjE2OTY3MTEzNzIsImV4cCI6MTY5NjcxMTk3Mn0.k3f2h9TGXVbENn2tfyzv76EIMA8YCx5zXR8QGM8ar-Q
+Authorization: Bearer 
 
 ###
 

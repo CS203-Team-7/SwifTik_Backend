@@ -1,11 +1,13 @@
 package com.swiftyticket.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -79,8 +81,13 @@ public class Event {
 
     private Integer raffleRound = 0;
 
+    @JsonIgnore
+    public boolean getOpenStatus(){
+        return this.open4Registration;
+    }
 
-    //currently eventController uses requestBody, which doesnt require this constructor. If you wish to change it in the future can use this.
+
+        //currently eventController uses requestBody, which doesnt require this constructor. If you wish to change it in the future can use this.
 /* public Event(String eventName, List<String> artists, List<Date> dates, String venue, Integer venueCapacity){
         this.eventName = eventName;
         this.artists = artists;
@@ -95,18 +102,6 @@ public class Event {
         log.info("event was constructed and the registration boolean is set to: " + this.open4Registration);
     }
 */
-
-
-
-
-
-    @JsonIgnore
-    public boolean getOpenStatus(){
-        return this.open4Registration;
-    }
-
-
-    
 
 
     // custom constructor to account for use of LocalDate.of(yyyy, mm, dd) method
