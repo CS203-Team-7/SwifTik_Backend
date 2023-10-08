@@ -16,6 +16,7 @@ import com.swiftyticket.services.ZoneService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.swiftyticket.exceptions.EventNotFoundException;
 import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.exceptions.ZoneNotFoundException;
 import com.swiftyticket.exceptions.UserNotFoundException;
@@ -44,14 +45,15 @@ public class ZoneServiceImpl implements ZoneService {
         return event.getZoneList();
     }
 
-    public String joinRaffle(String bearerToken, Integer id, String zoneName){
+    public String joinRaffle(String bearerToken, Integer eventId, String zoneName){
         String jwtToken = bearerToken.substring(7);
         String userEmail = jwtService.extractUserName(jwtToken);
-        // Get user using userEmail
+        // get Event and user respectively. get Zone by using the zone namd and corresponding name.
+        // zone name across events may be not unique, but with same events are unique.
+        Event joinEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         User joiningUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException("Invalid user / token!"));
-        Zones joinZone = zoneRepository.findByZoneName(zoneName).orElseThrow(() -> new ZoneNotFoundException("Invalid zone!"));
+        Zones joinZone = zoneRepository.findByZoneNameAndEvent(zoneName, joinEvent).orElseThrow(() -> new ZoneNotFoundException("Invalid zone!"));
 
-        Event joinEvent = joinZone.getEvent();
         if(!joinEvent.getOpenStatus()){
             log.info("User tried to join when pre-registration was closed, Denied.");
             return "The Pre-egistration has not yet opened, or Pre-registration has closed, join us next time!";

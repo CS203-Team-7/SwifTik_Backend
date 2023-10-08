@@ -97,8 +97,8 @@ public class EventServiceImpl implements EventService{
             throw new OpenRegistrationRaffleException("please close the event before raffling.");
         }
 
-        for(Zones zone : event.getZoneList()){
-            zoneService.raffle(zone);
+        for(int i=0; i<event.getZoneList().size(); i++){
+            zoneService.raffle(event.getZoneList().get(i));
             //log.info("entered event raffle's for loop");
         }
 

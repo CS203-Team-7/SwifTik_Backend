@@ -26,7 +26,7 @@ Content-Type: application/json
 Authorization: Bearer 
 
 {
-    "zoneCapacity": 2,
+    "zoneCapacity": 1,
     "zoneName": "testZone"
 }
 ###
@@ -48,8 +48,7 @@ Authorization: Bearer
 #admin raffles all the zones in event 1.
 PUT http://localhost:8080/events/1/raffle
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTY3NDY4MjcsImV4cCI6MTY5Njc0NzQyN30.fyMDLwt5og7pBZWqzuIGvTEiFmR-yRsol4lkF9E03cE
-
+Authorization: Bearer 
 
 ###
 #admin creates another event
@@ -175,7 +174,7 @@ Content-Type: application/json
 #user view available events
 GET http://localhost:8080/events
 Content-Type: application/json
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1emVyMkBnbWFpbC5jb20iLCJpYXQiOjE2OTY3NDcxMTcsImV4cCI6MTY5Njc0NzcxN30.n4B0jqtkFQDLJGukto7vICeAIARtsNjaBkpbDuW-2Tc
 
 ###
 
