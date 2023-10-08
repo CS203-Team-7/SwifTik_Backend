@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import com.swiftyticket.exceptions.EventNotFoundException;
 import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.exceptions.ZoneNotFoundException;
-import com.swiftyticket.exceptions.UserNotFoundException;
 
 
 @Service
@@ -72,6 +71,9 @@ public class ZoneServiceImpl implements ZoneService {
 
         //also add user to event they joined so they cant join other zones with the same event
         joinEvent.getPreRegisteredUsers4Event().add(joiningUser);
+
+        joinZone.setUser_count(joinZone.getPreRegisteredUsers4Zone().size());
+        joinEvent.setUser_count(joinEvent.getPreRegisteredUsers4Event().size());
 
         eventRepository.save(joinEvent);
         userRepository.save(joiningUser);
@@ -129,6 +131,9 @@ public class ZoneServiceImpl implements ZoneService {
         //update zone winnerlist
         zone.setWinnerList(userWinners);
 
+        //update count for registered user for zone
+        zone.setUser_count(toRaffle.size());
+
         zoneRepository.save(zone);
 
         //for all winners, update their user class (and event class) accordingly.
@@ -150,6 +155,8 @@ public class ZoneServiceImpl implements ZoneService {
 
             //remove accordingly from event pre-registration list.
             event.getPreRegisteredUsers4Event().remove(u);
+            //update count for pre_registered users for an event.
+            event.setUser_count(event.getPreRegisteredUsers4Event().size());
             eventRepository.save(event);
 
             log.info("winner no." + i + " zones won" + u.getZonesWon());

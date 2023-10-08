@@ -45,6 +45,9 @@ public class Zones {
     @Column(name = "zone_name")
     private String zoneName;
 
+    @Column(name = "register_count")
+    private int user_count;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "events_id", nullable = false)
     @JsonIgnore
@@ -78,6 +81,8 @@ public class Zones {
         
         this.ticketsLeft = zoneCapacity;
         this.winnerList = new ArrayList<>();
+
+        this.user_count = 0;
     }
 
 }

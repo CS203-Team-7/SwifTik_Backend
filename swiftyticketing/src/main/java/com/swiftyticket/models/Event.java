@@ -1,13 +1,11 @@
 package com.swiftyticket.models;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -64,6 +62,9 @@ public class Event {
 
     @Column(name = "open")
     private boolean open4Registration;
+    
+    @Column(name = "user_count")
+    private int user_count;
 
     @OneToMany(mappedBy = "event",
                 cascade = CascadeType.ALL)
