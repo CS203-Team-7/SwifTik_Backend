@@ -174,7 +174,7 @@ Content-Type: application/json
 #user view available events
 GET http://localhost:8080/events
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1emVyMkBnbWFpbC5jb20iLCJpYXQiOjE2OTY3NDcxMTcsImV4cCI6MTY5Njc0NzcxN30.n4B0jqtkFQDLJGukto7vICeAIARtsNjaBkpbDuW-2Tc
+Authorization: Bearer 
 
 ###
 
