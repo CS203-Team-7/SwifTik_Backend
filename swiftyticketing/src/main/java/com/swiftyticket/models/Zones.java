@@ -64,9 +64,9 @@ public class Zones {
     @JsonIgnore
     @JoinTable(name = "zones_winners",
             joinColumns=
-            @JoinColumn(name="zonew_id"),
+            @JoinColumn(name="zoneWin_id"),
         inverseJoinColumns=
-            @JoinColumn(name="userw_id"))
+            @JoinColumn(name="userWin_id"))
     @Column(name = "winning_users")
     private List<User> winnerList;
 

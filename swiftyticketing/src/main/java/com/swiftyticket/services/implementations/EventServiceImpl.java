@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.swiftyticket.exceptions.EventNotFoundException;
+import com.swiftyticket.exceptions.OpenRegistrationRaffleException;
 import com.swiftyticket.models.Event;
 import com.swiftyticket.models.Zones;
 import com.swiftyticket.repositories.EventRepository;
@@ -87,20 +88,22 @@ public class EventServiceImpl implements EventService{
     }
 
     public void raffle(Integer id){
-        //to do: make sure event is closed before raffle is commenced.
-        
         Optional<Event> e = eventRepository.findById(id);
         if (e == null) throw new EventNotFoundException(id);
         Event event = e.get();
+
+        //to do: make sure event is closed before raffle is commenced.
+        if(event.getOpenStatus()){
+            throw new OpenRegistrationRaffleException("please close the event before raffling.");
+        }
 
         for(Zones zone : event.getZoneList()){
             zoneService.raffle(zone);
             //log.info("entered event raffle's for loop");
         }
 
-        //increase count for raffle round
         event.setRaffleRound(event.getRaffleRound() + 1);
-        //log.info("" + event.getRaffleRound());
+        //log.info("event's raffle round: " + event.getRaffleRound());
 
         eventRepository.save(event);
 

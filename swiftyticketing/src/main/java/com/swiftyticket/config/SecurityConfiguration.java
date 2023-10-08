@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/auth/**","/otp/*").permitAll();
                     request.requestMatchers( "/users/**","/events/*/open",
-                    "/events/*/close","/events/create","/events/{id}/createZone")
+                    "/events/*/close","/events/create","/events/{id}/createZone",)
                     .hasAuthority("ADMIN")
                     .anyRequest().authenticated();
                 })
