@@ -1,11 +1,13 @@
 package com.swiftyticket.services.implementations;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.swiftyticket.exceptions.EventNotFoundException;
+import com.swiftyticket.exceptions.OpenRegistrationRaffleException;
 import com.swiftyticket.models.Event;
 import com.swiftyticket.repositories.EventRepository;
 import com.swiftyticket.services.EventService;
@@ -15,9 +17,11 @@ import com.swiftyticket.services.EventService;
 @Service
 public class EventServiceImpl implements EventService{
     private EventRepository eventRepository;
+    private ZoneServiceImpl zoneService;
 
-    public EventServiceImpl(EventRepository eventRepository) {
+    public EventServiceImpl(EventRepository eventRepository, ZoneServiceImpl zoneService) {
         this.eventRepository = eventRepository;
+        this.zoneService = zoneService;
     }
 
     @Override
@@ -35,6 +39,8 @@ public class EventServiceImpl implements EventService{
 
     @Override 
     public Event addEvent(Event event) {
+        event.setZoneList(new ArrayList<>());
+        event.setPreRegisteredUsers4Event(new ArrayList<>());
         return eventRepository.save(event);
     }
 
@@ -75,5 +81,28 @@ public class EventServiceImpl implements EventService{
         Event event = e.get();
         event.setOpen4Registration(false);
         eventRepository.save(event);
+    }
+
+    public void raffle(Integer id){
+        Optional<Event> e = eventRepository.findById(id);
+        if (e == null) throw new EventNotFoundException(id);
+        Event event = e.get();
+
+        //to do: make sure event is closed before raffle is commenced.
+        if(event.getOpenStatus()){
+            throw new OpenRegistrationRaffleException("please close the event before raffling.");
+        }
+
+        for(int i=0; i<event.getZoneList().size(); i++){
+            zoneService.raffle(event.getZoneList().get(i));
+            //log.info("entered event raffle's for loop");
+        }
+
+        event.setRaffleRound(event.getRaffleRound() + 1);
+        //log.info("event's raffle round: " + event.getRaffleRound());
+
+        eventRepository.save(event);
+
+        return;
     }
 }

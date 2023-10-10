@@ -10,4 +10,5 @@ public interface ZoneService {
     public Zones addZone(ZoneRequest zoneReq, Event event);
     public List<Zones> listZones(Event event);
     public String joinRaffle(String bearerToken, Integer id, String zoneName);
+    public void raffle(Zones zone);
 }

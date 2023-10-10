@@ -12,4 +12,5 @@ public interface EventService {
     void deleteEvent(Integer id);
     public void openEvent(Integer id);
     public void closeEvent(Integer id);
+    public void raffle(Integer id);
 }

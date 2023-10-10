@@ -38,9 +38,15 @@ public class Zones {
     @Column(name = "zone_capacity")
     private Integer zoneCapacity;
 
+    @Column(name = "tickets_left")
+    private Integer ticketsLeft;    
+
     @NonNull
     @Column(name = "zone_name")
     private String zoneName;
+
+    @Column(name = "register_count")
+    private int user_count;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "events_id", nullable = false)
@@ -57,10 +63,26 @@ public class Zones {
     @Column(name = "preRegistered_users")
     private List<User> preRegisteredUsers4Zone = new ArrayList<>();
 
+    @ManyToMany
+    @JsonIgnore
+    @JoinTable(name = "zones_winners",
+            joinColumns=
+            @JoinColumn(name="zoneWin_id"),
+        inverseJoinColumns=
+            @JoinColumn(name="userWin_id"))
+    @Column(name = "winning_users")
+    private List<User> winnerList;
 
+    @JsonIgnore
     public Zones(Integer zoneCapacity, String zoneName, Event event){
         this.zoneCapacity = zoneCapacity;
         this.zoneName = zoneName;
         this.event = event;
+        
+        this.ticketsLeft = zoneCapacity;
+        this.winnerList = new ArrayList<>();
+
+        this.user_count = 0;
     }
+
 }

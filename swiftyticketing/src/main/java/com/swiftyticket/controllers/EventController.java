@@ -75,4 +75,10 @@ public class EventController {
         eventService.openEvent(id);
         return new ResponseEntity<String>("Event #" + id + "'s registration window has been opened.", HttpStatus.OK);
     }
+
+    @PutMapping("/events/{id}/raffle")
+    public ResponseEntity<String> eventRaffle(@PathVariable Integer id) throws EventNotFoundException {
+        eventService.raffle(id);
+        return new ResponseEntity<String>("Event #" + id + "'s raffle has been done", HttpStatus.OK);
+    }
 }

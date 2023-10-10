@@ -9,6 +9,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -54,11 +56,16 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "preRegisteredUsers4Zone", fetch = FetchType.EAGER)
     private List<Zones> preRegisteredZones;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "preRegisteredUsers4Event", fetch = FetchType.EAGER)
     private List<Event> preRegisteredEvents;
 
+    @ManyToMany(mappedBy = "winnerList", fetch = FetchType.EAGER)
+    private List<Zones> zonesWon;
+
     // Below are all the methods that need to be implemented for Spring Security to actually be able to authorize this User:
 
+    @JsonIgnore
     public User (String email, String password, Date dateOfBirth, String phoneNumber, Role role, boolean verified){
         this.email = email;
         this.password = password;
@@ -70,35 +77,43 @@ public class User implements UserDetails {
         this.preRegisteredZones = new ArrayList<>();;
         this.preRegisteredEvents = new ArrayList<>();
 
+        this.zonesWon = new ArrayList<>();
+
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return email;
     }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     // For now I've set these to true but later we can add the necessary business logic if need be:
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return verified;
     }
     
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }

@@ -39,5 +39,27 @@ public class SwiftyticketingApplication implements CommandLineRunner{
 		userRepository.save(admin);
 		String token = jwtService.generateToken(admin);
 		log.info("admin token: " + token);
+
+		User uzer = new User("uzer@gmail.com",
+								   passwordEncoder.encode("Uzer123!"),
+								   new Date(),
+								   "87654321",
+								   Role.USER,
+								   true);
+
+		userRepository.save(uzer);
+		String token2 = jwtService.generateToken(uzer);
+		log.info("uzer token: " + token2);
+
+		User uzer2 = new User("uzer2@gmail.com",
+									passwordEncoder.encode("Uzer123!"),
+								   new Date(),
+								   "6969696969",
+								   Role.USER,
+								   true);
+
+		userRepository.save(uzer2);
+		String token3 = jwtService.generateToken(uzer2);
+		log.info("uzer2 token: " + token3);
 	}
 }
