@@ -28,4 +28,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> AccountNotVerifiedException(AccountNotVerifiedException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(OpenRegistrationRaffleException.class)
+    public ResponseEntity<Object> OpenRegistrationRaffleException(OpenRegistrationRaffleException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    //Will add exception handler for payment later
 }

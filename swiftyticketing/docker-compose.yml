@@ -1,0 +1,28 @@
+version: '4.2'
+
+services:
+  psql-db:
+    image: postgres
+    container_name: swifty-container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: swiftik
+    ports:
+      - "5432:5432"
+
+  swiftyticketing:
+    container_name: swiftyticketing_app
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - psql-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://psql-db:5432/swiftik
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      Spring_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
