@@ -1,6 +1,6 @@
 spring:
     datasource:
-        url: jdbc:postgresql://localhost:5432/swiftik
+        url: jdbc:postgresql://localhost:5433/swiftyticketing
         username: ${PG_ID}
         password: ${PG_PW}
         driver-class-name: org.postgresql.Driver
