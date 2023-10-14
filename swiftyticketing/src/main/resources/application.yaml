@@ -2,7 +2,7 @@ spring:
     datasource:
         url: jdbc:postgresql://localhost:5433/swiftyticketing
         username: ${PG_ID}
-        password: ${PG_PW}
+        password: postgres
         driver-class-name: org.postgresql.Driver
     jpa:
         show-sql: true
