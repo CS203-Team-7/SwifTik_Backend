@@ -62,6 +62,9 @@ public class Event {
 
     @Column(name = "open")
     private boolean open4Registration;
+    
+    @Column(name = "user_count")
+    private int user_count;
 
     @OneToMany(mappedBy = "event",
                 cascade = CascadeType.ALL)
@@ -77,8 +80,15 @@ public class Event {
     @Column(name = "users_preRegistered")
     private List<User> preRegisteredUsers4Event;
 
+    private Integer raffleRound = 0;
 
-    //currently eventController uses requestBody, which doesnt require this constructor. If you wish to change it in the future can use this.
+    @JsonIgnore
+    public boolean getOpenStatus(){
+        return this.open4Registration;
+    }
+
+
+        //currently eventController uses requestBody, which doesnt require this constructor. If you wish to change it in the future can use this.
 /* public Event(String eventName, List<String> artists, List<Date> dates, String venue, Integer venueCapacity){
         this.eventName = eventName;
         this.artists = artists;
@@ -93,18 +103,6 @@ public class Event {
         log.info("event was constructed and the registration boolean is set to: " + this.open4Registration);
     }
 */
-
-
-
-
-
-    @JsonIgnore
-    public boolean getOpenStatus(){
-        return this.open4Registration;
-    }
-
-
-    
 
 
     // custom constructor to account for use of LocalDate.of(yyyy, mm, dd) method
