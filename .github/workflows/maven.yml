@@ -22,7 +22,7 @@ jobs:
     # Since this is just for the backend we need to specify the working directory:
         defaults:
             run:
-                working-directory: ./backend/swiftyticketing
+                working-directory: ./swiftyticketing
 
 # We also need to tell Actions to create a Postgres image for testing:
         services:
