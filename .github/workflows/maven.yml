@@ -1,0 +1,51 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+
+name: Java CI with Maven
+
+on:
+    push:
+    # For all branches on the repository
+        branches:
+        - '**'
+    pull_request:
+        branches:
+            - '**'
+
+# First the build job will run, then the test job (if build job passes):
+jobs:
+    build:
+
+        runs-on: ubuntu-latest
+
+    # Since this is just for the backend we need to specify the working directory:
+        defaults:
+            run:
+                working-directory: ./backend/swiftyticketing
+
+# We also need to tell Actions to create a Postgres image for testing:
+        services:
+            postgres:
+                image: postgres
+                ports:
+                    - 5433:5432
+                env:
+                    POSTGRES_USERNAME: postgres
+                    POSTGRES_PASSWORD: postgres
+                    POSTGRES_DB: swiftyticketing
+                options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+# Steps to run everything:
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of git history
+            - name: Set up JDK 17
+              uses: actions/setup-java@v2
+              with:
+                java-version: '17'
+                distribution: 'adopt'
+                cache: 'maven'
+            - name: Build with Maven
+              run: mvn -B package --file pom.xml
