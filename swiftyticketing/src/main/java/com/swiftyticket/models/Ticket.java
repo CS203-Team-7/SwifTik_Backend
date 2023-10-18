@@ -25,6 +25,7 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ticket_id")
     private Integer ticketId;
+    
     @NonNull
     private Double ticketPrice;
     

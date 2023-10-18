@@ -28,7 +28,8 @@ Authorization: Bearer
 {
     "zoneCapacity": 1,
     "zoneName": "testZone",
-    "zoneDate": "2001-05-06"
+    "zoneDate": "2001-05-06",
+    "ticketPrice": 450
 }
 ###
 
@@ -42,7 +43,8 @@ Authorization: Bearer
 {
     "zoneCapacity": 10,
     "zoneName": "testZone2",
-    "zoneDate": "2001-05-06"
+    "zoneDate": "2001-05-06",
+    "ticketPrice": 350
 }
 ###
 

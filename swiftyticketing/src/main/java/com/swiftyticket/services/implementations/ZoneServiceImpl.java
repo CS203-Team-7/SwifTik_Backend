@@ -41,7 +41,7 @@ public class ZoneServiceImpl implements ZoneService {
             throw new WrongZoneDateException(event, zoneReq.getZoneDate());
         }
 
-        Zones newZone = new Zones(zoneReq.getZoneCapacity(), zoneReq.getZoneName(), zoneReq.getZoneDate(), event);
+        Zones newZone = new Zones(zoneReq.getZoneCapacity(), zoneReq.getZoneName(), zoneReq.getZoneDate(), zoneReq.getTicketPrice(), event);
         newZone = zoneRepository.save(newZone);
 
         // Add this zone to the event it belongs to
