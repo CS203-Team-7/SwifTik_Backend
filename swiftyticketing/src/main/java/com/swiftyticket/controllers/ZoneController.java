@@ -41,9 +41,9 @@ public class ZoneController {
         return new ResponseEntity<List<Zones>> (zoneService.listZones(event), HttpStatus.OK);
     }
 
-    @PutMapping("/events/{id}/{zoneName}/preRegister")
-    public ResponseEntity<String> preRegister(@RequestHeader("Authorization") String bearerToken, @PathVariable Integer id, @PathVariable String zoneName){
-        return new ResponseEntity<String> (zoneService.joinRaffle(bearerToken, id, zoneName), HttpStatus.OK);
+    @PutMapping("/events/{id}/zone={zoneID}/preRegister")
+    public ResponseEntity<String> preRegister(@RequestHeader("Authorization") String bearerToken, @PathVariable Integer id, @PathVariable Integer zoneID){
+        return new ResponseEntity<String> (zoneService.joinRaffle(bearerToken, id, zoneID), HttpStatus.OK);
     }
     
 }

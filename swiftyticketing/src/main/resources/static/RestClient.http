@@ -41,7 +41,8 @@ Authorization: Bearer
 
 {
     "zoneCapacity": 10,
-    "zoneName": "testZone2"
+    "zoneName": "testZone2",
+    "zoneDate": "2001-05-06"
 }
 ###
 
@@ -190,7 +191,7 @@ Authorization: Bearer
 
 ###
 #user tries to pre-register for a zone when it hasn't been opened.
-PUT http://localhost:8080/events/1/testZone/preRegister
+PUT http://localhost:8080/events/1/zone=1/preRegister
 Content-Type: application/json
 Authorization: Bearer 
 

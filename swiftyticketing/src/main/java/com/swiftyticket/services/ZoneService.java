@@ -9,6 +9,6 @@ import com.swiftyticket.models.Zones;
 public interface ZoneService {
     public Zones addZone(ZoneRequest zoneReq, Event event);
     public List<Zones> listZones(Event event);
-    public String joinRaffle(String bearerToken, Integer id, String zoneName);
+    public String joinRaffle(String bearerToken, Integer id, Integer zoneID);
     public void raffle(Zones zone);
 }

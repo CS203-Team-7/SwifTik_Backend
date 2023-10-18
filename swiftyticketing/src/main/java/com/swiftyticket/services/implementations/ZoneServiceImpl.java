@@ -52,15 +52,15 @@ public class ZoneServiceImpl implements ZoneService {
         return event.getZoneList();
     }
 
-    public String joinRaffle(String bearerToken, Integer eventId, String zoneName){
+    public String joinRaffle(String bearerToken, Integer eventId, Integer zoneID){
         String jwtToken = bearerToken.substring(7);
         String userEmail = jwtService.extractUserName(jwtToken);
-        // get Event and user respectively. get Zone by using the zone namd and corresponding name.
-        // zone name across events may be not unique, but with same events are unique.
+        // get Event and user respectively.
         Event joinEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         User joiningUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException("Invalid user / token!"));
-        Zones joinZone = zoneRepository.findByZoneNameAndEvent(zoneName, joinEvent).orElseThrow(() -> new ZoneNotFoundException("Invalid zone!"));
-
+        //we search for zone using both event and zoneid to make sure the zone is in the specified event.
+        Zones joinZone = zoneRepository.findByZoneIdAndEvent(zoneID, joinEvent).orElseThrow(() -> new ZoneNotFoundException("Invalid zone for " + joinEvent.getEventName()));
+//to do: error handling for these.
         if(!joinEvent.getOpenStatus()){
             log.info("User tried to join when pre-registration was closed, Denied.");
             return "The Pre-egistration has not yet opened, or Pre-registration has closed, join us next time!";
@@ -87,7 +87,7 @@ public class ZoneServiceImpl implements ZoneService {
         userRepository.save(joiningUser);
         zoneRepository.save(joinZone);
 
-        return "Successfully joined the raffle for: " + zoneName;
+        return "Successfully joined the raffle for: " + joinZone.getZoneName() + " on " + joinZone.getZoneDate() + " for " + joinEvent.getEventName();
         
     }
 
