@@ -34,5 +34,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(WrongZoneDateException.class)
+    public ResponseEntity<Object> WrongZoneDateException(WrongZoneDateException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
     //Will add exception handler for payment later
 }
