@@ -39,5 +39,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(AlreadyPreRegisteredException.class)
+    public ResponseEntity<Object> AlreadyPreRegisteredException(AlreadyPreRegisteredException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(EventClosedException.class)
+    public ResponseEntity<Object> EventClosedException(EventClosedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
     //Will add exception handler for payment later
 }

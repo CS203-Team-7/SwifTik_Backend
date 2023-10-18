@@ -75,7 +75,8 @@ Authorization: Bearer
 
 {
     "zoneCapacity": 10,
-    "zoneName": "testZonez"
+    "zoneName": "testZonez",
+    "zoneDate": "2001-05-06"
 }
 ###
 

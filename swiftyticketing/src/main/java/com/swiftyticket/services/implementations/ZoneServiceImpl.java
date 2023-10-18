@@ -17,6 +17,8 @@ import com.swiftyticket.services.ZoneService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.swiftyticket.exceptions.AlreadyPreRegisteredException;
+import com.swiftyticket.exceptions.EventClosedException;
 import com.swiftyticket.exceptions.EventNotFoundException;
 import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.exceptions.WrongZoneDateException;
@@ -60,15 +62,17 @@ public class ZoneServiceImpl implements ZoneService {
         User joiningUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException("Invalid user / token!"));
         //we search for zone using both event and zoneid to make sure the zone is in the specified event.
         Zones joinZone = zoneRepository.findByZoneIdAndEvent(zoneID, joinEvent).orElseThrow(() -> new ZoneNotFoundException("Invalid zone for " + joinEvent.getEventName()));
-//to do: error handling for these.
+
         if(!joinEvent.getOpenStatus()){
             log.info("User tried to join when pre-registration was closed, Denied.");
-            return "The Pre-egistration has not yet opened, or Pre-registration has closed, join us next time!";
+            //return "The Pre-egistration has not yet opened, or Pre-registration has closed, join us next time!";
+            throw new EventClosedException();
         }
 
         if(joinEvent.getPreRegisteredUsers4Event().contains(joiningUser)){
             log.info("User tried to join when already pre-registrated, Denied.");
-            return "You have already pre-registered for this event!";
+            //return "You have already pre-registered for this event!";
+            throw new AlreadyPreRegisteredException(joinEvent);
             
         }
 
