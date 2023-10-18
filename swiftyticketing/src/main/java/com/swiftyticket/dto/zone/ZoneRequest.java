@@ -15,5 +15,5 @@ public class ZoneRequest {
     Integer zoneCapacity;
     String zoneName;
     Date zoneDate;
-    int ticketPrice;
+    double ticketPrice;
 }

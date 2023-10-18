@@ -54,7 +54,7 @@ public class Zones {
     private int user_count;
 
     @Column(name = "ticket_price")
-    private int ticket_price;
+    private double ticket_price;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "events_id", nullable = false)
@@ -82,7 +82,7 @@ public class Zones {
     private List<User> winnerList;
 
     @JsonIgnore
-    public Zones(Integer zoneCapacity, String zoneName, Date date, int ticketPrice, Event event){
+    public Zones(Integer zoneCapacity, String zoneName, Date date, double ticketPrice, Event event){
         this.zoneCapacity = zoneCapacity;
         this.zoneName = zoneName;
         this.event = event;
