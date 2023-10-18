@@ -3,8 +3,9 @@ package com.swiftyticket.models;
 import java.util.Date;
 import java.util.List;
 
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -29,6 +30,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "events")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,6 +51,7 @@ public class Event {
     // have to use LocalDate.of() method, unsure of how to input the arguements for the method right now
     // how to incorporate time? cant just make a list of time because the a specific time should be linked to specific date
     @NonNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "event_dates")
     private List<Date> dates;
 
