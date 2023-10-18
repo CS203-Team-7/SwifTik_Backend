@@ -27,12 +27,10 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Data
 @Getter
 @Setter
 @NoArgsConstructor
@@ -64,23 +62,25 @@ public class User implements UserDetails {
     //lock users until they verify with OTP (set it to false)
     private boolean verified;
 
+
     @ManyToMany(mappedBy = "preRegisteredUsers4Zone", fetch = FetchType.EAGER)
     private List<Zones> preRegisteredZones;
 
-//@JsonIgnore
+
     @ManyToMany(mappedBy = "preRegisteredUsers4Event", fetch = FetchType.EAGER)
     private List<Event> preRegisteredEvents;
+
 
     @ManyToMany(mappedBy = "winnerList", fetch = FetchType.EAGER)
     private List<Zones> zonesWon;
 
-/*
+
     @OneToMany(mappedBy = "forUser",
                cascade = CascadeType.ALL,
                fetch = FetchType.EAGER)
     private List<Ticket> ticketsBought;
-*/
-    List<Integer> ticketsBought;
+
+    //List<Integer> ticketsBought;
 
     // Below are all the methods that need to be implemented for Spring Security to actually be able to authorize this User:
 

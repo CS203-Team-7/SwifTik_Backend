@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.swiftyticket.exceptions.EventNotFoundException;
+import com.swiftyticket.exceptions.PurchaseException;
 import com.swiftyticket.exceptions.TicketNotFoundException;
 import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.exceptions.ZoneNotFoundException;
@@ -43,7 +43,7 @@ public class TicketServiceImpl implements TicketService {
     public Ticket getTicket(Integer id) {
         return ticketRepo.findById(id).map(ticket -> {
             return ticket;
-        }).orElse(null);
+        }).orElseThrow( () -> new TicketNotFoundException(id) );
     }
 
     @Override
@@ -62,14 +62,14 @@ public class TicketServiceImpl implements TicketService {
         if( !( purchase4Zone.getWinnerList().contains(purchasingUser) ) ){
             log.info("user tried to purchase ticket for zone they didn't win. get outta here!");
             //to do: throw exception!
-            return null;
+            throw new PurchaseException();
         }
         //if reach this part of the code, means the user is a winner, we can continue with the purchase.
         Ticket purchasedTicket = new Ticket(purchase4Zone, purchasingUser);
         ticketRepo.save(purchasedTicket);
         //assign to corresponding zone and user for the relationship
-        purchasingUser.getTicketsBought().add(purchasedTicket.getUserId());
-        purchase4Zone.getTicketList().add(purchasedTicket.getTicketId());
+        purchasingUser.getTicketsBought().add(purchasedTicket);
+        purchase4Zone.getTicketList().add(purchasedTicket);
 
         //reduce the amount of tickets available for purchase in that zone by 1.
         purchase4Zone.setTicketsLeft(purchase4Zone.getTicketsLeft()-1);

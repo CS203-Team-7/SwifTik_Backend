@@ -13,10 +13,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -32,31 +34,32 @@ public class Ticket {
     @Column(name = "zone_name")
     private String zonename;
 
-/*
+
     @JsonIgnore
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "zonet_id", nullable = false)
     private Zones forZone;
-*/
-    private Integer userId;
 
-/*
+    //private Integer zoneId;
+
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "usert_id", nullable = false)
     private User forUser;
-*/
-    private Integer zoneId;
+
+    //private Integer userId;
+    
 
     private String userEmail;
 
     @JsonIgnore
     public Ticket(Zones zone, User user){
 
-        //this.forZone = zone;
-        //this.forUser = user;
-        this.zoneId = zone.getZoneId();
-        this.userId = user.getUserId();
+        this.forZone = zone;
+        this.forUser = user;
+        //this.zoneId = zone.getZoneId();
+        //this.userId = user.getUserId();
 
 
         

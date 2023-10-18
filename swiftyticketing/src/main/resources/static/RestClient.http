@@ -198,7 +198,7 @@ Authorization: Bearer
 #user view existing zones in an event
 GET http://localhost:8080/events/1/zones
 Content-Type: application/json
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTc2MzY1MTcsImV4cCI6MTY5NzYzNzExN30.TZhM7OTAF6q5xqgOj7Hn-skSxOrQC5dwiWvMFU_Vcyc
 
 ###
 
@@ -432,7 +432,7 @@ Authorization: Bearer
 #user view existing zones in an event (show that it has been created)
 GET http://localhost:8080/events/1/zones
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTc2MzEzODUsImV4cCI6MTY5NzYzMTk4NX0.TAoHSSbAnqliPuZAcx9cvB9RkW1pbRoNc5fcaMV9YMs
+Authorization: Bearer 
 ###
 
 ###
@@ -541,7 +541,7 @@ Authorization: Bearer
 #user view events (can see that is has been created)
 GET http://localhost:8080/events
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTc2MzQxNzcsImV4cCI6MTY5NzYzNDc3N30.-bKl1iJf5_uqDM29vFAqD4PU1nPSfMlvZIQloCm-6XY
+Authorization: Bearer 
 ###
 
 ###
@@ -581,7 +581,7 @@ Authorization: Bearer
 #a winner tries to purchase a ticket
 POST http://localhost:8080/tickets/purchase/eventId=1,zoneId=1
 Content-Type: application/json
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTc2MzY1MTcsImV4cCI6MTY5NzYzNzExN30.TZhM7OTAF6q5xqgOj7Hn-skSxOrQC5dwiWvMFU_Vcyc
 
 ###
 
@@ -589,7 +589,7 @@ Authorization: Bearer
 #view all tickets
 GET http://localhost:8080/tickets
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTc2MzQxNzcsImV4cCI6MTY5NzYzNDc3N30.-bKl1iJf5_uqDM29vFAqD4PU1nPSfMlvZIQloCm-6XY
+Authorization: Bearer 
 
 ###
 

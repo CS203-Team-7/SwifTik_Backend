@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -82,13 +85,13 @@ public class Zones {
     @Column(name = "winning_users")
     private List<User> winnerList;
 
-/*
+
     @JsonIgnore
     @OneToMany(mappedBy = "forZone",
                cascade = CascadeType.ALL)
     private List<Ticket> ticketList;
-*/
-    private List<Integer> ticketList;
+
+    //private List<Integer> ticketList;
 
     @JsonIgnore
     public Zones(Integer zoneCapacity, String zoneName, Date date, double ticketPrice, Event event){
