@@ -1,5 +1,6 @@
 package com.swiftyticket.services.implementations;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.swiftyticket.exceptions.EventNotFoundException;
 import com.swiftyticket.exceptions.UserNotFoundException;
+import com.swiftyticket.exceptions.WrongZoneDateException;
 import com.swiftyticket.exceptions.ZoneNotFoundException;
 
 
@@ -31,6 +33,12 @@ public class ZoneServiceImpl implements ZoneService {
     private final EventRepository eventRepository;
 
     public Zones addZone(ZoneRequest zoneReq, Event event){
+        //check if event has a date for the zone's date. If event does not have a date for that zone, throw an error (wrong date!)
+        if( !(event.getDates().contains(zoneReq.getZoneDate())) ){
+            log.info("admin tried to create a zone with a date it's corresponding event does not have!");
+            throw new WrongZoneDateException(event, zoneReq.getZoneDate());
+        }
+
         Zones newZone = new Zones(zoneReq.getZoneCapacity(), zoneReq.getZoneName(), zoneReq.getZoneDate(), event);
         newZone = zoneRepository.save(newZone);
 
