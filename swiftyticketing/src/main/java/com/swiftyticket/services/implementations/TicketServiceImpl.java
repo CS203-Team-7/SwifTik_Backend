@@ -37,14 +37,6 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Ticket updateTicket(Integer id, Ticket newTicketInfo) {
-        return ticketRepo.findById(id).map(ticket -> {
-            ticket.setTicketPrice(newTicketInfo.getTicketPrice());
-            return ticketRepo.save(ticket);
-        }).orElse(null);
-    }
-
-    @Override
     public void deleteTicket(Integer id) {
         Optional<Ticket> t = ticketRepo.findById(id);
         if (t == null) throw new TicketNotFoundException(id);

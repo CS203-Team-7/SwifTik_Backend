@@ -47,13 +47,6 @@ public class TicketController {
     public Ticket addTicket(@RequestBody Ticket ticket){
         return ticketService.addTicket(ticket);
     }
-    
-    @PutMapping("/tickets/{id}")
-    public Ticket updateTicket(@PathVariable Integer id, @RequestBody Ticket newTicket) throws TicketNotFoundException {
-        Ticket ticket = ticketService.updateTicket(id, newTicket);
-        if (ticket == null) throw new TicketNotFoundException(id);
-        return ticket;
-    }
 
     @DeleteMapping("/tickets/{id}")
     public String deleteTicket(@PathVariable Integer id) {
