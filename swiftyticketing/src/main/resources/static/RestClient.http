@@ -198,7 +198,7 @@ Authorization: Bearer
 #user view existing zones in an event
 GET http://localhost:8080/events/1/zones
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTc2MzY1MTcsImV4cCI6MTY5NzYzNzExN30.TZhM7OTAF6q5xqgOj7Hn-skSxOrQC5dwiWvMFU_Vcyc
+Authorization: Bearer 
 
 ###
 
@@ -571,7 +571,7 @@ Authorization: Bearer
 
 ###
 #a non-winner tries to purchase a ticket
-POST http://localhost:8080/users//tickets/purchase/eventId=1,zoneId=2
+POST http://localhost:8080/tickets/purchase/eventId=1,zoneId=2
 Content-Type: application/json
 Authorization: Bearer 
 
@@ -581,7 +581,7 @@ Authorization: Bearer
 #a winner tries to purchase a ticket
 POST http://localhost:8080/tickets/purchase/eventId=1,zoneId=1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTc2MzY1MTcsImV4cCI6MTY5NzYzNzExN30.TZhM7OTAF6q5xqgOj7Hn-skSxOrQC5dwiWvMFU_Vcyc
+Authorization: Bearer 
 
 ###
 

@@ -48,6 +48,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> EventClosedException(EventClosedException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
+    
+    @ExceptionHandler(PurchaseException.class)
+    public ResponseEntity<Object> PurchaseException(PurchaseException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(TicketNotFoundException.class)
+    public ResponseEntity<Object> TicketNotFoundException(TicketNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EventNotFoundException.class)
+    public ResponseEntity<Object> EventNotFoundException(EventNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
     //Will add exception handler for payment later
 }
