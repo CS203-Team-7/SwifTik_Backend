@@ -31,7 +31,7 @@ public class ZoneServiceImpl implements ZoneService {
     private final EventRepository eventRepository;
 
     public Zones addZone(ZoneRequest zoneReq, Event event){
-        Zones newZone = new Zones(zoneReq.getZoneCapacity(), zoneReq.getZoneName(), event);
+        Zones newZone = new Zones(zoneReq.getZoneCapacity(), zoneReq.getZoneName(), zoneReq.getZoneDate(), event);
         newZone = zoneRepository.save(newZone);
 
         // Add this zone to the event it belongs to

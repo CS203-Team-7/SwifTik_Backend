@@ -1,6 +1,7 @@
 package com.swiftyticket.models;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -38,6 +39,10 @@ public class Zones {
     @Column(name = "zone_capacity")
     private Integer zoneCapacity;
 
+    @NonNull
+    @Column(name = "zone_date")
+    private Date zoneDate;
+
     @Column(name = "tickets_left")
     private Integer ticketsLeft;    
 
@@ -74,10 +79,11 @@ public class Zones {
     private List<User> winnerList;
 
     @JsonIgnore
-    public Zones(Integer zoneCapacity, String zoneName, Event event){
+    public Zones(Integer zoneCapacity, String zoneName, Date date, Event event){
         this.zoneCapacity = zoneCapacity;
         this.zoneName = zoneName;
         this.event = event;
+        this.zoneDate = date;
         
         this.ticketsLeft = zoneCapacity;
         this.winnerList = new ArrayList<>();
