@@ -11,6 +11,7 @@ import com.swiftyticket.models.User;
 import com.swiftyticket.repositories.UserRepository;
 import com.swiftyticket.services.UserService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public List<User> getAllUsers() {
         List<User> usersList = userRepository.findAll();
         if(usersList.isEmpty()) throw new UserNotFoundException("No users found");

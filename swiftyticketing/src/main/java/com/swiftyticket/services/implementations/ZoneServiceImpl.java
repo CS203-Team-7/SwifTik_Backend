@@ -1,5 +1,6 @@
 package com.swiftyticket.services.implementations;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,8 +17,11 @@ import com.swiftyticket.services.ZoneService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.swiftyticket.exceptions.AlreadyPreRegisteredException;
+import com.swiftyticket.exceptions.EventClosedException;
 import com.swiftyticket.exceptions.EventNotFoundException;
 import com.swiftyticket.exceptions.UserNotFoundException;
+import com.swiftyticket.exceptions.WrongZoneDateException;
 import com.swiftyticket.exceptions.ZoneNotFoundException;
 
 
@@ -31,7 +35,13 @@ public class ZoneServiceImpl implements ZoneService {
     private final EventRepository eventRepository;
 
     public Zones addZone(ZoneRequest zoneReq, Event event){
-        Zones newZone = new Zones(zoneReq.getZoneCapacity(), zoneReq.getZoneName(), event);
+        //check if event has a date for the zone's date. If event does not have a date for that zone, throw an error (wrong date!)
+        if( !(event.getDates().contains(zoneReq.getZoneDate())) ){
+            log.info("admin tried to create a zone with a date it's corresponding event does not have!");
+            throw new WrongZoneDateException(event, zoneReq.getZoneDate());
+        }
+
+        Zones newZone = new Zones(zoneReq.getZoneCapacity(), zoneReq.getZoneName(), zoneReq.getZoneDate(), zoneReq.getTicketPrice(), event);
         newZone = zoneRepository.save(newZone);
 
         // Add this zone to the event it belongs to
@@ -44,23 +54,25 @@ public class ZoneServiceImpl implements ZoneService {
         return event.getZoneList();
     }
 
-    public String joinRaffle(String bearerToken, Integer eventId, String zoneName){
+    public String joinRaffle(String bearerToken, Integer eventId, Integer zoneID){
         String jwtToken = bearerToken.substring(7);
         String userEmail = jwtService.extractUserName(jwtToken);
-        // get Event and user respectively. get Zone by using the zone namd and corresponding name.
-        // zone name across events may be not unique, but with same events are unique.
+        // get Event and user respectively.
         Event joinEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         User joiningUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException("Invalid user / token!"));
-        Zones joinZone = zoneRepository.findByZoneNameAndEvent(zoneName, joinEvent).orElseThrow(() -> new ZoneNotFoundException("Invalid zone!"));
+        //we search for zone using both event and zoneid to make sure the zone is in the specified event.
+        Zones joinZone = zoneRepository.findByZoneIdAndEvent(zoneID, joinEvent).orElseThrow(() -> new ZoneNotFoundException("Invalid zone for " + joinEvent.getEventName()));
 
         if(!joinEvent.getOpenStatus()){
             log.info("User tried to join when pre-registration was closed, Denied.");
-            return "The Pre-egistration has not yet opened, or Pre-registration has closed, join us next time!";
+            //return "The Pre-egistration has not yet opened, or Pre-registration has closed, join us next time!";
+            throw new EventClosedException();
         }
 
         if(joinEvent.getPreRegisteredUsers4Event().contains(joiningUser)){
             log.info("User tried to join when already pre-registrated, Denied.");
-            return "You have already pre-registered for this event!";
+            //return "You have already pre-registered for this event!";
+            throw new AlreadyPreRegisteredException(joinEvent);
             
         }
 
@@ -79,7 +91,7 @@ public class ZoneServiceImpl implements ZoneService {
         userRepository.save(joiningUser);
         zoneRepository.save(joinZone);
 
-        return "Successfully joined the raffle for: " + zoneName;
+        return "Successfully joined the raffle for: " + joinZone.getZoneName() + " on " + joinZone.getZoneDate() + " for " + joinEvent.getEventName();
         
     }
 

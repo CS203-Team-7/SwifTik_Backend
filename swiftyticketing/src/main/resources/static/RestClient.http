@@ -26,8 +26,10 @@ Content-Type: application/json
 Authorization: Bearer 
 
 {
-    "zoneCapacity": 1,
-    "zoneName": "testZone"
+    "zoneCapacity": 3,
+    "zoneName": "testZone",
+    "zoneDate": "2001-05-06",
+    "ticketPrice": 450
 }
 ###
 
@@ -40,7 +42,9 @@ Authorization: Bearer
 
 {
     "zoneCapacity": 10,
-    "zoneName": "testZone2"
+    "zoneName": "testZone2",
+    "zoneDate": "2001-05-06",
+    "ticketPrice": 350
 }
 ###
 
@@ -51,6 +55,16 @@ Content-Type: application/json
 Authorization: Bearer 
 
 ###
+
+###
+#admin closes the pre-registration for an event.
+PUT http://localhost:8080/events/1/close
+Content-Type: application/json
+Authorization: Bearer 
+
+###
+
+
 #admin creates another event
 POST http://localhost:8080/events/create
 Content-Type: application/json
@@ -73,7 +87,8 @@ Authorization: Bearer
 
 {
     "zoneCapacity": 10,
-    "zoneName": "testZonez"
+    "zoneName": "testZonez",
+    "zoneDate": "2001-05-06"
 }
 ###
 
@@ -189,7 +204,7 @@ Authorization: Bearer
 
 ###
 #user tries to pre-register for a zone when it hasn't been opened.
-PUT http://localhost:8080/events/1/testZone/preRegister
+PUT http://localhost:8080/events/1/zone=1/preRegister
 Content-Type: application/json
 Authorization: Bearer 
 
@@ -205,7 +220,7 @@ Authorization: Bearer
 
 ###
 #user tries to pre-register for a zone when after it has opened.
-PUT http://localhost:8080/events/1/testZone/preRegister
+PUT http://localhost:8080/events/1/zone=1/preRegister
 Content-Type: application/json
 Authorization: Bearer 
 
@@ -213,7 +228,7 @@ Authorization: Bearer
 
 ###
 #user tries to pre-register for another zone when they already joined one, for the same event.
-PUT http://localhost:8080/events/1/testZone2/preRegister
+PUT http://localhost:8080/events/1/zone=2/preRegister
 Content-Type: application/json
 Authorization: Bearer 
 
@@ -417,7 +432,7 @@ Authorization: Bearer
 #user view existing zones in an event (show that it has been created)
 GET http://localhost:8080/events/1/zones
 Content-Type: application/json
-Authorization: Bearer
+Authorization: Bearer 
 ###
 
 ###
@@ -550,7 +565,31 @@ Authorization: Bearer
 #admin view all users who have signed up
 GET http://localhost:8080/users/all
 Content-Type: application/json
-Authorization: Bearer
+Authorization: Bearer 
+
+###
+
+###
+#a non-winner tries to purchase a ticket
+POST http://localhost:8080/tickets/purchase/eventId=1,zoneId=2
+Content-Type: application/json
+Authorization: Bearer 
+
+###
+
+###
+#a winner tries to purchase a ticket
+POST http://localhost:8080/tickets/purchase/eventId=1,zoneId=1
+Content-Type: application/json
+Authorization: Bearer 
+
+###
+
+###
+#view all tickets
+GET http://localhost:8080/tickets
+Content-Type: application/json
+Authorization: Bearer 
 
 ###
 
