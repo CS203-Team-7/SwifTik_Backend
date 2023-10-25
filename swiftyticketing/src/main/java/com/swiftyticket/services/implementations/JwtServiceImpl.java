@@ -31,12 +31,20 @@ public class JwtServiceImpl implements JwtService {
     // Logger for debugging:
     private final Logger logger = Logger.getLogger(JwtServiceImpl.class.getName());
 
-    // Method to extract the key from the signing key:
+    /**
+     * Returns the signing key for the JWT token.
+     * @return Key -> Signing key for the JWT token
+     */
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSigningKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    /**
+     * Generates a unique JWT token for the user with the specified expiry date.
+     * @param user -> User object containing the user's details
+     * @return String token -> JWT token for the user
+     */
     public String generateToken(User user) {
         JwtBuilder token = Jwts.builder()
                 .setSubject(user.getEmail())
@@ -49,6 +57,11 @@ public class JwtServiceImpl implements JwtService {
         return token.compact();
     }
 
+    /**
+     * Extracts the user's email from the JWT token.
+     * @param token -> String JWT token
+     * @return String email -> User's email
+     */
     public String extractUserName(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -58,6 +71,11 @@ public class JwtServiceImpl implements JwtService {
         return claims.getSubject();
     }
 
+    /**
+     * Extracts the expiry date from the JWT token. This is to help validate the token.
+     * @param token -> String JWT token
+     * @return LocalDateTime expiry date -> Expiry date of the JWT token
+     */
     public LocalDateTime getExpirationDate(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -67,6 +85,18 @@ public class JwtServiceImpl implements JwtService {
         return claims.getExpiration().toInstant().atZone(java.time.ZoneOffset.UTC).toLocalDateTime();
     }
 
+    /**
+     * Validates the JWT token by checking certain requirements.
+     * @param token -> String JWT token
+     * @throws SignatureException -> if the JWT token signature is invalid
+     * @throws MalformedJwtException -> if the JWT token is malformed
+     * @throws ExpiredJwtException -> if the JWT token is expired
+     * @throws UnsupportedJwtException -> if the JWT token is unsupported
+     * @throws IllegalArgumentException -> if the JWT claims string is empty
+     * @throws NullPointerException -> if the JWT token is null
+     * @throws IllegalArgumentException -> if the JWT token is empty
+     * @return boolean isValid -> true if the JWT token is valid, false otherwise
+     */
     public boolean isTokenValid(String token) {
         try {
             Jwts.parserBuilder()

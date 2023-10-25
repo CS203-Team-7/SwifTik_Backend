@@ -32,18 +32,30 @@ public class SmsServiceImpl {
 	private TwilioConfig twilioConfig;
 	Map<String, String> otpMap = new HashMap<>();
 
+	/**
+	 * This method is called when the bean is created, and it initializes the Twilio
+	 * account with the account SID and auth token.
+	 */
 	@PostConstruct
 	public void setup() {
 		Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
 	}
 
-	// we use decimal format to makesure the generated number is always 6 digits
-	// (will front fill 0's)
+	/**
+	 * This method generates a random 6-digit OTP for the user.
+	 * @return String otp -> 6-digit OTP
+	 */
 	public String generateOTP() {
 		return new DecimalFormat("000000")
 				.format(new SecureRandom().nextInt(999999));
 	}
 
+	/**
+	 * This method sends an SMS to the user's phone number with the OTP generated.
+	 * @param otpRequest -> OtpRequest object containing the user's email and phone number
+	 * @throws Exception -> if the SMS fails to send
+	 * @return OtpResponseDto -> OtpResponseDto object containing the status of the SMS
+	 */
 	public OtpResponseDto sendSMS(OtpRequest otpRequest) {
 		OtpResponseDto otpResponseDto = null;
 		try {
@@ -68,12 +80,16 @@ public class SmsServiceImpl {
 			otpMap.put(otpRequest.getEmail(), otp);
 			otpResponseDto = new OtpResponseDto(OtpStatus.DELIVERED, otpMessage);
 		} catch (Exception e) {
-			e.printStackTrace();
 			otpResponseDto = new OtpResponseDto(OtpStatus.FAILED, e.getMessage());
 		}
 		return otpResponseDto;
 	}
 
+	/**
+	 * This method checks if the OTP entered by the user is correct.
+	 * @param otpValidationRequest -> OtpValidationRequest object containing the user's email and OTP
+	 * @return String message -> message to indicate success or failure
+	 */
 	public String validateOtp(OtpValidationRequest otpValidationRequest) {
 		// get corresponding given otp for username trying to verify
 		String username = otpValidationRequest.getEmail();
@@ -90,5 +106,4 @@ public class SmsServiceImpl {
 			return "OTP is invalid! Please try again, or request for a new OTP";
 		}
 	}
-
 }

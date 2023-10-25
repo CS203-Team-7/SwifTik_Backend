@@ -21,6 +21,10 @@ public class UserServiceImpl implements UserService {
     // We are going to need the repository methods here:
     private final UserRepository userRepository;
 
+    /**
+     * Returns a list of all users in the DB.
+     * @return List<User>
+     */
     @Override
     @Transactional
     public List<User> getAllUsers() {
@@ -29,12 +33,25 @@ public class UserServiceImpl implements UserService {
         else return usersList;
     }
 
+    /**
+     * Returns a single user based on the user email.
+     * @param email -> String user email (Unique identifier)
+     * @throws UserNotFoundException -> if the user email does not exist in the DB
+     * @return User -> User object with the specified email
+     */
     @Override
     public User getUserByEmail(String email){
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
     }
 
+    /**
+     * Updates the existing user with the new user details.
+     * @param email -> String user email (Unique identifier)
+     * @param newUserInfo -> User object containing the new user details
+     * @throws UserNotFoundException -> if the user email does not exist in the DB
+     * @return -> User object with the updated details
+     */
     @Override
     public User updateUser(String email, User newUserInfo) {
         return userRepository.findByEmail(email).map(user -> {
@@ -46,12 +63,21 @@ public class UserServiceImpl implements UserService {
         }).orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
     }
 
+    /**
+     * Deletes the user with the specified email.
+     * @param email -> String user email (Unique identifier)
+     */
     @Override
     public void deleteUser(String email){
         userRepository.deleteByEmail(email);
     }
 
-    // Also implement the UserDetailsService for Spring security:
+    /**
+     * This function is to satisfy the UserDetailsService interface.
+     * It is used by the Spring Security framework to load the user details from the DB.
+     * @throws UserNotFoundException -> if the user email does not exist in the DB
+     * @return UserDetailsService -> UserDetailsService object containing the user details
+     */
     @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -59,9 +85,8 @@ public class UserServiceImpl implements UserService {
             @Override
             public UserDetails loadUserByUsername(String username) {
                 return userRepository.findByEmail(username)
-                                        .orElseThrow(() -> new UserNotFoundException("User does not exist"));
+                        .orElseThrow(() -> new UserNotFoundException("User does not exist"));
             }
         };
     }
-    
 }

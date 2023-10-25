@@ -34,11 +34,20 @@ public class TicketServiceImpl implements TicketService {
     private final EventRepository eventRepository;
     private final ZoneRepository zoneRepository;
 
+    /**
+     * Returns a list of all tickets in the DB irrespective of zones.
+     * @return List<Ticket>
+     */
     @Override
     public List<Ticket> listTickets() {
         return ticketRepo.findAll();
     }
 
+    /**
+     * Returns a single ticket based on the ticket ID.
+     * @param id -> Integer ticket ID (Unique identifier)
+     * @return Ticket -> Ticket object with the specified ID
+     */
     @Override
     public Ticket getTicket(Integer id) {
         return ticketRepo.findById(id).map(ticket -> {
@@ -46,6 +55,17 @@ public class TicketServiceImpl implements TicketService {
         }).orElseThrow( () -> new TicketNotFoundException(id) );
     }
 
+    /**
+     * This function is to allow a user to purchase a ticket for an event.
+     * @param bearerToken -> the token of the user who's trying to purchase the ticket
+     * @param eventId -> the event id of the zone the user is trying to purchase the ticket for
+     * @param zoneId -> the zone id of the zone the user is trying to purchase the ticket for
+     * @throws PurchaseException -> if the user is not a winner for the zone
+     * @throws EventNotFoundException -> if the event ID does not exist in the DB
+     * @throws UserNotFoundException -> if the user does not exist in the DB
+     * @throws ZoneNotFoundException -> if the zone ID does not exist in the DB
+     * @return Ticket -> the ticket that was purchased
+     */
     @Override
     public Ticket purchaseTicket(String bearerToken, Integer eventId, Integer zoneId) {
         //get event and corresponding zones. 
@@ -59,7 +79,7 @@ public class TicketServiceImpl implements TicketService {
 
         //create the ticket object, give it to respective zone & user.
         //begin by checking if the user who's trying to buy the ticket is a winner for the zone
-        if( !( purchase4Zone.getWinnerList().contains(purchasingUser) ) ){
+        if (!(purchase4Zone.getWinnerList().contains(purchasingUser))) {
             log.info("user tried to purchase ticket for zone they didn't win. get outta here!");
             //to do: throw exception!
             throw new PurchaseException();
@@ -72,7 +92,7 @@ public class TicketServiceImpl implements TicketService {
         purchase4Zone.getTicketList().add(purchasedTicket);
 
         //reduce the amount of tickets available for purchase in that zone by 1.
-        purchase4Zone.setTicketsLeft(purchase4Zone.getTicketsLeft()-1);
+        purchase4Zone.setTicketsLeft(purchase4Zone.getTicketsLeft() - 1);
 
         //now that they have purchased a ticket, remove them from the winnerList for zone and zonesWon for user.
         //this is to prevent them from purchasing another ticket again.
@@ -87,6 +107,11 @@ public class TicketServiceImpl implements TicketService {
         return purchasedTicket;
     }
 
+    /**
+     * Deletes a ticket from the DB based on the ticket ID.
+     * @param id -> Integer ticket ID (Unique identifier)
+     * @throws TicketNotFoundException -> if the ticket ID does not exist in the DB
+     */
     @Override
     public void deleteTicket(Integer id) {
         Optional<Ticket> t = ticketRepo.findById(id);

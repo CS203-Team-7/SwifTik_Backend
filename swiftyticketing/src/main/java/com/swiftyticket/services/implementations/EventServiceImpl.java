@@ -24,11 +24,21 @@ public class EventServiceImpl implements EventService{
         this.zoneService = zoneService;
     }
 
+    /**
+     * Returns a list of all events in the DB.
+     * @return List<Event>
+     */
     @Override
     public List<Event> listEvents() {
         return eventRepository.findAll();
     }
 
+    /**
+     * Returns a single event based on the event ID.
+     * @param id -> Integer event ID (Unique identifier)
+     * @throws EventNotFoundException -> if the event ID does not exist in the DB
+     * @return Event -> Event object with the specified ID
+     */
     // Consider adding get methods by date, artist, genre. KIV for future business logic
     @Override
     public Event getEvent(Integer id) {
@@ -37,6 +47,11 @@ public class EventServiceImpl implements EventService{
         }).orElseThrow(() -> new EventNotFoundException(id));
     }
 
+    /**
+     * Adds a new event to the DB from the event details provided.
+     * @param event -> Event object containing the event details
+     * @return Event -> Event object that was added to the DB
+     */
     @Override 
     public Event addEvent(Event event) {
         event.setZoneList(new ArrayList<>());
@@ -44,6 +59,13 @@ public class EventServiceImpl implements EventService{
         return eventRepository.save(event);
     }
 
+    /**
+     * Updates an existing event in the DB with the new event details provided.
+     * @param id -> Integer event ID (Unique identifier)
+     * @param newEventInfo -> Event object containing the (updated) event details
+     * @throws EventNotFoundException -> if the event ID does not exist in the DB
+     * @return Event -> Event object that was updated in the DB
+     */
     @Override
     public Event updateEvent(Integer id, Event newEventInfo) {
         return eventRepository.findById(id).map(event -> {
@@ -56,6 +78,11 @@ public class EventServiceImpl implements EventService{
         }).orElseThrow(() -> new EventNotFoundException(id));
     }
 
+    /**
+     * Deletes an existing event from the DB.
+     * @param id -> Integer event ID (Unique identifier)
+     * @throws EventNotFoundException -> if the event ID does not exist in the DB
+     */
     @Override
     public void deleteEvent(Integer id) {
         Optional<Event> e = eventRepository.findById(id);
@@ -65,6 +92,11 @@ public class EventServiceImpl implements EventService{
         eventRepository.deleteById(event.getEventId());
     }
 
+    /**
+     * Opens up an event so that users can pre-register for zones in the event.
+     * @param id -> Integer event ID (Unique identifier)
+     * @throws EventNotFoundException -> if the event ID does not exist in the DB
+     */
     public void openEvent(Integer id){
         Optional<Event> e = eventRepository.findById(id);
         if (e == null) throw new EventNotFoundException(id);
@@ -74,6 +106,11 @@ public class EventServiceImpl implements EventService{
         eventRepository.save(event);
     }
 
+    /**
+     * Closes an event so that users can no more pre-register for zones in the event.
+     * @param id -> Integer event ID (Unique identifier)
+     * @throws EventNotFoundException -> if the event ID does not exist in the DB
+     */
     public void closeEvent(Integer id){
         Optional<Event> e = eventRepository.findById(id);
         if (e == null) throw new EventNotFoundException(id);
@@ -83,6 +120,12 @@ public class EventServiceImpl implements EventService{
         eventRepository.save(event);
     }
 
+    /**
+     * This function is to perform the raffling of each zone in the event once pre-registration is closed.
+     * @param id -> Integer event ID (Unique identifier)
+     * @throws EventNotFoundException -> if the event ID does not exist in the DB
+     * @throws OpenRegistrationRaffleException -> if the event is still open for registration
+     */
     public void raffle(Integer id){
         Optional<Event> e = eventRepository.findById(id);
         if (e == null) throw new EventNotFoundException(id);
