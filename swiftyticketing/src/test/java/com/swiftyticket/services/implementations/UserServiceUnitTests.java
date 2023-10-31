@@ -27,35 +27,27 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {UserServiceImpl.class})
 @ExtendWith(SpringExtension.class)
-class UserServiceImplDiffblueTest {
+class UserServiceUnitTests {
     @MockBean
     private UserRepository userRepository;
 
     @Autowired
     private UserServiceImpl userServiceImpl;
 
-    /**
-     * Method under test: {@link UserServiceImpl#getAllUsers()}
-     */
     @Test
-    void testGetAllUsers() {
+    void getAllUsers_ReturnEmptyList_ThrowsException() {
         when(userRepository.findAll()).thenReturn(new ArrayList<>());
         assertThrows(UserNotFoundException.class, () -> userServiceImpl.getAllUsers());
         verify(userRepository).findAll();
     }
 
-    /**
-     * Method under test: {@link UserServiceImpl#getAllUsers()}
-     */
     @Test
-    void testGetAllUsers2() {
+    void getAllUsers_ReturnList_Successful() {
         User user = new User();
         user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
         user.setEmail("jane.doe@example.org");
@@ -78,21 +70,15 @@ class UserServiceImplDiffblueTest {
         assertSame(userList, actualAllUsers);
     }
 
-    /**
-     * Method under test: {@link UserServiceImpl#getAllUsers()}
-     */
     @Test
-    void testGetAllUsers3() {
+    void getAllUsers_UserNotFound_ThrowsException() {
         when(userRepository.findAll()).thenThrow(new UserNotFoundException("An error occurred"));
         assertThrows(UserNotFoundException.class, () -> userServiceImpl.getAllUsers());
         verify(userRepository).findAll();
     }
 
-    /**
-     * Method under test: {@link UserServiceImpl#getUserByEmail(String)}
-     */
     @Test
-    void testGetUserByEmail() {
+    void getUserByEmail_ValidEmail_Successful() {
         User user = new User();
         user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
         user.setEmail("jane.doe@example.org");
@@ -112,30 +98,21 @@ class UserServiceImplDiffblueTest {
         assertSame(user, actualUserByEmail);
     }
 
-    /**
-     * Method under test: {@link UserServiceImpl#getUserByEmail(String)}
-     */
     @Test
-    void testGetUserByEmail2() {
+    void getUserByEmail_NullEmail_ThrowsException() {
         Optional<User> emptyResult = Optional.empty();
         when(userRepository.findByEmail(Mockito.<String>any())).thenReturn(emptyResult);
         assertThrows(UserNotFoundException.class, () -> userServiceImpl.getUserByEmail("jane.doe@example.org"));
         verify(userRepository).findByEmail(Mockito.<String>any());
     }
 
-    /**
-     * Method under test: {@link UserServiceImpl#getUserByEmail(String)}
-     */
     @Test
-    void testGetUserByEmail3() {
+    void getUserByEmail_UserNotFound_ThrowsException() {
         when(userRepository.findByEmail(Mockito.<String>any())).thenThrow(new UserNotFoundException("An error occurred"));
         assertThrows(UserNotFoundException.class, () -> userServiceImpl.getUserByEmail("jane.doe@example.org"));
         verify(userRepository).findByEmail(Mockito.<String>any());
     }
 
-    /**
-     * Method under test: {@link UserServiceImpl#updateUser(String, User)}
-     */
     @Test
     void testUpdateUser() {
         User user = new User();
@@ -185,9 +162,6 @@ class UserServiceImplDiffblueTest {
         assertSame(user2, actualUpdateUserResult);
     }
 
-    /**
-     * Method under test: {@link UserServiceImpl#updateUser(String, User)}
-     */
     @Test
     void testUpdateUser2() {
         User user = new User();
@@ -223,9 +197,6 @@ class UserServiceImplDiffblueTest {
         verify(userRepository).save(Mockito.<User>any());
     }
 
-    /**
-     * Method under test: {@link UserServiceImpl#updateUser(String, User)}
-     */
     @Test
     void testUpdateUser3() {
         Optional<User> emptyResult = Optional.empty();
@@ -247,9 +218,6 @@ class UserServiceImplDiffblueTest {
         verify(userRepository).findByEmail(Mockito.<String>any());
     }
 
-    /**
-     * Method under test: {@link UserServiceImpl#deleteUser(String)}
-     */
     @Test
     void testDeleteUser() {
         doNothing().when(userRepository).deleteByEmail(Mockito.<String>any());
@@ -257,9 +225,6 @@ class UserServiceImplDiffblueTest {
         verify(userRepository).deleteByEmail(Mockito.<String>any());
     }
 
-    /**
-     * Method under test: {@link UserServiceImpl#deleteUser(String)}
-     */
     @Test
     void testDeleteUser2() {
         doThrow(new UserNotFoundException("An error occurred")).when(userRepository).deleteByEmail(Mockito.<String>any());
