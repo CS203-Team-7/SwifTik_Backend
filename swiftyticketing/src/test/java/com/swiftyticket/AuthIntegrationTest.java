@@ -1,6 +1,7 @@
 package com.swiftyticket;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.*;
@@ -24,6 +25,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.swiftyticket.dto.auth.AuthResponse;
 import com.swiftyticket.dto.auth.SignInRequest;
+import com.swiftyticket.dto.auth.SignUpRequest;
 import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.models.Role;
 import com.swiftyticket.models.User;
@@ -134,29 +136,57 @@ public class AuthIntegrationTest {
 
     @Test
     public void signup_Valid_ReturnOTPMessage() throws Exception{
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newUser@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-
-        //set the user's verified status to false.
-        User newUser = userRepo.findByEmail("newUser@email.com").orElseThrow(() -> new UserNotFoundException());
-        newUser.setVerified(false);
-        userRepo.save(newUser);
-        log.info("" + userRepo.findAll());
+        SignUpRequest signupRequest = new SignUpRequest();
+        signupRequest.setEmail("anotherUser@email.com");
+        signupRequest.setPassword("GoodPassword123!");
+        signupRequest.setDateOfBirth(new Date());
+        signupRequest.setPhoneNumber("+6582887066");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
 
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, headers);
-        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, Void.class
+        HttpEntity<SignUpRequest> entity = new HttpEntity<>(signupRequest, headers);
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/auth/signup"),
+                HttpMethod.POST, entity, String.class
             );
+        //get user to make sure that user was created successfully
+        User createdUser = userRepo.findByEmail("anotherUser@email.com").orElseThrow(() -> new UserNotFoundException());
             
-        assertEquals(401, responseEntity.getStatusCode().value());
+        assertEquals(201, responseEntity.getStatusCode().value());
+        assertEquals("Sign up successful, please check your phone for the OTP code.", responseEntity.getBody());
+        assertNotNull(createdUser);
+        assertFalse(createdUser.isVerified());
+        assertEquals(createdUser.getRole(), Role.USER);
     }
 
+    @Test
+    public void signup_WeakPassword_ReturnOTPMessage() throws Exception{
+        SignUpRequest signupRequest = new SignUpRequest();
+        signupRequest.setEmail("anotherUser@email.com");
+        signupRequest.setPassword("GoodPassword123!");
+        signupRequest.setDateOfBirth(new Date());
+        signupRequest.setPhoneNumber("+6582887066");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+
+        HttpEntity<SignUpRequest> entity = new HttpEntity<>(signupRequest, headers);
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/auth/signup"),
+                HttpMethod.POST, entity, String.class
+            );
+        //get user to make sure that user was created successfully
+        User createdUser = userRepo.findByEmail("anotherUser@email.com").orElseThrow(() -> new UserNotFoundException());
+            
+        assertEquals(201, responseEntity.getStatusCode().value());
+        assertEquals("Sign up successful, please check your phone for the OTP code.", responseEntity.getBody());
+        assertNotNull(createdUser);
+        assertFalse(createdUser.isVerified());
+        assertEquals(createdUser.getRole(), Role.USER);
+    }
 
     
 }
