@@ -87,6 +87,9 @@ public class AuthIntegrationTest {
         assertNotNull(responseEntity.getBody().getToken());
     }
 
-
+    @Test
+    public void login_Invalid_ReturnWrongCredentialsException(){
+        
+    }
     
 }

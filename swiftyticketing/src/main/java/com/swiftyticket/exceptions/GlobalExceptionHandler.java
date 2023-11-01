@@ -64,5 +64,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(WrongCredentialsException.class)
+    public ResponseEntity<Object> WrongCredentialsException(WrongCredentialsException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
     //Will add exception handler for payment later
 }
