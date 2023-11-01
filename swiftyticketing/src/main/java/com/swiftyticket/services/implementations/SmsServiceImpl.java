@@ -77,7 +77,7 @@ public class SmsServiceImpl {
 			// store in map with username as key, and save response in the DTO so we can
 			// access it later back in the controller.
 			otpMap.put(otpRequest.getEmail(), otp);
-			otpResponseDto = new OtpResponseDto(OtpStatus.DELIVERED, otpMessage);
+			otpResponseDto = new OtpResponseDto(OtpStatus.DELIVERED, "OTP sent successfully, please check your phone.");
 		} catch (Exception e) {
 			e.printStackTrace();
 			otpResponseDto = new OtpResponseDto(OtpStatus.FAILED, "Either invalid phone number, or email and phone numbers don't match.");

@@ -263,8 +263,33 @@ public class AuthIntegrationTest {
         assertFalse(createdUser.isVerified());
     }
 
+/*
+    @Test
+    public void requestNewOTP_Invalid_Return201() throws Exception{
+        OtpRequest req = new OtpRequest();
+        req.setEmail("nopeUser@email.com");
+        req.setPhoneNumber("+6582887066");
 
-    //re-request OTP (successful)
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+
+        HttpEntity<OtpRequest> entity = new HttpEntity<>(req, headers);
+        ResponseEntity<OtpStatus> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/otp/send"),
+                HttpMethod.POST, entity, OtpStatus.class
+            );
+
+        //make sure user's validation still false.
+        User createdUser = userRepo.findByEmail("notVerifiedUser@email.com").orElseThrow(() -> new UserNotFoundException());
+            
+        assertEquals(200, responseEntity.getStatusCode().value());
+        assertEquals(OtpStatus.FAILED, responseEntity.getBody());
+        assertFalse(createdUser.isVerified());
+    }
+*/
+
+
     //re-request OTP (invalid phone number /+ email doesn't match phone number)
 
 
