@@ -56,9 +56,11 @@ public class SmsServiceImpl {
 
 			//check if email and phone numbers match. If not, throw exception. 
 			User toSend = userRepo.findByEmail(otpRequest.getEmail()).orElseThrow(() -> new UserNotFoundException());
-			if(toSend.getPhoneNumber() != otpRequest.getPhoneNumber()){
+
+			if( !( toSend.getPhoneNumber().equals(otpRequest.getPhoneNumber()) )){
 				throw new RuntimeException("phone numbers don't match");
 			}
+			
 
 			// generate OTP&message using the earlier method
 			String otp = generateOTP();

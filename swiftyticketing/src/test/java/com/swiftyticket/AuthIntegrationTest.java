@@ -27,6 +27,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.swiftyticket.dto.auth.AuthResponse;
 import com.swiftyticket.dto.auth.SignInRequest;
 import com.swiftyticket.dto.auth.SignUpRequest;
+import com.swiftyticket.dto.otp.OtpRequest;
+import com.swiftyticket.dto.otp.OtpValidationRequest;
 import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.models.Role;
 import com.swiftyticket.models.User;
@@ -54,8 +56,11 @@ public class AuthIntegrationTest {
     void createUsers(){
         String encodedPassowrd = new BCryptPasswordEncoder().encode("GoodPassword123!");
 
-        User newUser = new User("newUser@email.com", encodedPassowrd, new Date(), "+6987662344", Role.USER, true);
+        User newUser = new User("newUser@email.com", encodedPassowrd, new Date(), "+6582887066", Role.USER, true);
         userRepo.save(newUser);
+
+        User unverifiedUser = new User("notVerifiedUser@email.com", encodedPassowrd, new Date(), "+6987662344", Role.USER, false);
+        userRepo.save(unverifiedUser);
 
         User newAdmin = new User("newAdmin@email.com", encodedPassowrd, new Date(), "+6887662344", Role.ADMIN, true);
         userRepo.save(newAdmin);
@@ -113,14 +118,8 @@ public class AuthIntegrationTest {
     @Test
     public void login_Unverified_ReturnAccountNotVerifiedException() throws Exception{
         SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newUser@email.com");
+        loginRequest.setEmail("notVerifiedUser@email.com");
         loginRequest.setPassword("GoodPassword123!");
-
-        //set the user's verified status to false.
-        User newUser = userRepo.findByEmail("newUser@email.com").orElseThrow(() -> new UserNotFoundException());
-        newUser.setVerified(false);
-        userRepo.save(newUser);
-        log.info("" + userRepo.findAll());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -188,5 +187,83 @@ public class AuthIntegrationTest {
         assert(createdUser.isEmpty());
     }
 
+    @Test
+    public void signup_DuplicateEmail_Return400() throws Exception{
+        SignUpRequest signupRequest = new SignUpRequest();
+        signupRequest.setEmail("newUser@email.com");
+        signupRequest.setPassword("GoodPassword123!");
+        signupRequest.setDateOfBirth(new Date());
+        signupRequest.setPhoneNumber("+6987662344");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+
+        HttpEntity<SignUpRequest> entity = new HttpEntity<>(signupRequest, headers);
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/auth/signup"),
+                HttpMethod.POST, entity, String.class
+            );
+
+        //make sure user wasn't created
+        Optional<User> createdUser = userRepo.findByEmail("anotherUser@email.com");
+            
+        assertEquals(400, responseEntity.getStatusCode().value());
+        assertEquals("This Email and/or Phone number is already in use!", responseEntity.getBody());
+        assert(createdUser.isEmpty());
+    }
+
+    @Test
+    public void OTPValidation_Wrong_ReturnMessage() throws Exception{
+        OtpValidationRequest req = new OtpValidationRequest();
+        req.setEmail("notVerifiedUser@email.com");
+        req.setOtpNumber("0");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+
+        HttpEntity<OtpValidationRequest> entity = new HttpEntity<>(req, headers);
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/otp/validate"),
+                HttpMethod.POST, entity, String.class
+            );
+
+        //make sure user's validation still false.
+        User createdUser = userRepo.findByEmail("notVerifiedUser@email.com").orElseThrow(() -> new UserNotFoundException());
+            
+        assertEquals(200, responseEntity.getStatusCode().value());
+        assertEquals("OTP is invalid! Please try again, or request for a new OTP", responseEntity.getBody());
+        assertFalse(createdUser.isVerified());
+    }
+
+/*
+    @Test
+    public void requestNewOTP_Valid_Return200() throws Exception{
+        OtpRequest req = new OtpRequest();
+        req.setEmail("newUser@email.com");
+        req.setPhoneNumber("+6582887066");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+
+        HttpEntity<OtpRequest> entity = new HttpEntity<>(req, headers);
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/otp/validate"),
+                HttpMethod.POST, entity, String.class
+            );
+
+        //make sure user's validation still false.
+        User createdUser = userRepo.findByEmail("notVerifiedUser@email.com").orElseThrow(() -> new UserNotFoundException());
+            
+        assertEquals(200, responseEntity.getStatusCode().value());
+        assertEquals("", responseEntity.getBody());
+        assertFalse(createdUser.isVerified());
+    }
+    //re-request OTP (successful)
+    //re-request OTP (invalid phone number /+ email doesn't match phone number)
+
+*/
     
 }
