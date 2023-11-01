@@ -12,6 +12,9 @@ import com.swiftyticket.dto.otp.OtpRequest;
 import com.swiftyticket.dto.otp.OtpResponseDto;
 import com.swiftyticket.dto.otp.OtpStatus;
 import com.swiftyticket.dto.otp.OtpValidationRequest;
+import com.swiftyticket.exceptions.UserNotFoundException;
+import com.swiftyticket.models.User;
+
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -51,6 +54,12 @@ public class SmsServiceImpl {
 			PhoneNumber to = new PhoneNumber(otpRequest.getPhoneNumber());// to
 			PhoneNumber from = new PhoneNumber(twilioConfig.getPhoneNumber()); // from
 
+			//check if email and phone numbers match. If not, throw exception. 
+			User toSend = userRepo.findByEmail(otpRequest.getEmail()).orElseThrow(() -> new UserNotFoundException());
+			if(toSend.getPhoneNumber() != otpRequest.getPhoneNumber()){
+				throw new RuntimeException("phone numbers don't match");
+			}
+
 			// generate OTP&message using the earlier method
 			String otp = generateOTP();
 			String otpMessage = "Hi, " + otpRequest.getEmail() + ", your OTP for verification is: " + otp
@@ -69,7 +78,7 @@ public class SmsServiceImpl {
 			otpResponseDto = new OtpResponseDto(OtpStatus.DELIVERED, otpMessage);
 		} catch (Exception e) {
 			e.printStackTrace();
-			otpResponseDto = new OtpResponseDto(OtpStatus.FAILED, e.getMessage());
+			otpResponseDto = new OtpResponseDto(OtpStatus.FAILED, "Either invalid phone number, or email and phone numbers don't match.");
 		}
 		return otpResponseDto;
 	}
