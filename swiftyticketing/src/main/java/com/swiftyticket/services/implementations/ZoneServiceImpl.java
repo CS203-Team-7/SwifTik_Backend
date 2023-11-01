@@ -90,12 +90,12 @@ public class ZoneServiceImpl implements ZoneService {
 
         if(!joinEvent.getOpenStatus()){
             log.info("User tried to join when pre-registration was closed, Denied.");
-            //return "The Pre-egistration has not yet opened, or Pre-registration has closed, join us next time!";
+            //return "The Pre-registration has not yet opened, or Pre-registration has closed, join us next time!";
             throw new EventClosedException();
         }
 
         if(joinEvent.getPreRegisteredUsers4Event().contains(joiningUser)){
-            log.info("User tried to join when already pre-registrated, Denied.");
+            log.info("User tried to join when already pre-registered, Denied.");
             //return "You have already pre-registered for this event!";
             throw new AlreadyPreRegisteredException(joinEvent);
             

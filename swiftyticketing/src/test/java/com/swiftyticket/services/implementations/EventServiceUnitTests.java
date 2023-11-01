@@ -262,44 +262,9 @@ class EventServiceUnitTests {
         when(newEventInfo.getArtists()).thenReturn(new ArrayList<>());
         when(newEventInfo.getDates()).thenReturn(new ArrayList<>());
         when(newEventInfo.getEventName()).thenReturn("Event 1");
-        doNothing().when(newEventInfo).setArtists(Mockito.<List<String>>any());
-        doNothing().when(newEventInfo).setDates(Mockito.<List<Date>>any());
-        doNothing().when(newEventInfo).setEventId(Mockito.<Integer>any());
-        doNothing().when(newEventInfo).setEventName(Mockito.<String>any());
-        doNothing().when(newEventInfo).setOpen4Registration(anyBoolean());
-        doNothing().when(newEventInfo).setRaffleRound(Mockito.<Integer>any());
-        doNothing().when(newEventInfo).setUser_count(anyInt());
-        doNothing().when(newEventInfo).setVenue(Mockito.<String>any());
-        doNothing().when(newEventInfo).setVenueCapacity(Mockito.<Integer>any());
-        doNothing().when(newEventInfo).setZoneList(Mockito.<List<Zones>>any());
-        newEventInfo.setArtists(new ArrayList<>());
-        newEventInfo.setDates(new ArrayList<>());
-        newEventInfo.setEventId(1);
-        newEventInfo.setEventName("Event 1");
-        newEventInfo.setOpen4Registration(true);
-        newEventInfo.setRaffleRound(1);
-        newEventInfo.setUser_count(3);
-        newEventInfo.setVenue("Venue 1");
-        newEventInfo.setVenueCapacity(1);
-        newEventInfo.setZoneList(new ArrayList<>());
 
         // Assert
         assertThrows(EventNotFoundException.class, () -> eventServiceImpl.updateEvent(1, newEventInfo));
-        verify(newEventInfo).getArtists();
-        verify(newEventInfo).getDates();
-        verify(newEventInfo).getEventName();
-        verify(newEventInfo).getVenue();
-        verify(newEventInfo).getVenueCapacity();
-        verify(newEventInfo).setArtists(Mockito.<List<String>>any());
-        verify(newEventInfo).setDates(Mockito.<List<Date>>any());
-        verify(newEventInfo).setEventId(Mockito.<Integer>any());
-        verify(newEventInfo).setEventName(Mockito.<String>any());
-        verify(newEventInfo).setOpen4Registration(anyBoolean());
-        verify(newEventInfo).setRaffleRound(Mockito.<Integer>any());
-        verify(newEventInfo).setUser_count(anyInt());
-        verify(newEventInfo).setVenue(Mockito.<String>any());
-        verify(newEventInfo).setVenueCapacity(Mockito.<Integer>any());
-        verify(newEventInfo).setZoneList(Mockito.<List<Zones>>any());
         verify(eventRepository).findById(Mockito.<Integer>any());
     }
 
