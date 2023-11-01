@@ -28,6 +28,7 @@ import com.swiftyticket.dto.auth.AuthResponse;
 import com.swiftyticket.dto.auth.SignInRequest;
 import com.swiftyticket.dto.auth.SignUpRequest;
 import com.swiftyticket.dto.otp.OtpRequest;
+import com.swiftyticket.dto.otp.OtpStatus;
 import com.swiftyticket.dto.otp.OtpValidationRequest;
 import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.models.Role;
@@ -193,7 +194,7 @@ public class AuthIntegrationTest {
         signupRequest.setEmail("newUser@email.com");
         signupRequest.setPassword("GoodPassword123!");
         signupRequest.setDateOfBirth(new Date());
-        signupRequest.setPhoneNumber("+6987662344");
+        signupRequest.setPhoneNumber("+6582887066");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -237,9 +238,9 @@ public class AuthIntegrationTest {
         assertFalse(createdUser.isVerified());
     }
 
-/*
+
     @Test
-    public void requestNewOTP_Valid_Return200() throws Exception{
+    public void requestNewOTP_Valid_Return201() throws Exception{
         OtpRequest req = new OtpRequest();
         req.setEmail("newUser@email.com");
         req.setPhoneNumber("+6582887066");
@@ -249,21 +250,23 @@ public class AuthIntegrationTest {
         headers.add("Content-Type", "application/json");
 
         HttpEntity<OtpRequest> entity = new HttpEntity<>(req, headers);
-        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-                createURLWithPort("/otp/validate"),
-                HttpMethod.POST, entity, String.class
+        ResponseEntity<OtpStatus> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/otp/send"),
+                HttpMethod.POST, entity, OtpStatus.class
             );
 
         //make sure user's validation still false.
         User createdUser = userRepo.findByEmail("notVerifiedUser@email.com").orElseThrow(() -> new UserNotFoundException());
             
-        assertEquals(200, responseEntity.getStatusCode().value());
-        assertEquals("", responseEntity.getBody());
+        assertEquals(201, responseEntity.getStatusCode().value());
+        assertEquals(OtpStatus.DELIVERED, responseEntity.getBody());
         assertFalse(createdUser.isVerified());
     }
+
+
     //re-request OTP (successful)
     //re-request OTP (invalid phone number /+ email doesn't match phone number)
 
-*/
+
     
 }
