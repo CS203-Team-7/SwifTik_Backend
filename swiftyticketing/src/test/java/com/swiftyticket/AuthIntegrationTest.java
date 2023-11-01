@@ -24,6 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.swiftyticket.dto.auth.AuthResponse;
 import com.swiftyticket.dto.auth.SignInRequest;
+import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.models.Role;
 import com.swiftyticket.models.User;
 import com.swiftyticket.repositories.UserRepository;
@@ -88,8 +89,74 @@ public class AuthIntegrationTest {
     }
 
     @Test
-    public void login_Invalid_ReturnWrongCredentialsException(){
-        
+    public void login_Invalid_ReturnWrongCredentialsException() throws Exception{
+        SignInRequest loginRequest = new SignInRequest();
+        loginRequest.setEmail("newUser@email.com");
+        loginRequest.setPassword("bzzztWrong!");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+
+        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, headers);
+        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/auth/signin"),
+                HttpMethod.POST, entity, Void.class
+            );
+            
+        assertEquals(401, responseEntity.getStatusCode().value());
     }
+
+    @Test
+    public void login_Unverified_ReturnAccountNotVerifiedException() throws Exception{
+        SignInRequest loginRequest = new SignInRequest();
+        loginRequest.setEmail("newUser@email.com");
+        loginRequest.setPassword("GoodPassword123!");
+
+        //set the user's verified status to false.
+        User newUser = userRepo.findByEmail("newUser@email.com").orElseThrow(() -> new UserNotFoundException());
+        newUser.setVerified(false);
+        userRepo.save(newUser);
+        log.info("" + userRepo.findAll());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+
+        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, headers);
+        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/auth/signin"),
+                HttpMethod.POST, entity, Void.class
+            );
+            
+        assertEquals(401, responseEntity.getStatusCode().value());
+    }
+
+    @Test
+    public void signup_Valid_ReturnOTPMessage() throws Exception{
+        SignInRequest loginRequest = new SignInRequest();
+        loginRequest.setEmail("newUser@email.com");
+        loginRequest.setPassword("GoodPassword123!");
+
+        //set the user's verified status to false.
+        User newUser = userRepo.findByEmail("newUser@email.com").orElseThrow(() -> new UserNotFoundException());
+        newUser.setVerified(false);
+        userRepo.save(newUser);
+        log.info("" + userRepo.findAll());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+
+        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, headers);
+        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/auth/signin"),
+                HttpMethod.POST, entity, Void.class
+            );
+            
+        assertEquals(401, responseEntity.getStatusCode().value());
+    }
+
+
     
 }
