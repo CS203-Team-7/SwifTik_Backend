@@ -3,6 +3,7 @@ package com.swiftyticket;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.*;
 
@@ -162,10 +163,10 @@ public class AuthIntegrationTest {
     }
 
     @Test
-    public void signup_WeakPassword_ReturnOTPMessage() throws Exception{
+    public void signup_WeakPassword_Return400() throws Exception{
         SignUpRequest signupRequest = new SignUpRequest();
         signupRequest.setEmail("anotherUser@email.com");
-        signupRequest.setPassword("GoodPassword123!");
+        signupRequest.setPassword("baaadpassword");
         signupRequest.setDateOfBirth(new Date());
         signupRequest.setPhoneNumber("+6582887066");
 
@@ -178,14 +179,13 @@ public class AuthIntegrationTest {
                 createURLWithPort("/auth/signup"),
                 HttpMethod.POST, entity, String.class
             );
-        //get user to make sure that user was created successfully
-        User createdUser = userRepo.findByEmail("anotherUser@email.com").orElseThrow(() -> new UserNotFoundException());
+
+        //make sure user wasn't created
+        Optional<User> createdUser = userRepo.findByEmail("anotherUser@email.com");
             
-        assertEquals(201, responseEntity.getStatusCode().value());
-        assertEquals("Sign up successful, please check your phone for the OTP code.", responseEntity.getBody());
-        assertNotNull(createdUser);
-        assertFalse(createdUser.isVerified());
-        assertEquals(createdUser.getRole(), Role.USER);
+        assertEquals(400, responseEntity.getStatusCode().value());
+        assertEquals("Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character", responseEntity.getBody());
+        assert(createdUser.isEmpty());
     }
 
     

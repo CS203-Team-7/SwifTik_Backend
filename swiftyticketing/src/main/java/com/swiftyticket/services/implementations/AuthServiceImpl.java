@@ -1,9 +1,11 @@
 package com.swiftyticket.services.implementations;
 
 import com.swiftyticket.exceptions.AccountNotVerifiedException;
+import com.swiftyticket.exceptions.DuplicateUserException;
 import com.swiftyticket.exceptions.IncorrectUserPasswordException;
+import com.swiftyticket.exceptions.UserNotFoundException;
 
-
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,14 +37,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String signup(SignUpRequest request) {
         // Creating a new user in the DB and making a JWT Token for them:
-        var user = new User(request.getEmail(),
-                            passwordEncoder.encode(request.getPassword()),
-                            request.getDateOfBirth(),
-                            request.getPhoneNumber(), 
-                            Role.USER,
-                            false);
-
-        userRepository.save(user);
+        try{
+            var user = new User(request.getEmail(),
+                                passwordEncoder.encode(request.getPassword()),
+                                request.getDateOfBirth(),
+                                request.getPhoneNumber(), 
+                                Role.USER,
+                                false);
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e){
+            throw new DuplicateUserException();
+        }
 
         // Create OTP request object to send the SMS
         OtpRequest otpReq = new OtpRequest( request.getEmail(), request.getPhoneNumber() );
