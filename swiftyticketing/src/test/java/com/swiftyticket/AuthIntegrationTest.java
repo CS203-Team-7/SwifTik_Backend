@@ -28,6 +28,7 @@ import com.swiftyticket.dto.auth.AuthResponse;
 import com.swiftyticket.dto.auth.SignInRequest;
 import com.swiftyticket.dto.auth.SignUpRequest;
 import com.swiftyticket.dto.otp.OtpRequest;
+import com.swiftyticket.dto.otp.OtpResponseDto;
 import com.swiftyticket.dto.otp.OtpStatus;
 import com.swiftyticket.dto.otp.OtpValidationRequest;
 import com.swiftyticket.exceptions.UserNotFoundException;
@@ -250,20 +251,21 @@ public class AuthIntegrationTest {
         headers.add("Content-Type", "application/json");
 
         HttpEntity<OtpRequest> entity = new HttpEntity<>(req, headers);
-        ResponseEntity<OtpStatus> responseEntity = testRestTemplate.exchange(
+        ResponseEntity<OtpResponseDto> responseEntity = testRestTemplate.exchange(
                 createURLWithPort("/otp/send"),
-                HttpMethod.POST, entity, OtpStatus.class
+                HttpMethod.POST, entity, OtpResponseDto.class
             );
 
         //make sure user's validation still false.
         User createdUser = userRepo.findByEmail("notVerifiedUser@email.com").orElseThrow(() -> new UserNotFoundException());
             
         assertEquals(201, responseEntity.getStatusCode().value());
-        assertEquals(OtpStatus.DELIVERED, responseEntity.getBody());
+        assertEquals(OtpStatus.DELIVERED, responseEntity.getBody().getStatus());
+        assertEquals("OTP sent successfully, please check your phone.", responseEntity.getBody().getMessage());
         assertFalse(createdUser.isVerified());
     }
 
-/*
+
     @Test
     public void requestNewOTP_Invalid_Return201() throws Exception{
         OtpRequest req = new OtpRequest();
@@ -275,22 +277,22 @@ public class AuthIntegrationTest {
         headers.add("Content-Type", "application/json");
 
         HttpEntity<OtpRequest> entity = new HttpEntity<>(req, headers);
-        ResponseEntity<OtpStatus> responseEntity = testRestTemplate.exchange(
+        ResponseEntity<OtpResponseDto> responseEntity = testRestTemplate.exchange(
                 createURLWithPort("/otp/send"),
-                HttpMethod.POST, entity, OtpStatus.class
+                HttpMethod.POST, entity, OtpResponseDto.class
             );
 
         //make sure user's validation still false.
         User createdUser = userRepo.findByEmail("notVerifiedUser@email.com").orElseThrow(() -> new UserNotFoundException());
             
-        assertEquals(200, responseEntity.getStatusCode().value());
-        assertEquals(OtpStatus.FAILED, responseEntity.getBody());
+        assertEquals(201, responseEntity.getStatusCode().value());
+        assertEquals(OtpStatus.FAILED, responseEntity.getBody().getStatus());
+        assertEquals("Either invalid phone number, or email and phone numbers don't match.", responseEntity.getBody().getMessage());
         assertFalse(createdUser.isVerified());
     }
-*/
 
 
-    //re-request OTP (invalid phone number /+ email doesn't match phone number)
+
 
 
     
