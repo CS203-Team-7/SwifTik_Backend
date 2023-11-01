@@ -25,14 +25,14 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public List<User> getAllUsers() {
         List<User> usersList = userRepository.findAll();
-        if(usersList.isEmpty()) throw new UserNotFoundException("No users found");
+        if(usersList.isEmpty()) throw new UserNotFoundException();
         else return usersList;
     }
 
     @Override
     public User getUserByEmail(String email){
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
+                .orElseThrow(() -> new UserNotFoundException());
     }
 
     @Override
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(newUserInfo.getPassword());
             user.setPhoneNumber(newUserInfo.getPhoneNumber());
             return userRepository.save(user);
-        }).orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+        }).orElseThrow(() -> new UserNotFoundException());
     }
 
     @Override
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
             @Override
             public UserDetails loadUserByUsername(String username) {
                 return userRepository.findByEmail(username)
-                                        .orElseThrow(() -> new UserNotFoundException("User does not exist"));
+                                        .orElseThrow(() -> new UserNotFoundException());
             }
         };
     }

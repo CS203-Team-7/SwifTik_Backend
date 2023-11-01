@@ -59,7 +59,7 @@ public class ZoneServiceImpl implements ZoneService {
         String userEmail = jwtService.extractUserName(jwtToken);
         // get Event and user respectively.
         Event joinEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
-        User joiningUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException("Invalid user / token!"));
+        User joiningUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException());
         //we search for zone using both event and zoneid to make sure the zone is in the specified event.
         Zones joinZone = zoneRepository.findByZoneIdAndEvent(zoneID, joinEvent).orElseThrow(() -> new ZoneNotFoundException("Invalid zone for " + joinEvent.getEventName()));
 

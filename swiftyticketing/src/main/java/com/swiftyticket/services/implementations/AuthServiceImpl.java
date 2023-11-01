@@ -2,6 +2,8 @@ package com.swiftyticket.services.implementations;
 
 import com.swiftyticket.exceptions.AccountNotVerifiedException;
 import com.swiftyticket.exceptions.IncorrectUserPasswordException;
+import com.swiftyticket.exceptions.WrongCredentialsException;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,11 +55,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse signIn(SignInRequest request) throws IncorrectUserPasswordException,  AccountNotVerifiedException{
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+                .orElseThrow(() -> new WrongCredentialsException());
         // We check if they have verified using OTP yet
         if(!user.isVerified()){
             System.out.println("Entered here");
-            throw new AccountNotVerifiedException("Please verify account with the OTP sent to your phone number before logging in.");
+            throw new AccountNotVerifiedException();
         }
 
         // We check if the username and password actually match:
