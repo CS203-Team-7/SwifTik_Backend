@@ -32,7 +32,7 @@ public class SwiftyticketingApplication implements CommandLineRunner{
 		User admin = new User("admin@gmail.com",
 								   passwordEncoder.encode("Admin123!"),
 								   new Date(),
-								   "12345678",
+								   "+6582887066",
 								   Role.ADMIN,
 								   true);
 
@@ -43,7 +43,7 @@ public class SwiftyticketingApplication implements CommandLineRunner{
 		User uzer = new User("uzer@gmail.com",
 								   passwordEncoder.encode("Uzer123!"),
 								   new Date(),
-								   "87654321",
+								   "+6582887066",
 								   Role.USER,
 								   true);
 
@@ -54,7 +54,7 @@ public class SwiftyticketingApplication implements CommandLineRunner{
 		User uzer2 = new User("uzer2@gmail.com",
 									passwordEncoder.encode("Uzer123!"),
 								   new Date(),
-								   "6969696969",
+								   "+6582887066",
 								   Role.USER,
 								   true);
 
