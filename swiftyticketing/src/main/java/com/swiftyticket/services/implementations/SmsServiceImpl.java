@@ -22,10 +22,12 @@ import com.twilio.type.PhoneNumber;
 import com.swiftyticket.repositories.UserRepository;
 
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Getter
 @RequiredArgsConstructor
 @Slf4j
 public class SmsServiceImpl {

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.*;
 
@@ -35,6 +36,7 @@ import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.models.Role;
 import com.swiftyticket.models.User;
 import com.swiftyticket.repositories.UserRepository;
+import com.swiftyticket.services.implementations.SmsServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,6 +55,9 @@ public class AuthIntegrationTest {
 
     @Autowired
     private UserRepository userRepo;
+    
+    @Autowired
+    private SmsServiceImpl smsServ;
 
     @BeforeEach
     void createUsers(){
@@ -61,7 +66,7 @@ public class AuthIntegrationTest {
         User newUser = new User("newUser@email.com", encodedPassowrd, new Date(), "+6582887066", Role.USER, true);
         userRepo.save(newUser);
 
-        User unverifiedUser = new User("notVerifiedUser@email.com", encodedPassowrd, new Date(), "+6987662344", Role.USER, false);
+        User unverifiedUser = new User("notVerifiedUser@email.com", encodedPassowrd, new Date(), "+6582887066", Role.USER, false);
         userRepo.save(unverifiedUser);
 
         User newAdmin = new User("newAdmin@email.com", encodedPassowrd, new Date(), "+6887662344", Role.ADMIN, true);
@@ -216,6 +221,38 @@ public class AuthIntegrationTest {
     }
 
     @Test
+    public void OTPValidation_Correct_ValidateUser() throws Exception{
+        //request for a new OTP 
+        smsServ.sendSMS(new OtpRequest("notVerifiedUser@email.com", "+6582887066"));
+
+        //prepare to send request with right OTP for verification.
+        OtpValidationRequest req = new OtpValidationRequest();
+        req.setEmail("notVerifiedUser@email.com");
+        //get the otp that was sent
+        String otp = smsServ.getOtpMap().get("notVerifiedUser@email.com");
+        
+        req.setOtpNumber(otp);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+
+        HttpEntity<OtpValidationRequest> entity = new HttpEntity<>(req, headers);
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/otp/validate"),
+                HttpMethod.POST, entity, String.class
+            );
+
+        //make sure user is now verified.
+        User createdUser = userRepo.findByEmail("newUser@email.com").orElseThrow(() -> new UserNotFoundException());
+            
+        assertEquals(200, responseEntity.getStatusCode().value());
+        assertEquals("Success! You may log into your account now", responseEntity.getBody());
+        assertTrue(createdUser.isVerified());
+    }
+
+
+    @Test
     public void OTPValidation_Wrong_ReturnMessage() throws Exception{
         OtpValidationRequest req = new OtpValidationRequest();
         req.setEmail("notVerifiedUser@email.com");
@@ -285,7 +322,7 @@ public class AuthIntegrationTest {
         //make sure user's validation still false.
         User createdUser = userRepo.findByEmail("notVerifiedUser@email.com").orElseThrow(() -> new UserNotFoundException());
             
-        assertEquals(201, responseEntity.getStatusCode().value());
+        assertEquals(200, responseEntity.getStatusCode().value());
         assertEquals(OtpStatus.FAILED, responseEntity.getBody().getStatus());
         assertEquals("Either invalid phone number, or email and phone numbers don't match.", responseEntity.getBody().getMessage());
         assertFalse(createdUser.isVerified());
