@@ -26,7 +26,7 @@ Content-Type: application/json
 Authorization: Bearer 
 
 {
-    "zoneCapacity": 3,
+    "zoneCapacity": 2,
     "zoneName": "testZone",
     "zoneDate": "2001-05-06",
     "ticketPrice": 450
@@ -52,7 +52,7 @@ Authorization: Bearer
 #admin raffles all the zones in event 1.
 PUT http://localhost:8080/events/1/raffle
 Content-Type: application/json
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTg5MTY0MTgsImV4cCI6MTY5ODkxNzAxOH0.-MH3N5z8YSJJy4W4zBIA6wf7lza0Av2isEzuyItF4w0
 
 ###
 

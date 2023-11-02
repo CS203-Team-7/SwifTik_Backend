@@ -104,4 +104,24 @@ public class SmsServiceImpl {
 		}
 	}
 
+	public void sendCongratz(String message, String phoneNumber) {
+		try {
+			// get the to and from number for the message function later
+			PhoneNumber to = new PhoneNumber(phoneNumber);// to
+			PhoneNumber from = new PhoneNumber(twilioConfig.getPhoneNumber()); // from
+
+			Message
+					.creator(to, from,
+							message)
+					.create();
+
+			log.info("message sent to " + phoneNumber + " saying: " + message);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			//if message failed to send to number, just ignore. (they can still check their zones won online) itsok. 
+		}
+		return;
+	}
+
 }

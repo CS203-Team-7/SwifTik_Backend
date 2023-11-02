@@ -33,6 +33,7 @@ public class ZoneServiceImpl implements ZoneService {
     private final JwtServiceImpl jwtService;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
+    private final SmsServiceImpl smsServ;
 
     public Zones addZone(ZoneRequest zoneReq, Event event){
         //check if event has a date for the zone's date. If event does not have a date for that zone, throw an error (wrong date!)
@@ -174,6 +175,10 @@ public class ZoneServiceImpl implements ZoneService {
             log.info("winner no." + i + " zones won" + u.getZonesWon());
             log.info("winner no." + i + " preRegisteredZones" + u.getPreRegisteredZones());
             log.info("winner no." + i + " preRegisteredEvent" + u.getPreRegisteredEvents());
+
+        //now we want to message the winners who won
+        String congratz = "Congratulations! You have won the raffle for the event: " + event.getEventName() + ", for the zone: " + zone.getZoneName();
+        smsServ.sendCongratz(congratz, u.getPhoneNumber());
         }
 
         //check everything is updated accordingly.
@@ -182,6 +187,7 @@ public class ZoneServiceImpl implements ZoneService {
         log.info("zone winner list:" + zone.getWinnerList());
 
         log.info("ran somehow");
+
         return;
     }
     
