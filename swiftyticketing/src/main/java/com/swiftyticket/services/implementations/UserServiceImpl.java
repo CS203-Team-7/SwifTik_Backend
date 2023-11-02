@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import com.swiftyticket.exceptions.DuplicateUserException;
 import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.models.User;
 import com.swiftyticket.repositories.UserRepository;
@@ -37,6 +38,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(String email, User newUserInfo) {
+        //check if current email is already in use, if it is throw exception. 
+        if(userRepository.findByEmail(newUserInfo.getEmail()).isPresent()){
+            throw new DuplicateUserException();
+        }
+
         return userRepository.findByEmail(email).map(user -> {
             user.setDateOfBirth(newUserInfo.getDateOfBirth());
             user.setEmail(newUserInfo.getEmail());
