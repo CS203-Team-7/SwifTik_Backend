@@ -253,7 +253,7 @@ class AuthServiceUnitTests {
         when(userRepository.findByEmail(Mockito.<String>any())).thenReturn(emptyResult);
 
         // Act and Assert
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IncorrectUserPasswordException.class,
                 () -> authServiceImpl.signIn(new SignInRequest("jane.doe@example.org", "Iloveyou1!")));
         verify(userRepository).findByEmail(Mockito.<String>any());
     }
