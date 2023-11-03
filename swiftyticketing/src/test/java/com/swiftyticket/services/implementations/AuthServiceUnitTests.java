@@ -59,13 +59,13 @@ class AuthServiceUnitTests {
     @MockBean
     private UserRepository userRepository;
 
-    private User user = new User();
+    private final User user = new User();
     @BeforeEach
     void setUp() {
         user.setDateOfBirth(new Date());
-        user.setEmail("jane.doe@example.org");
+        user.setEmail("test@gmail.com");
         user.setPassword("Iloveyou1!");
-        user.setPhoneNumber("6625550144");
+        user.setPhoneNumber("1234567890");
         user.setRole(Role.USER);
         user.setVerified(true);
     }
@@ -114,10 +114,10 @@ class AuthServiceUnitTests {
         // Assert
         assertThrows(AccountNotVerifiedException.class,
                 () -> authServiceImpl.signup(builderResult
-                        .dateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()))
-                        .email("jane.doe@example.org")
+                        .dateOfBirth(new Date())
+                        .email("test@gmail.com")
                         .password("Iloveyou1!")
-                        .phoneNumber("6625550144")
+                        .phoneNumber("1234567890")
                         .build()));
         verify(smsServiceImpl).sendSMS(Mockito.<OtpRequest>any());
         verify(userRepository).save(Mockito.<User>any());
@@ -135,16 +135,16 @@ class AuthServiceUnitTests {
                 .thenReturn(new TestingAuthenticationToken("Principal", "Credentials"));
 
         // Act
-        AuthResponse actualSignInResult = authServiceImpl.signIn(new SignInRequest("jane.doe@example.org", "Iloveyou1!"));
+        AuthResponse actualSignInResult = authServiceImpl.signIn(new SignInRequest("test@gmail.com", "Iloveyou1!"));
 
         // Assert
         verify(userRepository).findByEmail(Mockito.<String>any());
         verify(jwtService).generateToken(Mockito.<User>any());
         verify(authenticationManager).authenticate(Mockito.<Authentication>any());
         CustomUserDTO customUser = actualSignInResult.getCustomUser();
-        assertEquals("6625550144", customUser.getPhoneNumber());
+        assertEquals("1234567890", customUser.getPhoneNumber());
         assertEquals("Bearer ABC123", actualSignInResult.getToken());
-        assertEquals("jane.doe@example.org", customUser.getEmail());
+        assertEquals("test@gmail.com", customUser.getEmail());
         assertSame(user.getDateOfBirth(), customUser.getDateOfBirth());
     }
 
@@ -158,7 +158,7 @@ class AuthServiceUnitTests {
 
         // Act and Assert
         assertThrows(IncorrectUserPasswordException.class,
-                () -> authServiceImpl.signIn(new SignInRequest("jane.doe@example.org", "Iloveyou1!")));
+                () -> authServiceImpl.signIn(new SignInRequest("test@gmail.com", "Iloveyou1!")));
         verify(userRepository).findByEmail(Mockito.<String>any());
         verify(authenticationManager).authenticate(Mockito.<Authentication>any());
     }
@@ -179,10 +179,10 @@ class AuthServiceUnitTests {
         doNothing().when(user).setVerified(anyBoolean());
 
         // Then we set  null credentials:
-        user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
-        user.setEmail("jane.doe@example.org");
+        user.setDateOfBirth(new Date());
+        user.setEmail("test@gmail.com");
         user.setPassword("Iloveyou1!");
-        user.setPhoneNumber("6625550144");
+        user.setPhoneNumber("1234567890");
         user.setRole(Role.USER);
         user.setVerified(true);
         Optional<User> ofResult = Optional.of(user);
@@ -193,7 +193,7 @@ class AuthServiceUnitTests {
 
         // Act and Assert
         assertThrows(IllegalArgumentException.class,
-                () -> authServiceImpl.signIn(new SignInRequest("jane.doe@example.org", "Iloveyou1!")));
+                () -> authServiceImpl.signIn(new SignInRequest("test@gmail.com", "Iloveyou1!")));
         verify(user).getEmail();
         verify(user).isVerified();
         // To make sure the setters are called:
@@ -223,10 +223,10 @@ class AuthServiceUnitTests {
         doNothing().when(user).setVerified(anyBoolean());
 
         // Then we set  null credentials:
-        user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
-        user.setEmail("jane.doe@example.org");
+        user.setDateOfBirth(new Date());
+        user.setEmail("test@gmail.com");
         user.setPassword("Iloveyou1!");
-        user.setPhoneNumber("6625550144");
+        user.setPhoneNumber("1234567890");
         user.setRole(Role.USER);
         user.setVerified(true);
         Optional<User> ofResult = Optional.of(user);
@@ -234,7 +234,7 @@ class AuthServiceUnitTests {
 
         // Act and Assert
         assertThrows(AccountNotVerifiedException.class,
-                () -> authServiceImpl.signIn(new SignInRequest("jane.doe@example.org", "Iloveyou1!")));
+                () -> authServiceImpl.signIn(new SignInRequest("test@gmail.com", "Iloveyou1!")));
         verify(user).isVerified();
         // To make sure the setters are called:
         verify(user).setDateOfBirth(Mockito.<Date>any());
@@ -254,7 +254,7 @@ class AuthServiceUnitTests {
 
         // Act and Assert
         assertThrows(IncorrectUserPasswordException.class,
-                () -> authServiceImpl.signIn(new SignInRequest("jane.doe@example.org", "Iloveyou1!")));
+                () -> authServiceImpl.signIn(new SignInRequest("test@gmail.com", "Iloveyou1!")));
         verify(userRepository).findByEmail(Mockito.<String>any());
     }
 
@@ -268,7 +268,7 @@ class AuthServiceUnitTests {
 
         // Act and Assert
         assertThrows(IncorrectUserPasswordException.class,
-                () -> authServiceImpl.signIn(new SignInRequest("jane.doe@example.org", "wrongPassword")));
+                () -> authServiceImpl.signIn(new SignInRequest("test@gmail.com", "wrongPassword")));
         verify(authenticationManager).authenticate(Mockito.<Authentication>any());
     }
 }

@@ -43,9 +43,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByEmail(String email){
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
     }
 
+    /**
+     * Creates a new user in the DB.
+     * @param newUserInfo -> User object containing the user details
+     * @throws DuplicateUserException -> if the user email already exists in the DB
+     * @throws UserNotFoundException -> if the user email does not exist in the DB
+     * @return User -> User object containing the user details
+     */
     @Override
     public User updateUser(String email, User newUserInfo) {
         //check if current email is already in use, if it is throw exception. 
@@ -59,7 +66,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(newUserInfo.getPassword());
             user.setPhoneNumber(newUserInfo.getPhoneNumber());
             return userRepository.save(user);
-        }).orElseThrow(() -> new UserNotFoundException());
+        }).orElseThrow(UserNotFoundException::new);
     }
 
     /**

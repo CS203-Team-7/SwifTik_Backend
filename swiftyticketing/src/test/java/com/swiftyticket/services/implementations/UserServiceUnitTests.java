@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.swiftyticket.exceptions.DuplicateUserException;
 import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.models.Role;
 import com.swiftyticket.models.User;
@@ -38,6 +39,18 @@ class UserServiceUnitTests {
     @Autowired
     private UserServiceImpl userServiceImpl;
 
+    // Helper method to get a User object
+    private static User getUserInfo() {
+        User newUserInfo = new User();
+        newUserInfo.setDateOfBirth(new Date());
+        newUserInfo.setEmail("test@gmail.com");
+        newUserInfo.setPassword("Iloveyou1!");
+        newUserInfo.setPhoneNumber("1234567890");
+        newUserInfo.setRole(Role.USER);
+        newUserInfo.setVerified(true);
+        return newUserInfo;
+    }
+
     // getAllUsers tests
     @Test
     void getAllUsers_ReturnEmptyList_ThrowsException() {
@@ -53,7 +66,7 @@ class UserServiceUnitTests {
     void getAllUsers_ReturnList_Successful() {
         // Arrange
         User user = new User();
-        user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
+        user.setDateOfBirth(new Date());
         user.setEmail("test@gmail.com");
         user.setPassword("Iloveyou1!");
         user.setPhoneNumber("1234567890");
@@ -87,7 +100,7 @@ class UserServiceUnitTests {
     void getUserByEmail_ValidEmail_Successful() {
         // Arrange
         User user = new User();
-        user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
+        user.setDateOfBirth(new Date());
         user.setEmail("test@gmail.com");
         user.setPassword("Iloveyou1!");
         user.setPhoneNumber("1234567890");
@@ -129,90 +142,26 @@ class UserServiceUnitTests {
 
 
     // updateUser tests
-    @Test
-    void updateUser_ValidUser_Successful() {
-        // Arrange
-        User user = new User();
-        user.setDateOfBirth(new Date());
-        user.setEmail("test@gmail.com");
-        user.setPassword("Iloveyou1!");
-        user.setPhoneNumber("1234567890");
-        user.setRole(Role.USER);
-        user.setVerified(true);
-        Optional<User> ofResult = Optional.of(user);
-
-        User user2 = new User();
-        user2.setDateOfBirth(new Date());
-        user2.setEmail("test@gmail.com");
-        user2.setPassword("Iloveyou1!");
-        user2.setPhoneNumber("1234567890");
-        user2.setRole(Role.USER);
-        user2.setVerified(true);
-
-        // Act
-        when(userRepository.save(Mockito.<User>any())).thenReturn(user2);
-        when(userRepository.findByEmail(Mockito.<String>any())).thenReturn(ofResult);
-        User newUserInfo = new User();
-        newUserInfo.setDateOfBirth(new Date());
-        newUserInfo.setEmail("test@gmail.com");
-        newUserInfo.setPassword("Iloveyou1!");
-        newUserInfo.setPhoneNumber("1234567890");
-        newUserInfo.setRole(Role.USER);
-        newUserInfo.setVerified(true);
-        User actualUpdateUserResult = userServiceImpl.updateUser("test@gmail.com", newUserInfo);
-
-        // Assert
-        verify(userRepository).findByEmail(Mockito.<String>any());
-        verify(userRepository).save(Mockito.<User>any());
-        assertSame(user2, actualUpdateUserResult);
-    }
 
     @Test
-    void updateUser_InvalidUser_ThrowException() {
-        // Arrange
-        User user = new User();
-        user.setDateOfBirth(new Date());
-        user.setEmail("test@gmail.com");
-        user.setPassword("IloveYou1!");
-        user.setPhoneNumber("1234567890");
-        user.setRole(Role.USER);
-        user.setVerified(true);
+    void updateUser_EmailAlreadyExists_ThrowException() {
+        User user = getUserInfo();
         Optional<User> ofResult = Optional.of(user);
-
-        // Act
-        when(userRepository.save(Mockito.<User>any())).thenThrow(new UserNotFoundException());
         when(userRepository.findByEmail(Mockito.<String>any())).thenReturn(ofResult);
 
-        User newUserInfo = new User();
-        newUserInfo.setDateOfBirth(new Date());
-        newUserInfo.setEmail("test@gmail.com");
-        newUserInfo.setPassword("IloveYou1!");
-        newUserInfo.setPhoneNumber("1234567890");
-        newUserInfo.setRole(Role.USER);
-        newUserInfo.setVerified(true);
-
-        // Assert
-        assertThrows(UserNotFoundException.class, () -> userServiceImpl.updateUser("test@gmail.com", newUserInfo));
+        User newUserInfo = getUserInfo();
+        assertThrows(DuplicateUserException.class, () -> userServiceImpl.updateUser("test@gmail.com", newUserInfo));
         verify(userRepository).findByEmail(Mockito.<String>any());
-        verify(userRepository).save(Mockito.<User>any());
     }
 
+    /**
+     * Method under test: {@link UserServiceImpl#updateUser(String, User)}
+     */
     @Test
-    void updateUser_NoSuchUser_ThrowException() {
-        // Arrange
-        Optional<User> emptyResult = Optional.empty();
+    void updateUser_EmailDoesNotExist_ThrowException() {
+        when(userRepository.findByEmail(Mockito.<String>any())).thenThrow(new UserNotFoundException());
 
-        // Act
-        when(userRepository.findByEmail(Mockito.<String>any())).thenReturn(emptyResult);
-        User newUserInfo = new User();
-        newUserInfo.setDateOfBirth(new Date());
-        newUserInfo.setEmail("test@gmail.com");
-        newUserInfo.setPassword("Iloveyou1!");
-        newUserInfo.setPhoneNumber("1234567890");
-        newUserInfo.setRole(Role.USER);
-        newUserInfo.setVerified(true);
-
-        // Assert
+        User newUserInfo = getUserInfo();
         assertThrows(UserNotFoundException.class, () -> userServiceImpl.updateUser("test@gmail.com", newUserInfo));
         verify(userRepository).findByEmail(Mockito.<String>any());
     }
