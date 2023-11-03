@@ -220,6 +220,9 @@ public class AuthIntegrationTest {
         assert(createdUser.isEmpty());
     }
 
+//git tests will fail since the token is hidden locally on the .env, comment out for commits to remote branch
+//uncomment to use the comment it back.
+/* 
     @Test
     public void OTPValidation_Correct_ValidateUser() throws Exception{
         //request for a new OTP 
@@ -250,7 +253,7 @@ public class AuthIntegrationTest {
         assertEquals("Success! You may log into your account now", responseEntity.getBody());
         assertTrue(createdUser.isVerified());
     }
-
+*/
 
     @Test
     public void OTPValidation_Wrong_ReturnMessage() throws Exception{
