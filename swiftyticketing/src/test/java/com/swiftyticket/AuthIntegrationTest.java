@@ -50,15 +50,15 @@ public class AuthIntegrationTest {
 
     @BeforeEach
     void createUsers(){
-        String encodedPassowrd = new BCryptPasswordEncoder().encode("GoodPassword123!");
+        String encodedPassword = new BCryptPasswordEncoder().encode("GoodPassword123!");
 
-        User newUser = new User("newUser@email.com", encodedPassowrd, new Date(), "+6582887066", Role.USER, true);
+        User newUser = new User("newUser@email.com", encodedPassword, new Date(), "+6582887066", Role.USER, true);
         userRepo.save(newUser);
 
-        User unverifiedUser = new User("notVerifiedUser@email.com", encodedPassowrd, new Date(), "+6582887066", Role.USER, false);
+        User unverifiedUser = new User("notVerifiedUser@email.com", encodedPassword, new Date(), "+6582887066", Role.USER, false);
         userRepo.save(unverifiedUser);
 
-        User newAdmin = new User("newAdmin@email.com", encodedPassowrd, new Date(), "+6887662344", Role.ADMIN, true);
+        User newAdmin = new User("newAdmin@email.com", encodedPassword, new Date(), "+6887662344", Role.ADMIN, true);
         userRepo.save(newAdmin);
     }
 
@@ -79,7 +79,7 @@ public class AuthIntegrationTest {
         loginRequest.setPassword("GoodPassword123!");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
 
         HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, headers);
@@ -89,7 +89,7 @@ public class AuthIntegrationTest {
             );
             
         assertEquals(200, responseEntity.getStatusCode().value());
-        assertNotNull(responseEntity.getBody().getToken());
+        assertNotNull(Objects.requireNonNull(responseEntity.getBody()).getToken());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class AuthIntegrationTest {
         loginRequest.setPassword("bzzztWrong!");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
 
         HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, headers);
@@ -118,7 +118,7 @@ public class AuthIntegrationTest {
         loginRequest.setPassword("GoodPassword123!");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
 
         HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, headers);
@@ -139,7 +139,7 @@ public class AuthIntegrationTest {
         signupRequest.setPhoneNumber("+6582887066");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
 
         HttpEntity<SignUpRequest> entity = new HttpEntity<>(signupRequest, headers);
@@ -148,7 +148,7 @@ public class AuthIntegrationTest {
                 HttpMethod.POST, entity, String.class
             );
         //get user to make sure that user was created successfully
-        User createdUser = userRepo.findByEmail("anotherUser@email.com").orElseThrow(() -> new UserNotFoundException());
+        User createdUser = userRepo.findByEmail("anotherUser@email.com").orElseThrow(UserNotFoundException::new);
             
         assertEquals(201, responseEntity.getStatusCode().value());
         assertEquals("Sign up successful, please check your phone for the OTP code.", responseEntity.getBody());
@@ -166,7 +166,7 @@ public class AuthIntegrationTest {
         signupRequest.setPhoneNumber("+6582887066");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
 
         HttpEntity<SignUpRequest> entity = new HttpEntity<>(signupRequest, headers);
@@ -192,7 +192,7 @@ public class AuthIntegrationTest {
         signupRequest.setPhoneNumber("+6582887066");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
 
         HttpEntity<SignUpRequest> entity = new HttpEntity<>(signupRequest, headers);
@@ -251,7 +251,7 @@ public class AuthIntegrationTest {
         req.setOtpNumber("0");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
 
         HttpEntity<OtpValidationRequest> entity = new HttpEntity<>(req, headers);
@@ -261,7 +261,7 @@ public class AuthIntegrationTest {
             );
 
         //make sure user's validation still false.
-        User createdUser = userRepo.findByEmail("notVerifiedUser@email.com").orElseThrow(() -> new UserNotFoundException());
+        User createdUser = userRepo.findByEmail("notVerifiedUser@email.com").orElseThrow(UserNotFoundException::new);
             
         assertEquals(200, responseEntity.getStatusCode().value());
         assertEquals("OTP is invalid! Please try again, or request for a new OTP", responseEntity.getBody());
@@ -304,7 +304,7 @@ public class AuthIntegrationTest {
         req.setPhoneNumber("+6582887066");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
 
         HttpEntity<OtpRequest> entity = new HttpEntity<>(req, headers);
@@ -314,10 +314,10 @@ public class AuthIntegrationTest {
             );
 
         //make sure user's validation still false.
-        User createdUser = userRepo.findByEmail("notVerifiedUser@email.com").orElseThrow(() -> new UserNotFoundException());
+        User createdUser = userRepo.findByEmail("notVerifiedUser@email.com").orElseThrow(UserNotFoundException::new);
             
         assertEquals(200, responseEntity.getStatusCode().value());
-        assertEquals(OtpStatus.FAILED, responseEntity.getBody().getStatus());
+        assertEquals(OtpStatus.FAILED, Objects.requireNonNull(responseEntity.getBody()).getStatus());
         assertEquals("Either invalid phone number, or email and phone numbers don't match.", responseEntity.getBody().getMessage());
         assertFalse(createdUser.isVerified());
     }

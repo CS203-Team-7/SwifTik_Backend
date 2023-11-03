@@ -35,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
     /**
     *  Creates a new user in the DB and sends an OTP to their phone number for verification.
      * @param request -> SignUpRequest object containing the user's details
+     * @throws DuplicateUserException -> if the user already exists in the DB
      * @return String message to indicate success
     */
     @Override
@@ -70,10 +71,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse signIn(SignInRequest request) throws IncorrectUserPasswordException,  AccountNotVerifiedException{
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IncorrectUserPasswordException());
+                .orElseThrow(IncorrectUserPasswordException::new);
         // We check if they have verified using OTP yet
         if(!user.isVerified()){
-            System.out.println("Entered here");
+            System.out.println("Unverified user spotted");
             throw new AccountNotVerifiedException();
         }
 
