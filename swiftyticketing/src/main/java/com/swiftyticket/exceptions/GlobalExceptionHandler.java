@@ -64,5 +64,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(DuplicateUserException.class)
+    public ResponseEntity<Object> DuplicateUserException(DuplicateUserException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     //Will add exception handler for payment later
 }

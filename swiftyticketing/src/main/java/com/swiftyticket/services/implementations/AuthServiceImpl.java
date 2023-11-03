@@ -1,7 +1,11 @@
 package com.swiftyticket.services.implementations;
 
 import com.swiftyticket.exceptions.AccountNotVerifiedException;
+import com.swiftyticket.exceptions.DuplicateUserException;
 import com.swiftyticket.exceptions.IncorrectUserPasswordException;
+import com.swiftyticket.exceptions.UserNotFoundException;
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,14 +42,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String signup(SignUpRequest request) {
         // Creating a new user in the DB and making a JWT Token for them:
-        var user = new User(request.getEmail(),
-                passwordEncoder.encode(request.getPassword()),
-                request.getDateOfBirth(),
-                request.getPhoneNumber(),
-                Role.USER,
-                false);
-
-        userRepository.save(user);
+        try{
+            var user = new User(request.getEmail(),
+                                passwordEncoder.encode(request.getPassword()),
+                                request.getDateOfBirth(),
+                                request.getPhoneNumber(), 
+                                Role.USER,
+                                false);
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e){
+            throw new DuplicateUserException();
+        }
 
         // Create OTP request object to send the SMS
         OtpRequest otpReq = new OtpRequest(request.getEmail(), request.getPhoneNumber());
@@ -65,11 +72,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse signIn(SignInRequest request) throws IncorrectUserPasswordException,  AccountNotVerifiedException{
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+                .orElseThrow(() -> new IncorrectUserPasswordException());
         // We check if they have verified using OTP yet
         if(!user.isVerified()){
             System.out.println("Entered here");
-            throw new AccountNotVerifiedException("Please verify account with the OTP sent to your phone number before logging in.");
+            throw new AccountNotVerifiedException();
         }
 
         // We check if the username and password actually match:
@@ -77,7 +84,7 @@ public class AuthServiceImpl implements AuthService {
             authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         } catch (Exception e){
-            throw new IncorrectUserPasswordException("Incorrect email or password");
+            throw new IncorrectUserPasswordException();
         }
         
         // Once authenticated: create JWT Token and then send response

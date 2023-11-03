@@ -46,6 +46,7 @@ public class TicketController {
         return new ResponseEntity<Ticket>(ticketService.purchaseTicket(bearerToken, eventId, zoneId), HttpStatus.CREATED);
     }
 
+    /*
     @DeleteMapping("/tickets/{id}")
     public String deleteTicket(@PathVariable Integer id) {
         try {
@@ -55,4 +56,5 @@ public class TicketController {
         }
         return "Ticket "+ id + " deleted.";
     }
+    */
 }
