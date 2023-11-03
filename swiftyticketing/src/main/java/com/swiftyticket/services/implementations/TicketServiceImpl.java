@@ -53,7 +53,7 @@ public class TicketServiceImpl implements TicketService {
         String userEmail = jwtService.extractUserName(jwtToken);
         // get Event and user respectively.
         Event purchase4Event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
-        User purchasingUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException("Invalid user / token!"));
+        User purchasingUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException());
         //we search for zone using both event and zoneid to make sure the zone is in the specified event.
         Zones purchase4Zone = zoneRepository.findByZoneIdAndEvent(zoneId, purchase4Event).orElseThrow(() -> new ZoneNotFoundException("Invalid zone for " + purchase4Event.getEventName()));
 

@@ -48,6 +48,7 @@ public class User implements UserDetails {
     // We should set this to only unique values to avoid duplicate email accounts being formed:
     @Column(unique = true)
     private String email;
+    
     private String password;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
