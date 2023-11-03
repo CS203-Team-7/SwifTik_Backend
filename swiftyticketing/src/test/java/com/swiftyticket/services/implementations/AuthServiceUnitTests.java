@@ -93,7 +93,7 @@ class AuthServiceUnitTests {
     void signUp_InvalidCredentials_ThrowsAccountNotVerified() {
         // Arrange
         when(passwordEncoder.encode(Mockito.<CharSequence>any()))
-                .thenThrow(new AccountNotVerifiedException("An error occurred"));
+                .thenThrow(new AccountNotVerifiedException());
 
         // Act and Assert
         assertThrows(AccountNotVerifiedException.class, () -> authServiceImpl.signup(new SignUpRequest()));
@@ -105,7 +105,7 @@ class AuthServiceUnitTests {
         // Arrange
         when(userRepository.save(Mockito.<User>any())).thenReturn(user);
         when(smsServiceImpl.sendSMS(Mockito.<OtpRequest>any()))
-                .thenThrow(new AccountNotVerifiedException("An error occurred"));
+                .thenThrow(new AccountNotVerifiedException());
         when(passwordEncoder.encode(Mockito.<CharSequence>any())).thenReturn("secret");
 
         // Act
@@ -154,7 +154,7 @@ class AuthServiceUnitTests {
         Optional<User> ofResult = Optional.of(user);
         when(userRepository.findByEmail(Mockito.<String>any())).thenReturn(ofResult);
         when(authenticationManager.authenticate(Mockito.<Authentication>any()))
-                .thenThrow(new AccountNotVerifiedException("An error occurred"));
+                .thenThrow(new AccountNotVerifiedException());
 
         // Act and Assert
         assertThrows(IncorrectUserPasswordException.class,
@@ -264,7 +264,7 @@ class AuthServiceUnitTests {
         Optional<User> ofResult = Optional.of(user);
         when(userRepository.findByEmail(Mockito.<String>any())).thenReturn(ofResult);
         when(authenticationManager.authenticate(Mockito.<Authentication>any()))
-                .thenThrow(new IncorrectUserPasswordException("An error occurred"));
+                .thenThrow(new IncorrectUserPasswordException());
 
         // Act and Assert
         assertThrows(IncorrectUserPasswordException.class,

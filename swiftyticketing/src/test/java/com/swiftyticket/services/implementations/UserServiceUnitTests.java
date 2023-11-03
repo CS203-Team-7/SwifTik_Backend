@@ -75,7 +75,7 @@ class UserServiceUnitTests {
     @Test
     void getAllUsers_UserNotFound_ThrowsException() {
         // Arrange and Act
-        when(userRepository.findAll()).thenThrow(new UserNotFoundException("No users found"));
+        when(userRepository.findAll()).thenThrow(new UserNotFoundException());
 
         // Assert
         assertThrows(UserNotFoundException.class, () -> userServiceImpl.getAllUsers());
@@ -120,7 +120,7 @@ class UserServiceUnitTests {
     @Test
     void getUserByEmail_UserNotFound_ThrowsException() {
         // Arrange and Act
-        when(userRepository.findByEmail(Mockito.<String>any())).thenThrow(new UserNotFoundException("User with email does not exist"));
+        when(userRepository.findByEmail(Mockito.<String>any())).thenThrow(new UserNotFoundException());
 
         // Assert
         assertThrows(UserNotFoundException.class, () -> userServiceImpl.getUserByEmail("test@gmail.com"));
@@ -180,7 +180,7 @@ class UserServiceUnitTests {
         Optional<User> ofResult = Optional.of(user);
 
         // Act
-        when(userRepository.save(Mockito.<User>any())).thenThrow(new UserNotFoundException("User not found"));
+        when(userRepository.save(Mockito.<User>any())).thenThrow(new UserNotFoundException());
         when(userRepository.findByEmail(Mockito.<String>any())).thenReturn(ofResult);
 
         User newUserInfo = new User();
@@ -232,7 +232,7 @@ class UserServiceUnitTests {
     @Test
     void deleteUser_UserNotFound_ThrowException() {
         // Arrange and Act
-        doThrow(new UserNotFoundException("User does not exist")).when(userRepository).deleteByEmail(Mockito.<String>any());
+        doThrow(new UserNotFoundException()).when(userRepository).deleteByEmail(Mockito.<String>any());
 
         // Assert
         assertThrows(UserNotFoundException.class, () -> userServiceImpl.deleteUser("test@gmail.com"));

@@ -3,8 +3,6 @@ package com.swiftyticket.services.implementations;
 import com.swiftyticket.exceptions.AccountNotVerifiedException;
 import com.swiftyticket.exceptions.DuplicateUserException;
 import com.swiftyticket.exceptions.IncorrectUserPasswordException;
-import com.swiftyticket.exceptions.UserNotFoundException;
-
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
