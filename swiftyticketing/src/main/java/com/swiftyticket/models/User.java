@@ -9,8 +9,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -20,13 +23,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -42,9 +48,13 @@ public class User implements UserDetails {
     // We should set this to only unique values to avoid duplicate email accounts being formed:
     @Column(unique = true)
     private String email;
+    
     private String password;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
+
     @Column(name = "phone_number")
     private String phoneNumber;
     // Since we need to assign certain roles to the users that login, we use ENUMS for ease of access:
@@ -53,15 +63,25 @@ public class User implements UserDetails {
     //lock users until they verify with OTP (set it to false)
     private boolean verified;
 
+
     @ManyToMany(mappedBy = "preRegisteredUsers4Zone", fetch = FetchType.EAGER)
     private List<Zones> preRegisteredZones;
 
-    @JsonIgnore
+
     @ManyToMany(mappedBy = "preRegisteredUsers4Event", fetch = FetchType.EAGER)
     private List<Event> preRegisteredEvents;
 
+
     @ManyToMany(mappedBy = "winnerList", fetch = FetchType.EAGER)
     private List<Zones> zonesWon;
+
+
+    @OneToMany(mappedBy = "forUser",
+               cascade = CascadeType.ALL,
+               fetch = FetchType.EAGER)
+    private List<Ticket> ticketsBought;
+
+    //List<Integer> ticketsBought;
 
     // Below are all the methods that need to be implemented for Spring Security to actually be able to authorize this User:
 
@@ -76,6 +96,7 @@ public class User implements UserDetails {
 
         this.preRegisteredZones = new ArrayList<>();;
         this.preRegisteredEvents = new ArrayList<>();
+        this.ticketsBought = new ArrayList<>();
 
         this.zonesWon = new ArrayList<>();
 

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.swiftyticket.dto.otp.OtpRequest;
 import com.swiftyticket.dto.otp.OtpResponseDto;
+import com.swiftyticket.dto.otp.OtpStatus;
 import com.swiftyticket.dto.otp.OtpValidationRequest;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,12 @@ public class OtpController {
 	public ResponseEntity<OtpResponseDto> sendOtp(@RequestBody OtpRequest otpRequest) {
 		//log will print to console when this command is executed
 		log.info("inside sendOtp to "+otpRequest.getEmail());
-		return new ResponseEntity<OtpResponseDto>(smsService.sendSMS(otpRequest), HttpStatus.CREATED);
+		OtpResponseDto response = smsService.sendSMS(otpRequest);
+		if(response.getStatus().equals(OtpStatus.DELIVERED)){
+			return new ResponseEntity<OtpResponseDto>(response, HttpStatus.CREATED);
+		}else{
+			return new ResponseEntity<OtpResponseDto>(response, HttpStatus.OK);
+		}
 	}
 	
 	@PostMapping("/validate")

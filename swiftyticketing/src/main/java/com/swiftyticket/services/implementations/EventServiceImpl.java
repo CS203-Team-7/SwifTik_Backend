@@ -34,7 +34,7 @@ public class EventServiceImpl implements EventService{
     public Event getEvent(Integer id) {
         return eventRepository.findById(id).map(event -> {
             return event;
-        }).orElse(null);
+        }).orElseThrow(() -> new EventNotFoundException(id));
     }
 
     @Override 
@@ -53,7 +53,7 @@ public class EventServiceImpl implements EventService{
             event.setVenue(newEventInfo.getVenue());
             event.setVenueCapacity(newEventInfo.getVenueCapacity());
             return eventRepository.save(event);
-        }).orElse(null);
+        }).orElseThrow(() -> new EventNotFoundException(id));
     }
 
     @Override

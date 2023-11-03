@@ -12,6 +12,8 @@ import com.swiftyticket.models.Zones;
 
 @Repository
 public interface ZoneRepository extends JpaRepository<Zones, Integer>{
-    Optional<Zones> findByZoneNameAndEvent(String zoneName, Event event);
+    Optional<Zones> findByZoneIdAndEvent(Integer zoneID, Event event);
 
+    //Optional<Zones> findByZoneNameAndEvent(String zoneName, Event event);
+    //replaced by the one above. keep just in case.
 }

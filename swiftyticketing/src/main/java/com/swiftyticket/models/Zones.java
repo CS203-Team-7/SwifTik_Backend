@@ -1,10 +1,13 @@
 package com.swiftyticket.models;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,6 +42,11 @@ public class Zones {
     @Column(name = "zone_capacity")
     private Integer zoneCapacity;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @NonNull
+    @Column(name = "zone_date")
+    private Date zoneDate;
+
     @Column(name = "tickets_left")
     private Integer ticketsLeft;    
 
@@ -47,6 +56,9 @@ public class Zones {
 
     @Column(name = "register_count")
     private int user_count;
+
+    @Column(name = "ticket_price")
+    private double ticket_price;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "events_id", nullable = false)
@@ -73,14 +85,25 @@ public class Zones {
     @Column(name = "winning_users")
     private List<User> winnerList;
 
+
     @JsonIgnore
-    public Zones(Integer zoneCapacity, String zoneName, Event event){
+    @OneToMany(mappedBy = "forZone",
+               cascade = CascadeType.ALL)
+    private List<Ticket> ticketList;
+
+    //private List<Integer> ticketList;
+
+    @JsonIgnore
+    public Zones(Integer zoneCapacity, String zoneName, Date date, double ticketPrice, Event event){
         this.zoneCapacity = zoneCapacity;
         this.zoneName = zoneName;
         this.event = event;
+        this.zoneDate = date;
+        this.ticket_price = ticketPrice;
         
         this.ticketsLeft = zoneCapacity;
         this.winnerList = new ArrayList<>();
+        this.ticketList = new ArrayList<>();
 
         this.user_count = 0;
     }

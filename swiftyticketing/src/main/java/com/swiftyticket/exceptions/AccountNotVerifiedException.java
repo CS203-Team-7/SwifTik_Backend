@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class AccountNotVerifiedException extends RuntimeException{
-    public AccountNotVerifiedException(String message) {
-        super(message);
+    public AccountNotVerifiedException() {
+        super("Please verify account with the OTP sent to your phone number before logging in.");
     }
 }

@@ -34,5 +34,40 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(WrongZoneDateException.class)
+    public ResponseEntity<Object> WrongZoneDateException(WrongZoneDateException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(AlreadyPreRegisteredException.class)
+    public ResponseEntity<Object> AlreadyPreRegisteredException(AlreadyPreRegisteredException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(EventClosedException.class)
+    public ResponseEntity<Object> EventClosedException(EventClosedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+    
+    @ExceptionHandler(PurchaseException.class)
+    public ResponseEntity<Object> PurchaseException(PurchaseException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(TicketNotFoundException.class)
+    public ResponseEntity<Object> TicketNotFoundException(TicketNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EventNotFoundException.class)
+    public ResponseEntity<Object> EventNotFoundException(EventNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DuplicateUserException.class)
+    public ResponseEntity<Object> DuplicateUserException(DuplicateUserException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     //Will add exception handler for payment later
 }
