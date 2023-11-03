@@ -278,7 +278,7 @@ public class AuthIntegrationTest {
 
 
     @Test
-    public void requestNewOTP_Valid_Return201() throws Exception{
+    public void requestNewOTP_Valid_Return200() throws Exception{
         OtpRequest req = new OtpRequest();
         req.setEmail("newUser@email.com");
         req.setPhoneNumber("+6582887066");
@@ -296,7 +296,7 @@ public class AuthIntegrationTest {
         //make sure user's validation still false.
         User createdUser = userRepo.findByEmail("notVerifiedUser@email.com").orElseThrow(() -> new UserNotFoundException());
             
-        assertEquals(201, responseEntity.getStatusCode().value());
+        assertEquals(200, responseEntity.getStatusCode().value());
         assertEquals(OtpStatus.DELIVERED, responseEntity.getBody().getStatus());
         assertEquals("OTP sent successfully, please check your phone.", responseEntity.getBody().getMessage());
         assertFalse(createdUser.isVerified());
@@ -304,7 +304,7 @@ public class AuthIntegrationTest {
 
 
     @Test
-    public void requestNewOTP_Invalid_Return201() throws Exception{
+    public void requestNewOTP_Invalid_Return200() throws Exception{
         OtpRequest req = new OtpRequest();
         req.setEmail("nopeUser@email.com");
         req.setPhoneNumber("+6582887066");
