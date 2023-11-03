@@ -1,6 +1,5 @@
 package com.swiftyticket.services.implementations;
 
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

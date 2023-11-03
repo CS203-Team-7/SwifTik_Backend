@@ -1,10 +1,8 @@
 package com.swiftyticket.services.implementations;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
@@ -16,12 +14,10 @@ import static org.mockito.Mockito.when;
 import com.swiftyticket.exceptions.EventNotFoundException;
 import com.swiftyticket.exceptions.OpenRegistrationRaffleException;
 import com.swiftyticket.models.Event;
-import com.swiftyticket.models.User;
 import com.swiftyticket.models.Zones;
 import com.swiftyticket.repositories.EventRepository;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 

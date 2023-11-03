@@ -1,12 +1,8 @@
 package com.swiftyticket.services.implementations;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.anyBoolean;
-import static org.mockito.Mockito.anyDouble;
-import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -14,25 +10,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.swiftyticket.dto.zone.ZoneRequest;
-import com.swiftyticket.exceptions.EventNotFoundException;
 import com.swiftyticket.exceptions.WrongZoneDateException;
 import com.swiftyticket.models.Event;
-import com.swiftyticket.models.Role;
-import com.swiftyticket.models.Ticket;
-import com.swiftyticket.models.User;
 import com.swiftyticket.models.Zones;
 import com.swiftyticket.repositories.EventRepository;
 import com.swiftyticket.repositories.UserRepository;
 import com.swiftyticket.repositories.ZoneRepository;
 
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
