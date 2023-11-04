@@ -20,7 +20,7 @@ import com.swiftyticket.services.TicketService;
 @CrossOrigin(origins = "http://localhost:3000")
 public class TicketController {
     
-    private TicketService ticketService;
+    private final TicketService ticketService;
 
     public TicketController(TicketRepository ticketRepository, TicketService ticketService) {
         this.ticketService = ticketService;

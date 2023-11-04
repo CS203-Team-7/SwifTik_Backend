@@ -2,6 +2,7 @@ package com.swiftyticket.controllers;
 
 import java.util.List;
 import jakarta.annotation.Nonnull;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class UserController {
     }
 
     @PutMapping("/update/{email}")
-    public ResponseEntity<User> updateUser(@Nonnull @PathVariable String email, @Nonnull @RequestBody User newUserInfo)
+    public ResponseEntity<User> updateUser(@Nonnull @PathVariable String email, @Nonnull @RequestBody @Valid User newUserInfo)
             throws UserNotFoundException {
         User user = userService.updateUser(email, newUserInfo);
         return new ResponseEntity<>(user, HttpStatus.OK);
