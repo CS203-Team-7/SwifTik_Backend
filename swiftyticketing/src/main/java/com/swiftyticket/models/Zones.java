@@ -65,7 +65,7 @@ public class Zones {
     @JsonIgnore
     private Event event;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinTable(name = "zones_users",
         joinColumns=

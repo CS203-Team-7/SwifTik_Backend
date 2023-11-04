@@ -2,7 +2,6 @@ package com.swiftyticket.services;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.swiftyticket.models.Ticket;
 

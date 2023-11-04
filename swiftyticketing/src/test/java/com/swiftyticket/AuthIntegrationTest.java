@@ -333,9 +333,4 @@ public class AuthIntegrationTest {
         assertFalse(createdUser.isVerified());
     }
 
-
-
-
-
-    
 }
