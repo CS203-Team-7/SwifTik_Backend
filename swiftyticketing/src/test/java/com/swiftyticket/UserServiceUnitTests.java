@@ -14,9 +14,6 @@ import com.swiftyticket.models.Role;
 import com.swiftyticket.models.User;
 import com.swiftyticket.repositories.UserRepository;
 
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

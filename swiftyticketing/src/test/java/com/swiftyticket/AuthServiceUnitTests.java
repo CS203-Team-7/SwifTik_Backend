@@ -19,8 +19,6 @@ import com.swiftyticket.models.User;
 import com.swiftyticket.repositories.UserRepository;
 import com.swiftyticket.services.JwtService;
 
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 
