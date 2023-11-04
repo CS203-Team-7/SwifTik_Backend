@@ -1,5 +1,6 @@
 package com.swiftyticket.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
@@ -31,6 +33,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "events")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Slf4j
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -92,7 +95,9 @@ public class Event {
 
 
         //currently eventController uses requestBody, which doesnt require this constructor. If you wish to change it in the future can use this.
-/* public Event(String eventName, List<String> artists, List<Date> dates, String venue, Integer venueCapacity){
+        @JsonIgnore
+    public Event(String eventName, List<String> artists, List<Date> dates, String venue, Integer venueCapacity){
+
         this.eventName = eventName;
         this.artists = artists;
         this.dates = dates;
@@ -100,12 +105,13 @@ public class Event {
         this.venueCapacity = venueCapacity;
 
         this.zoneList = new ArrayList<>();
-        this.open4Registration = true;
         this.preRegisteredUsers4Event = new ArrayList<>();
+        
 
-        log.info("event was constructed and the registration boolean is set to: " + this.open4Registration);
-    }
-*/
+        log.info("Event successfully created!");
+
+        }
+
 
 
     // custom constructor to account for use of LocalDate.of(yyyy, mm, dd) method
