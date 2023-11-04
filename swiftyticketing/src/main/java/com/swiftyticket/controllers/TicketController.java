@@ -2,21 +2,15 @@ package com.swiftyticket.controllers;
 
 import java.util.List;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.swiftyticket.dto.otp.OtpResponseDto;
 import com.swiftyticket.exceptions.TicketNotFoundException;
 import com.swiftyticket.models.Ticket;
 import com.swiftyticket.repositories.TicketRepository;
@@ -26,7 +20,7 @@ import com.swiftyticket.services.TicketService;
 @CrossOrigin(origins = "http://localhost:3000")
 public class TicketController {
     
-    private TicketService ticketService;
+    private final TicketService ticketService;
 
     public TicketController(TicketRepository ticketRepository, TicketService ticketService) {
         this.ticketService = ticketService;
@@ -50,6 +44,7 @@ public class TicketController {
         return new ResponseEntity<Ticket>(ticketService.purchaseTicket(bearerToken, eventId, zoneId), HttpStatus.CREATED);
     }
 
+    /*
     @DeleteMapping("/tickets/{id}")
     public String deleteTicket(@PathVariable Integer id) {
         try {
@@ -59,4 +54,5 @@ public class TicketController {
         }
         return "Ticket "+ id + " deleted.";
     }
+    */
 }

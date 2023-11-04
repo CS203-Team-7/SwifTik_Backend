@@ -2,6 +2,7 @@ package com.swiftyticket.controllers;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +21,8 @@ import com.swiftyticket.services.ZoneService;
 
 @RestController
 public class ZoneController {
-    private ZoneService zoneService;
-    private EventService eventService;
+    private final ZoneService zoneService;
+    private final EventService eventService;
     
 
     public ZoneController(ZoneService zoneService, EventService eventService) {
@@ -30,7 +31,7 @@ public class ZoneController {
     }
 
     @PostMapping("/events/{id}/createZone")
-    public ResponseEntity<Zones> addEvent(@RequestBody ZoneRequest zoneReq, @PathVariable Integer id){
+    public ResponseEntity<Zones> addEvent(@RequestBody @Valid ZoneRequest zoneReq, @PathVariable Integer id){
         Event event = eventService.getEvent(id);
         return new ResponseEntity<Zones> (zoneService.addZone(zoneReq, event), HttpStatus.CREATED);
     }

@@ -12,6 +12,9 @@ import com.swiftyticket.dto.otp.OtpRequest;
 import com.swiftyticket.dto.otp.OtpResponseDto;
 import com.swiftyticket.dto.otp.OtpStatus;
 import com.swiftyticket.dto.otp.OtpValidationRequest;
+import com.swiftyticket.exceptions.UserNotFoundException;
+import com.swiftyticket.models.User;
+
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -19,10 +22,12 @@ import com.twilio.type.PhoneNumber;
 import com.swiftyticket.repositories.UserRepository;
 
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Getter
 @RequiredArgsConstructor
 @Slf4j
 public class SmsServiceImpl {
@@ -63,6 +68,14 @@ public class SmsServiceImpl {
 			PhoneNumber to = new PhoneNumber(otpRequest.getPhoneNumber());// to
 			PhoneNumber from = new PhoneNumber(twilioConfig.getPhoneNumber()); // from
 
+			//check if email and phone numbers match. If not, throw exception. 
+			User toSend = userRepo.findByEmail(otpRequest.getEmail()).orElseThrow(() -> new UserNotFoundException());
+
+			if( !( toSend.getPhoneNumber().equals(otpRequest.getPhoneNumber()) )){
+				throw new RuntimeException("phone numbers don't match");
+			}
+			
+
 			// generate OTP&message using the earlier method
 			String otp = generateOTP();
 			String otpMessage = "Hi, " + otpRequest.getEmail() + ", your OTP for verification is: " + otp
@@ -78,9 +91,10 @@ public class SmsServiceImpl {
 			// store in map with username as key, and save response in the DTO so we can
 			// access it later back in the controller.
 			otpMap.put(otpRequest.getEmail(), otp);
-			otpResponseDto = new OtpResponseDto(OtpStatus.DELIVERED, otpMessage);
+			otpResponseDto = new OtpResponseDto(OtpStatus.DELIVERED, "OTP sent successfully, please check your phone.");
 		} catch (Exception e) {
-			otpResponseDto = new OtpResponseDto(OtpStatus.FAILED, e.getMessage());
+			e.printStackTrace();
+			otpResponseDto = new OtpResponseDto(OtpStatus.FAILED, "Either invalid phone number, or email and phone numbers don't match.");
 		}
 		return otpResponseDto;
 	}
@@ -106,4 +120,25 @@ public class SmsServiceImpl {
 			return "OTP is invalid! Please try again, or request for a new OTP";
 		}
 	}
+
+	public void sendCongratz(String message, String phoneNumber) {
+		try {
+			// get the to and from number for the message function later
+			PhoneNumber to = new PhoneNumber(phoneNumber);// to
+			PhoneNumber from = new PhoneNumber(twilioConfig.getPhoneNumber()); // from
+
+			Message
+					.creator(to, from,
+							message)
+					.create();
+
+			log.info("message sent to " + phoneNumber + " saying: " + message);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			//if message failed to send to number, just ignore. (they can still check their zones won online) itsok. 
+		}
+		return;
+	}
+
 }

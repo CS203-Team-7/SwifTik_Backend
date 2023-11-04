@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import com.swiftyticket.exceptions.DuplicateUserException;
 import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.models.User;
 import com.swiftyticket.repositories.UserRepository;
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public List<User> getAllUsers() {
         List<User> usersList = userRepository.findAll();
-        if(usersList.isEmpty()) throw new UserNotFoundException("No users found");
+        if(usersList.isEmpty()) throw new UserNotFoundException();
         else return usersList;
     }
 
@@ -42,25 +43,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByEmail(String email){
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
+                .orElseThrow(UserNotFoundException::new);
     }
 
     /**
-     * Updates the existing user with the new user details.
-     * @param email -> String user email (Unique identifier)
-     * @param newUserInfo -> User object containing the new user details
+     * Creates a new user in the DB.
+     * @param newUserInfo -> User object containing the user details
+     * @throws DuplicateUserException -> if the user email already exists in the DB
      * @throws UserNotFoundException -> if the user email does not exist in the DB
-     * @return -> User object with the updated details
+     * @return User -> User object containing the user details
      */
     @Override
     public User updateUser(String email, User newUserInfo) {
+        //check if current email is already in use, if it is throw exception. 
+        if(userRepository.findByEmail(newUserInfo.getEmail()).isPresent()){
+            throw new DuplicateUserException();
+        }
+
         return userRepository.findByEmail(email).map(user -> {
             user.setDateOfBirth(newUserInfo.getDateOfBirth());
             user.setEmail(newUserInfo.getEmail());
             user.setPassword(newUserInfo.getPassword());
             user.setPhoneNumber(newUserInfo.getPhoneNumber());
             return userRepository.save(user);
-        }).orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+        }).orElseThrow(UserNotFoundException::new);
     }
 
     /**
@@ -85,7 +91,7 @@ public class UserServiceImpl implements UserService {
             @Override
             public UserDetails loadUserByUsername(String username) {
                 return userRepository.findByEmail(username)
-                        .orElseThrow(() -> new UserNotFoundException("User does not exist"));
+                                        .orElseThrow(() -> new UserNotFoundException());
             }
         };
     }

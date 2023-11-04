@@ -1,6 +1,7 @@
 package com.swiftyticket.controllers;
 
 import com.swiftyticket.services.implementations.SmsServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.swiftyticket.dto.otp.OtpRequest;
 import com.swiftyticket.dto.otp.OtpResponseDto;
+import com.swiftyticket.dto.otp.OtpStatus;
 import com.swiftyticket.dto.otp.OtpValidationRequest;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,14 +34,16 @@ public class OtpController {
 	}
 
 	@PostMapping("/send")
-	public ResponseEntity<OtpResponseDto> sendOtp(@RequestBody OtpRequest otpRequest) {
+	public ResponseEntity<OtpResponseDto> sendOtp(@RequestBody @Valid OtpRequest otpRequest) {
 		//log will print to console when this command is executed
 		log.info("inside sendOtp to "+otpRequest.getEmail());
-		return new ResponseEntity<OtpResponseDto>(smsService.sendSMS(otpRequest), HttpStatus.CREATED);
+		OtpResponseDto response = smsService.sendSMS(otpRequest);
+		log.info(""+response.getStatus().equals(OtpStatus.DELIVERED));
+		return new ResponseEntity<OtpResponseDto>(response, HttpStatus.OK);
 	}
 	
 	@PostMapping("/validate")
-    public ResponseEntity<String> validateOtp(@RequestBody OtpValidationRequest otpValidationRequest) {
+    public ResponseEntity<String> validateOtp(@RequestBody @Valid OtpValidationRequest otpValidationRequest) {
 		log.info("inside validateOtp :: "+otpValidationRequest.getEmail()+" "+otpValidationRequest.getOtpNumber());
 		return new ResponseEntity<String>(smsService.validateOtp(otpValidationRequest), HttpStatus.OK);
     }

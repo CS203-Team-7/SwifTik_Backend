@@ -8,6 +8,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(IllegalSignUpArgumentException.class)
+    public ResponseEntity<Object> handleIllegalSignUpArgumentException(IllegalSignUpArgumentException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(JWTExpiredException.class)
+    public ResponseEntity<Object> handleJWTExpiredException(JWTExpiredException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+    
+    @ExceptionHandler(ZoneNotFoundException.class)
+    public ResponseEntity<Object> handleZoneNotFoundException(ZoneNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
     
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException e) {
@@ -62,6 +77,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EventNotFoundException.class)
     public ResponseEntity<Object> EventNotFoundException(EventNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DuplicateUserException.class)
+    public ResponseEntity<Object> DuplicateUserException(DuplicateUserException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     //Will add exception handler for payment later
