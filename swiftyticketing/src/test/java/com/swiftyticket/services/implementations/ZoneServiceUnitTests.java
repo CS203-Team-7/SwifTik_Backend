@@ -1,6 +1,7 @@
 package com.swiftyticket.services.implementations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,7 +14,9 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -210,7 +213,7 @@ class ZoneServiceUnitTests {
         assertSame(zonesList, actualListZonesResult);
     }
 
-    // joinRaffle() and raffle() tests are remaining to be implemented in the future.
+    // joinRaffle() tests
     @Test
     void joinRaffle_EventNotFound_ThrowException(){
         //Arrange
@@ -488,6 +491,281 @@ class ZoneServiceUnitTests {
         verify(eventRepository).save(event);
         verify(userRepository).save(user);
         verify(zoneRepository).save(zones);
+    }
+
+
+    //raffle() tests
+
+    //helper method
+    public void setUserDetails(User user) {
+        user.setZonesWon(new ArrayList<Zones>());
+        user.setPreRegisteredEvents(new ArrayList<Event>());
+        user.setPreRegisteredZones(new ArrayList<Zones>());
+    }
+
+    @Test
+    void raffleFirstRound_MoreTicketsThanUsers_Successful() {
+        //set event
+        Event event = new Event();
+        event.setEventId(1);
+        event.setRaffleRound(0);
+
+        //set user
+        User user1 = new User();
+        setUserDetails(user1);
+
+        User user2 = new User();
+        setUserDetails(user2);
+
+        User user3 = new User();
+        setUserDetails(user3);
+
+        //set zone
+        Zones zone = new Zones();
+        zone.setWinnerList(new ArrayList<>());
+        zone.setEvent(event);
+        zone.setTicketsLeft(4);
+
+        //put a list of pre-registered users for event and zone
+        ArrayList<User> userList4Zone = new ArrayList<>();
+        userList4Zone.add(user1);
+        userList4Zone.add(user2);
+        userList4Zone.add(user3);
+
+        ArrayList<User> userList4Event = userList4Zone;
+
+        zone.setPreRegisteredUsers4Zone(userList4Zone);
+        event.setPreRegisteredUsers4Event(userList4Event);
+
+        ArrayList<User> expectedWinnersList = new ArrayList<>(Arrays.asList(user1, user2, user3));
+
+        //Act
+        zoneServiceImpl.raffle(zone);
+
+        //Assert
+        //put in HashSet because the arrangement of getWinnerList is randomized everytime the program runs.
+        assertEquals(new HashSet<User>(expectedWinnersList), new HashSet<User>(zone.getWinnerList()));
+        assertEquals(new ArrayList<User>(), zone.getPreRegisteredUsers4Zone());
+
+        //for users
+        assertEquals(new ArrayList<Event>(), user1.getPreRegisteredEvents());
+        assertEquals(new ArrayList<Zones>(), user1.getPreRegisteredZones());
+
+        assertEquals(new ArrayList<Event>(), user2.getPreRegisteredEvents());
+        assertEquals(new ArrayList<Zones>(), user2.getPreRegisteredZones());
+
+        assertEquals(new ArrayList<Event>(), user3.getPreRegisteredEvents());
+        assertEquals(new ArrayList<Zones>(), user3.getPreRegisteredZones());
+
+        assertEquals(new ArrayList<Zones>(Arrays.asList(zone)), user1.getZonesWon());
+        //assertEquals(expectedWinnersList, zone.getWinnerList());
+        
+    }
+
+    @Test
+    void raffleFirstRound_LessTicketsThanUsers_Successful() {
+        //set event
+        Event event = new Event();
+        event.setEventId(1);
+        event.setRaffleRound(0);
+
+        //set user
+        User user1 = new User();
+        setUserDetails(user1);
+
+        User user2 = new User();
+        setUserDetails(user2);
+
+        User user3 = new User();
+        setUserDetails(user3);
+
+        //set zone
+        Zones zone = new Zones();
+        zone.setWinnerList(new ArrayList<>());
+        zone.setEvent(event);
+        zone.setTicketsLeft(2);
+
+        //put a list of pre-registered users for event and zone
+        ArrayList<User> userList4Zone = new ArrayList<>();
+        userList4Zone.add(user1);
+        userList4Zone.add(user2);
+        userList4Zone.add(user3);
+
+        ArrayList<User> userList4Event = userList4Zone;
+
+        zone.setPreRegisteredUsers4Zone(userList4Zone);
+        event.setPreRegisteredUsers4Event(userList4Event);
+
+
+        //Act
+        zoneServiceImpl.raffle(zone);
+
+        //Assert
+        //check the size instead of the actual array since we don't know who is going to win
+        assertEquals(2, zone.getWinnerList().size());
+        assertEquals(1, zone.getPreRegisteredUsers4Zone().size());
+
+        //for users
+        assertEquals(new ArrayList<Event>(), user1.getPreRegisteredEvents());
+        assertEquals(new ArrayList<Zones>(), user1.getPreRegisteredZones());
+
+        assertEquals(new ArrayList<Event>(), user2.getPreRegisteredEvents());
+        assertEquals(new ArrayList<Zones>(), user2.getPreRegisteredZones());
+
+        assertEquals(new ArrayList<Event>(), user3.getPreRegisteredEvents());
+        assertEquals(new ArrayList<Zones>(), user3.getPreRegisteredZones());
+
+        //assertEquals(expectedWinnersList, zone.getWinnerList());
+
+        
+    }
+
+    @Test
+    void raffleSecondRound_MoreTicketsThanUsers_Successful() {
+        //set event
+        Event event = new Event();
+        event.setEventId(1);
+        event.setRaffleRound(1);
+
+        //set user
+        User user1 = new User();
+        setUserDetails(user1);
+        // user1.setZonesWon(new ArrayList<Zones>());
+        // user1.setPreRegisteredEvents(new ArrayList<Event>());
+        // user1.setPreRegisteredZones(new ArrayList<Zones>());
+
+        User user2 = new User();
+        setUserDetails(user2);
+
+        User user3 = new User();
+        setUserDetails(user3);
+
+        //user who won in the first raffle
+        User userPreviouslyWon = new User();
+        setUserDetails(userPreviouslyWon);
+
+        //set zone
+        Zones zone = new Zones();
+        zone.setWinnerList(new ArrayList<>());
+        zone.getWinnerList().add(userPreviouslyWon);
+
+        zone.setEvent(event);
+        zone.setTicketsLeft(4);
+
+        zone.getWinnerList().add(userPreviouslyWon);
+
+        //put a list of pre-registered users for event and zone
+        ArrayList<User> userList4Zone = new ArrayList<>();
+        userList4Zone.add(user1);
+        userList4Zone.add(user2);
+        userList4Zone.add(user3);
+
+        ArrayList<User> userList4Event = userList4Zone;
+
+        zone.setPreRegisteredUsers4Zone(userList4Zone);
+        event.setPreRegisteredUsers4Event(userList4Event);
+
+        
+        ArrayList<User> expectedWinnersList = new ArrayList<>(Arrays.asList(user1, user2, user3));
+
+
+        //Act
+        zoneServiceImpl.raffle(zone);
+
+        //Assert
+        //put in HashSet because the arrangement of getWinnerList is randomized everytime the program runs.
+        assertEquals(new HashSet<User>(expectedWinnersList), new HashSet<User>(zone.getWinnerList()));
+        assertEquals(0, zone.getPreRegisteredUsers4Zone().size());
+
+        //for users
+        assertEquals(new ArrayList<Event>(), user1.getPreRegisteredEvents());
+        assertEquals(new ArrayList<Zones>(), user1.getPreRegisteredZones());
+
+        assertEquals(new ArrayList<Event>(), user2.getPreRegisteredEvents());
+        assertEquals(new ArrayList<Zones>(), user2.getPreRegisteredZones());
+
+        assertEquals(new ArrayList<Event>(), user3.getPreRegisteredEvents());
+        assertEquals(new ArrayList<Zones>(), user3.getPreRegisteredZones());
+
+
+        assertEquals(new ArrayList<Zones>(Arrays.asList(zone)), user1.getZonesWon());
+        //assertEquals(expectedWinnersList, zone.getWinnerList());
+
+        //check if zonesWon has been removed, as the previously won user should not be able to buy the ticket for the current raffle
+        //if they have won in the previous raffle
+        assertEquals(new ArrayList<Zones>(), userPreviouslyWon.getZonesWon());
+        
+    }
+
+    @Test
+    void raffleSecondRound_LessTicketsThanUsers_Successful() {
+        //set event
+        Event event = new Event();
+        event.setEventId(1);
+        event.setRaffleRound(1);
+
+        //set user
+        User user1 = new User();
+        setUserDetails(user1);
+        // user1.setZonesWon(new ArrayList<Zones>());
+        // user1.setPreRegisteredEvents(new ArrayList<Event>());
+        // user1.setPreRegisteredZones(new ArrayList<Zones>());
+
+        User user2 = new User();
+        setUserDetails(user2);
+
+        User user3 = new User();
+        setUserDetails(user3);
+
+        //user who won in the first raffle
+        User userPreviouslyWon = new User();
+        setUserDetails(userPreviouslyWon);
+
+        //set zone
+        Zones zone = new Zones();
+        zone.setWinnerList(new ArrayList<>());
+        zone.getWinnerList().add(userPreviouslyWon);
+
+        zone.setEvent(event);
+        zone.setTicketsLeft(2);
+
+        zone.getWinnerList().add(userPreviouslyWon);
+
+        //put a list of pre-registered users for event and zone
+        ArrayList<User> userList4Zone = new ArrayList<>();
+        userList4Zone.add(user1);
+        userList4Zone.add(user2);
+        userList4Zone.add(user3);
+
+        ArrayList<User> userList4Event = userList4Zone;
+
+        zone.setPreRegisteredUsers4Zone(userList4Zone);
+        event.setPreRegisteredUsers4Event(userList4Event);
+
+
+        //Act
+        zoneServiceImpl.raffle(zone);
+
+        //Assert
+        //check the size instead of the actual array since we don't know who is going to win
+        assertEquals(2, zone.getWinnerList().size());
+        assertEquals(1, zone.getPreRegisteredUsers4Zone().size());
+
+
+        //for users
+        assertEquals(new ArrayList<Event>(), user1.getPreRegisteredEvents());
+        assertEquals(new ArrayList<Zones>(), user1.getPreRegisteredZones());
+
+        assertEquals(new ArrayList<Event>(), user2.getPreRegisteredEvents());
+        assertEquals(new ArrayList<Zones>(), user2.getPreRegisteredZones());
+
+        assertEquals(new ArrayList<Event>(), user3.getPreRegisteredEvents());
+        assertEquals(new ArrayList<Zones>(), user3.getPreRegisteredZones());
+
+        //check if zonesWon has been removed, as the previously won user should not be able to buy the ticket for the current raffle
+        //if they have won in the previous raffle
+        assertEquals(new ArrayList<Zones>(), userPreviouslyWon.getZonesWon());
+        
     }
 
 
