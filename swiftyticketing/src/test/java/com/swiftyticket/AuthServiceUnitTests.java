@@ -1,4 +1,4 @@
-package com.swiftyticket.services.implementations;
+package com.swiftyticket;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -24,6 +24,8 @@ import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 
+import com.swiftyticket.services.implementations.AuthServiceImpl;
+import com.swiftyticket.services.implementations.SmsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

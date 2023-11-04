@@ -1,4 +1,4 @@
-package com.swiftyticket.services.implementations;
+package com.swiftyticket;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.swiftyticket.services.implementations.JwtServiceImpl;
+import com.swiftyticket.services.implementations.SmsServiceImpl;
+import com.swiftyticket.services.implementations.ZoneServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
