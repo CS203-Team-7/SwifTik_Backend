@@ -58,29 +58,26 @@ public class EventServiceImpl implements EventService{
 
     @Override
     public void deleteEvent(Integer id) {
-        Optional<Event> e = eventRepository.findById(id);
-        if (e == null) throw new EventNotFoundException(id);
-
-        Event event = e.get();
-        eventRepository.deleteById(event.getEventId());
+        //check that event exists
+        Event e = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id));
+        // if exists error won't be thrown and we can proceed to delete (yipee)
+        eventRepository.deleteById(id);
     }
 
     public void openEvent(Integer id){
-        Optional<Event> e = eventRepository.findById(id);
-        if (e == null) throw new EventNotFoundException(id);
-
-        Event event = e.get();
-        event.setOpen4Registration(true);
-        eventRepository.save(event);
+        //check the event exists
+        Event e = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id));
+        // if exists error won't be thrown and we can proceed to update (yipee)
+        e.setOpen4Registration(true);
+        eventRepository.save(e);
     }
 
     public void closeEvent(Integer id){
-        Optional<Event> e = eventRepository.findById(id);
-        if (e == null) throw new EventNotFoundException(id);
-
-        Event event = e.get();
-        event.setOpen4Registration(false);
-        eventRepository.save(event);
+        //check the event exists
+        Event e = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id));
+        // if exists error won't be thrown and we can proceed to update (yipee)
+        e.setOpen4Registration(false);
+        eventRepository.save(e);
     }
 
     public void raffle(Integer id){
