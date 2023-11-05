@@ -80,20 +80,32 @@ public class EventController {
     }
 
     @PutMapping("/events/{id}/close")
-    public ResponseEntity<String> closeRegistration(@PathVariable Integer id) throws EventNotFoundException {
-        eventService.closeEvent(id);
+    public ResponseEntity<String> closeRegistration(@PathVariable Integer id)  {
+        try {
+            eventService.closeEvent(id);
+        } catch (Exception e) {
+            throw new EventNotFoundException(id);
+        }
         return new ResponseEntity<String>("Event #" + id + "'s registration window has been closed.", HttpStatus.OK);
     }
 
     @PutMapping("/events/{id}/open")
-    public ResponseEntity<String> openRegistration(@PathVariable Integer id) throws EventNotFoundException {
-        eventService.openEvent(id);
+    public ResponseEntity<String> openRegistration(@PathVariable Integer id) {
+        try {
+            eventService.openEvent(id);
+        } catch (Exception e) {
+            throw new EventNotFoundException(id);
+        }
         return new ResponseEntity<String>("Event #" + id + "'s registration window has been opened.", HttpStatus.OK);
     }
 
     @PutMapping("/events/{id}/raffle")
-    public ResponseEntity<String> eventRaffle(@PathVariable Integer id) throws EventNotFoundException {
-        eventService.raffle(id);
+    public ResponseEntity<String> eventRaffle(@PathVariable Integer id) {
+        try {
+            eventService.raffle(id);
+        } catch (Exception e) {
+            throw new EventNotFoundException(id);
+        }
         return new ResponseEntity<String>("Event #" + id + "'s raffle has been done", HttpStatus.OK);
     }
 }
