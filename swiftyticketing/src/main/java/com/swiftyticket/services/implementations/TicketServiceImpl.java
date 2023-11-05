@@ -1,11 +1,7 @@
 package com.swiftyticket.services.implementations;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
-
 import com.swiftyticket.exceptions.EventNotFoundException;
 import com.swiftyticket.exceptions.PurchaseException;
 import com.swiftyticket.exceptions.TicketNotFoundException;
@@ -23,7 +19,6 @@ import com.swiftyticket.services.TicketService;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 
 @Service
 @AllArgsConstructor

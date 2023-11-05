@@ -69,5 +69,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ZoneNotFoundException.class)
+    public ResponseEntity<Object> ZoneNotFoundException(ZoneNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
     //Will add exception handler for payment later
 }
