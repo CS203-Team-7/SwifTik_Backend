@@ -288,7 +288,7 @@ public class EventIntegrationTest {
         Integer eventId = testOpenEvent.getEventId();
 
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-            createURLWithPort("/events/" + eventId +"/close"),
+            createURLWithPort("/events/" + eventId + "/close"),
             HttpMethod.PUT,
             new HttpEntity<>(headers),
             String.class
@@ -308,7 +308,7 @@ public class EventIntegrationTest {
 
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
             // there is no event with id 999
-            createURLWithPort("/events/" + 999 +"/close"),
+            createURLWithPort("/events/" + 999 + "/close"),
             HttpMethod.PUT,
             new HttpEntity<>(headers),
             Void.class
@@ -329,7 +329,7 @@ public class EventIntegrationTest {
         Integer eventId = testClosedEvent.getEventId();
 
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-            createURLWithPort("/events/" + eventId +"/open"),
+            createURLWithPort("/events/" + eventId + "/open"),
             HttpMethod.PUT,
             new HttpEntity<>(headers),
             String.class
@@ -349,7 +349,7 @@ public class EventIntegrationTest {
 
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
             // there is no event with id 999
-            createURLWithPort("/events/" + 999 +"/open"),
+            createURLWithPort("/events/" + 999 + "/open"),
             HttpMethod.PUT,
             new HttpEntity<>(headers),
             String.class
