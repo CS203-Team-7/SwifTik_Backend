@@ -1,7 +1,7 @@
 spring:
     datasource:
-        url: jdbc:postgresql://localhost:5432/swiftyticketing
-        username: zj
+        url: jdbc:postgresql://localhost:5433/swiftyticketing
+        username: postgres
         password: postgres
         driver-class-name: org.postgresql.Driver
     jpa:
