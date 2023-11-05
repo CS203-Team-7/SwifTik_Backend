@@ -50,4 +50,9 @@ public class TicketController {
         return new ResponseEntity<Ticket>(ticketService.purchaseTicket(bearerToken, eventId, zoneId), HttpStatus.CREATED);
     }
 
+    @GetMapping("/tickets/userid={userid}")
+    public ResponseEntity<List<Ticket>> getUserTiks(@PathVariable Integer userid){
+        return new ResponseEntity<List<Ticket>>(ticketService.getAllUserTickets(userid), HttpStatus.OK);
+    }
+
 }

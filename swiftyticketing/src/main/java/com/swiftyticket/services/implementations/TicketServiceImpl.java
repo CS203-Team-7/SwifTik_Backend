@@ -94,7 +94,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<Ticket> getAllUserTickets(Integer userId){
-        return new ArrayList<>();
+        User uzer = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
+        return uzer.getTicketsBought();
     }
 
 }
