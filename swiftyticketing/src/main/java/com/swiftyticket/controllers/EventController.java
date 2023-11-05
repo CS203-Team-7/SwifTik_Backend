@@ -67,7 +67,7 @@ public class EventController {
 
             // DEUBUGGING
             log.info("DEBUG: passed try block in deleteEvent method in EventController");
-        } catch(EmptyResultDataAccessException e) {
+        } catch(Exception e) {
             // DEUBUGGING
             log.info("DEBUG: entering catch block in deleteEvent method in EventController");
 
