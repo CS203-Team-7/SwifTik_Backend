@@ -21,7 +21,6 @@ import com.swiftyticket.services.TicketService;
 public class TicketController {
     
     private final TicketService ticketService;
-    private final TicketService ticketService;
 
     public TicketController(TicketRepository ticketRepository, TicketService ticketService) {
         this.ticketService = ticketService;
