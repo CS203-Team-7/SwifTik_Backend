@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.junit.jupiter.api.AfterEach;
@@ -34,6 +35,8 @@ import com.swiftyticket.models.User;
 import com.swiftyticket.models.Zones;
 import com.swiftyticket.repositories.EventRepository;
 import com.swiftyticket.repositories.UserRepository;
+import com.swiftyticket.services.EventService;
+import com.swiftyticket.services.implementations.AuthServiceImpl;
 import com.swiftyticket.services.implementations.EventServiceImpl;
 import com.swiftyticket.services.implementations.SmsServiceImpl;
 
@@ -58,40 +61,86 @@ public class EventIntegrationTest {
 
     @Autowired
     private EventRepository eventRepo;
+
+    @Autowired
+    private EventService eventServ;
     
     @Autowired
-    private EventServiceImpl eventService;
+    private AuthServiceImpl authServ;
+
+    private String adminToken;
+    private String userToken;
+    private Event openEvent;
+    private Event closedEvent;
 
     @BeforeEach
-    void createUsers(){
-        String encodedPassowrd = new BCryptPasswordEncoder().encode("GoodPassword123!");
+    void setUp() throws Exception {
+        //create users
+        log.info("starting set up");
+        String password = "GoodPassword123!";
+        String encodedPassowrd = new BCryptPasswordEncoder().encode(password);
 
-        User user = new User("newUser@email.com", encodedPassowrd, new Date(), "+6582887066", Role.USER, true);
-        userRepo.save(user);
+        User newUser = new User("newUser@email.com", encodedPassowrd, new Date(), "+6582887066", Role.USER, true);
+        userRepo.save(newUser);
 
-        User admin = new User("newAdmin@email.com", encodedPassowrd, new Date(), "+6887662344", Role.ADMIN, true);
-        userRepo.save(admin);
+        User newAdmin = new User("newAdmin@email.com", encodedPassowrd, new Date(), "+6887662344", Role.ADMIN, true);
+        userRepo.save(newAdmin);
+
+        //get their tokens
+        AuthResponse adminLogin = authServ.signIn(new SignInRequest("newAdmin@email.com", password));
+        adminToken = adminLogin.getToken();
+
+        AuthResponse userLogin = authServ.signIn(new SignInRequest("newUser@email.com", password));
+        userToken = userLogin.getToken();
+        log.info(""+userToken);
+        log.info(""+adminToken);
+
+        //create events
+        //create date array for the creation of event.
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  
+        Date date = sdf.parse("07/03/2023");
+        Date[] dates = new Date[]{date};
+
+        //create Artists array
+        String[] artists = new String[]{"people","more people"};
+        Arrays.asList(artists);
+
+        openEvent = eventServ.addEvent(new Event(port, "concert", Arrays.asList(artists), Arrays.asList(dates), "some stage", 50, false, port, null, null, port));
+        //eventRepo.save(openEvent);
+        
+        closedEvent = eventServ.addEvent(new Event(port, "concert", Arrays.asList(artists), Arrays.asList(dates), "some stage", 50, false, port, null, null, port));
+        //eventRepo.save(closedEvent);
     }
+    
+    // void createUsers(){
+    //     String encodedPassowrd = new BCryptPasswordEncoder().encode("GoodPassword123!");
 
-    void createEvents(){
-        List<String> artists = new ArrayList<>();
-        artists.add("Taylor Swift");
-        artists.add("Ed Sheeran");
-        artists.add("Ariana Grande");
-        artists.add("BTS");
+    //     User user = new User("newUser@email.com", encodedPassowrd, new Date(), "+6582887066", Role.USER, true);
+    //     userRepo.save(user);
 
-        List<Date> dates = new ArrayList<>();
-        dates.add(new Date(2021, 10, 10));
-        dates.add(new Date(2021, 10, 11));
-        dates.add(new Date(2021, 10, 12));
-        dates.add(new Date(2021, 10, 13));
+    //     User admin = new User("newAdmin@email.com", encodedPassowrd, new Date(), "+6887662344", Role.ADMIN, true);
+    //     userRepo.save(admin);
+    // }
 
-        Event openEvent = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, true, port, null, null, port);
-        eventRepo.save(openEvent);
+    // void createEvents(){
+    //     List<String> artists = new ArrayList<>();
+    //     artists.add("Taylor Swift");
+    //     artists.add("Ed Sheeran");
+    //     artists.add("Ariana Grande");
+    //     artists.add("BTS");
 
-        Event closedEvent = new Event(port, "Swifty Concert 2", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-        eventRepo.save(closedEvent);
-    }
+    //     List<Date> dates = new ArrayList<>();
+    //     dates.add(new Date(2021, 10, 10));
+    //     dates.add(new Date(2021, 10, 11));
+    //     dates.add(new Date(2021, 10, 12));
+    //     dates.add(new Date(2021, 10, 13));
+
+    //     Event openEvent = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, true, port, null, null, port);
+    //     eventRepo.save(openEvent);
+
+    //     Event closedEvent = new Event(port, "Swifty Concert 2", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
+    //     eventRepo.save(closedEvent);
+    // }
 
     
     @AfterEach
@@ -449,11 +498,10 @@ public class EventIntegrationTest {
 
 
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
-            createURLWithPort("/events/{id}"),
+            createURLWithPort("/events/" + eventId),
             HttpMethod.DELETE,
             new HttpEntity<>(headers),
-            Void.class,
-            eventId
+            Void.class
         );
 
         assertEquals(404, responseEntity.getStatusCode().value());
