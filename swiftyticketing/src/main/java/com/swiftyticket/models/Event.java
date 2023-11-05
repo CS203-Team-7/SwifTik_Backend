@@ -114,6 +114,16 @@ public class Event {
 
         }
 
+        @Override
+        @JsonIgnore
+        public boolean equals(Object other){
+            if( !(other instanceof Event) ){
+                return false;
+            }
+    
+            return this.eventId == ((Event)other).eventId;
+        }
+
 
 
     // custom constructor to account for use of LocalDate.of(yyyy, mm, dd) method

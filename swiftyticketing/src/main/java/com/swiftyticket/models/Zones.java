@@ -109,4 +109,14 @@ public class Zones {
         this.user_count = 0;
     }
 
+    @Override
+    @JsonIgnore
+    public boolean equals(Object other){
+        if( !(other instanceof Zones) ){
+            return false;
+        }
+
+        return this.zoneId == ((Zones)other).zoneId;
+    }
+
 }

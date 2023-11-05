@@ -65,5 +65,15 @@ public class Ticket {
         this.zonename = zone.getZoneName();
         this.userEmail = user.getEmail();
     }
+
+    @Override
+    @JsonIgnore
+    public boolean equals(Object other){
+        if( !(other instanceof Ticket) ){
+            return false;
+        }
+
+        return this.ticketId == ((Ticket)other).ticketId;
+    }
     
 }
