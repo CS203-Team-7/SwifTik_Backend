@@ -266,7 +266,6 @@ public class EventIntegrationTest {
         assertEquals(200, responseEntity.getStatusCode().value());
     }
 
-        // ############################################### BROKEN TEST ################################################
     @Test
     public void deleteEvent_EventNotFoundException_failure() throws Exception {
         // setup header with adminToken
@@ -292,8 +291,6 @@ public class EventIntegrationTest {
 
         //DEBUGGING
         log.info("DEBUG: AFTER ASSERT");
-        // can't get expected 404, keep getting 403 :(
-        // ############################################### PLEASE ASSIST ################################################
     }
 
     @Test
@@ -327,6 +324,9 @@ public class EventIntegrationTest {
         headers.set("Authorization", "Bearer " + adminToken);
         headers.add("Content-Type", "application/json");
 
+        //DEBUGGING
+        log.info("DEBUG: BEFORE RESPONSE ENTITY");
+
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
             // there is no event with id 999
             createURLWithPort("/events/" + 999 +"/close"),
@@ -335,7 +335,13 @@ public class EventIntegrationTest {
             Void.class
         );
 
+        //DEBUGGING
+        log.info("DEBUG: AFTER RESPONSE ENTITY");
+
         assertEquals(404, responseEntity.getStatusCode().value());
+
+        //DEBUGGING
+        log.info("DEBUG: AFTER ASSERT");
         // why tf am i getting 403???
         // ############################################### PLEASE ASSIST ################################################
     }
