@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;
+
+import com.swiftyticket.dto.zone.PreRegisterRequest;
 import com.swiftyticket.dto.zone.ZoneRequest;
 import com.swiftyticket.models.Event;
 import com.swiftyticket.models.User;
@@ -29,7 +31,7 @@ import com.swiftyticket.exceptions.ZoneNotFoundException;
 @Slf4j
 public class ZoneServiceImpl implements ZoneService {
     private final ZoneRepository zoneRepository;
-    private final JwtServiceImpl jwtService;
+    //private final JwtServiceImpl jwtService;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final SmsServiceImpl smsServ;
@@ -79,12 +81,9 @@ public class ZoneServiceImpl implements ZoneService {
      * @throws EventClosedException -> if the event is not open for pre-registration
      * @return String message to indicate success or failure
      */
-    public String joinRaffle(String bearerToken, Integer eventId, Integer zoneID){
-        String jwtToken = bearerToken.substring(7);
-        String userEmail = jwtService.extractUserName(jwtToken);
+    public String joinRaffle(PreRegisterRequest registerRequest, Integer eventId, Integer zoneID){
         // get Event and user respectively.
         Event joinEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
-        User joiningUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException());
         //we search for zone using both event and zoneid to make sure the zone is in the specified event.
         Zones joinZone = zoneRepository.findByZoneIdAndEvent(zoneID, joinEvent).orElseThrow(() -> new ZoneNotFoundException("Invalid zone for " + joinEvent.getEventName()));
 
@@ -93,6 +92,9 @@ public class ZoneServiceImpl implements ZoneService {
             //return "The Pre-registration has not yet opened, or Pre-registration has closed, join us next time!";
             throw new EventClosedException();
         }
+
+        log.info(registerRequest.getEmail());
+        User joiningUser = userRepository.findByEmail(registerRequest.getEmail()).orElseThrow(() -> new UserNotFoundException());
 
         if(joinEvent.getPreRegisteredUsers4Event().contains(joiningUser)){
             log.info("User tried to join when already pre-registered, Denied.");
