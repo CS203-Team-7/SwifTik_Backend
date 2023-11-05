@@ -86,7 +86,9 @@ public class SecurityConfiguration {
         corsConfiguration.setAllowedOrigins(
                 List.of(
                         // The links that are allowed to access the API:
-                        "http://localhost:3000"
+                        "http://localhost:3000",
+                        "https://www.twilio.com"
+
                 )
         );
         // Now we allow particular methods to be used:
