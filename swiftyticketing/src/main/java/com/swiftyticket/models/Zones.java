@@ -60,12 +60,12 @@ public class Zones {
     @Column(name = "ticket_price")
     private double ticket_price;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "events_id", nullable = false)
     @JsonIgnore
     private Event event;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinTable(name = "zones_users",
         joinColumns=
@@ -75,7 +75,7 @@ public class Zones {
     @Column(name = "preRegistered_users")
     private List<User> preRegisteredUsers4Zone = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinTable(name = "zones_winners",
             joinColumns=
@@ -88,6 +88,7 @@ public class Zones {
 
     @JsonIgnore
     @OneToMany(mappedBy = "forZone",
+                fetch = FetchType.EAGER,
                cascade = CascadeType.ALL)
     private List<Ticket> ticketList;
 
@@ -106,6 +107,16 @@ public class Zones {
         this.ticketList = new ArrayList<>();
 
         this.user_count = 0;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean equals(Object other){
+        if( !(other instanceof Zones) ){
+            return false;
+        }
+
+        return this.zoneId == ((Zones)other).zoneId;
     }
 
 }

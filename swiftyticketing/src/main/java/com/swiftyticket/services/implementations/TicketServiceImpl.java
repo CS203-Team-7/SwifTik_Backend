@@ -1,10 +1,7 @@
 package com.swiftyticket.services.implementations;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
-
 import com.swiftyticket.exceptions.EventNotFoundException;
 import com.swiftyticket.exceptions.PurchaseException;
 import com.swiftyticket.exceptions.TicketNotFoundException;
@@ -22,7 +19,6 @@ import com.swiftyticket.services.TicketService;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 
 @Service
 @AllArgsConstructor
@@ -59,9 +55,13 @@ public class TicketServiceImpl implements TicketService {
 
         //create the ticket object, give it to respective zone & user.
         //begin by checking if the user who's trying to buy the ticket is a winner for the zone
+        log.info(purchase4Zone.getWinnerList().toString());
+        log.info(""+purchase4Zone.getWinnerList().get(0).getUserId());
+        log.info("" + purchasingUser);
+        log.info(""+purchasingUser.getUserId());
         if( !( purchase4Zone.getWinnerList().contains(purchasingUser) ) ){
             log.info("user tried to purchase ticket for zone they didn't win. get outta here!");
-            //to do: throw exception!
+            
             throw new PurchaseException();
         }
         //if reach this part of the code, means the user is a winner, we can continue with the purchase.
@@ -88,11 +88,9 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public void deleteTicket(Integer id) {
-        Optional<Ticket> t = ticketRepo.findById(id);
-        if (t == null) throw new TicketNotFoundException(id);
-
-        Ticket ticket = t.get();
-        ticketRepo.deleteById(ticket.getTicketId());
+    public List<Ticket> getAllUserTickets(Integer userId){
+        User uzer = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
+        return uzer.getTicketsBought();
     }
+
 }
