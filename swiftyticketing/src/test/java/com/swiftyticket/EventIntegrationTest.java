@@ -461,6 +461,55 @@ public class EventIntegrationTest {
         // ############################################### PLEASE ASSIST ################################################
     }
 
+    // ############################################### DUPLICATED METHOD TO TEST ################################################
+    @Test
+    public void deleteEvent_EventNotFoundException_failure_v2() throws Exception {
+        // admin login
+        SignInRequest loginRequest = new SignInRequest();
+        loginRequest.setEmail("newAdmin@email.com");
+        loginRequest.setPassword("GoodPassword123!");
+        
+        HttpHeaders authHeaders = new HttpHeaders();
+        authHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        // Send login request and get jwt token
+        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
+        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
+                createURLWithPort("/auth/signin"),
+                HttpMethod.POST, entity, AuthResponse.class
+            );
+        String jwtToken = authResponse.getBody().getToken();
+
+        // create test event
+        // List<String> artists = new ArrayList<>();
+        // artists.add("Taylor Swift");
+        // List<Date> dates = new ArrayList<>();
+        // dates.add(new Date(2021, 10, 10));
+
+        // Event event = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
+        // Event testEvent = eventRepo.saveAndFlush(event);
+        // Integer eventId = testEvent.getEventId();
+        // eventRepo.delete(testEvent);
+
+        // carry out request with jwt token
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + jwtToken);
+        headers.add("Content-Type", "application/json");
+
+
+        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
+            // there is no event with id 999
+            createURLWithPort("/events/" + 999),
+            HttpMethod.DELETE,
+            new HttpEntity<>(headers),
+            Void.class
+        );
+
+        assertEquals(404, responseEntity.getStatusCode().value());
+        // can't get expected 404, keep getting 403 :(
+        // ############################################### PLEASE ASSIST ################################################
+    }
+
     @Test
     public void closeRegistration_EventFoundRegClosed_successful() throws Exception {
         // admin login
