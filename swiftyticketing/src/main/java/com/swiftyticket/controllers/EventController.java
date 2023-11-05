@@ -2,6 +2,7 @@ package com.swiftyticket.controllers;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ import com.swiftyticket.services.EventService;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class EventController {
-    private EventService eventService;
+    private final EventService eventService;
 
     public EventController(EventService eventService) {
         this.eventService = eventService;
@@ -43,12 +44,12 @@ public class EventController {
     }
 
     @PostMapping("/events/create")
-    public ResponseEntity<Event> addEvent(@RequestBody Event event){
+    public ResponseEntity<Event> addEvent(@RequestBody @Valid Event event){
         return new ResponseEntity<Event>(eventService.addEvent(event), HttpStatus.CREATED);
     }
 
     @PutMapping("/events/{id}")
-    public ResponseEntity<Event> updateEvent(@PathVariable Integer id, @RequestBody Event newEventInfo) throws EventNotFoundException {
+    public ResponseEntity<Event> updateEvent(@PathVariable Integer id, @RequestBody @Valid Event newEventInfo) throws EventNotFoundException {
         Event event = eventService.updateEvent(id, newEventInfo);
         if (event == null) throw new EventNotFoundException(id);
         return new ResponseEntity<Event>(event, HttpStatus.OK);

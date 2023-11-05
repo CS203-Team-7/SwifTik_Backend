@@ -1,6 +1,7 @@
 package com.swiftyticket.controllers;
 
 import com.swiftyticket.services.implementations.SmsServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class OtpController {
 	}
 
 	@PostMapping("/send")
-	public ResponseEntity<OtpResponseDto> sendOtp(@RequestBody OtpRequest otpRequest) {
+	public ResponseEntity<OtpResponseDto> sendOtp(@RequestBody @Valid OtpRequest otpRequest) {
 		//log will print to console when this command is executed
 		log.info("inside sendOtp to "+otpRequest.getEmail());
 		OtpResponseDto response = smsService.sendSMS(otpRequest);
@@ -42,7 +43,7 @@ public class OtpController {
 	}
 	
 	@PostMapping("/validate")
-    public ResponseEntity<String> validateOtp(@RequestBody OtpValidationRequest otpValidationRequest) {
+    public ResponseEntity<String> validateOtp(@RequestBody @Valid OtpValidationRequest otpValidationRequest) {
 		log.info("inside validateOtp :: "+otpValidationRequest.getEmail()+" "+otpValidationRequest.getOtpNumber());
 		return new ResponseEntity<String>(smsService.validateOtp(otpValidationRequest), HttpStatus.OK);
     }

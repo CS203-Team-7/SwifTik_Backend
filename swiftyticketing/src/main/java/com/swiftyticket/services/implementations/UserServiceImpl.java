@@ -22,6 +22,10 @@ public class UserServiceImpl implements UserService {
     // We are going to need the repository methods here:
     private final UserRepository userRepository;
 
+    /**
+     * Returns a list of all users in the DB.
+     * @return List<User>
+     */
     @Override
     @Transactional
     public List<User> getAllUsers() {
@@ -30,12 +34,25 @@ public class UserServiceImpl implements UserService {
         else return usersList;
     }
 
+    /**
+     * Returns a single user based on the user email.
+     * @param email -> String user email (Unique identifier)
+     * @throws UserNotFoundException -> if the user email does not exist in the DB
+     * @return User -> User object with the specified email
+     */
     @Override
     public User getUserByEmail(String email){
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
     }
 
+    /**
+     * Creates a new user in the DB.
+     * @param newUserInfo -> User object containing the user details
+     * @throws DuplicateUserException -> if the user email already exists in the DB
+     * @throws UserNotFoundException -> if the user email does not exist in the DB
+     * @return User -> User object containing the user details
+     */
     @Override
     public User updateUser(String email, User newUserInfo) {
         //check if current email is already in use, if it is throw exception. 
@@ -49,15 +66,24 @@ public class UserServiceImpl implements UserService {
             user.setPassword(newUserInfo.getPassword());
             user.setPhoneNumber(newUserInfo.getPhoneNumber());
             return userRepository.save(user);
-        }).orElseThrow(() -> new UserNotFoundException());
+        }).orElseThrow(UserNotFoundException::new);
     }
 
+    /**
+     * Deletes the user with the specified email.
+     * @param email -> String user email (Unique identifier)
+     */
     @Override
     public void deleteUser(String email){
         userRepository.deleteByEmail(email);
     }
 
-    // Also implement the UserDetailsService for Spring security:
+    /**
+     * This function is to satisfy the UserDetailsService interface.
+     * It is used by the Spring Security framework to load the user details from the DB.
+     * @throws UserNotFoundException -> if the user email does not exist in the DB
+     * @return UserDetailsService -> UserDetailsService object containing the user details
+     */
     @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -69,5 +95,4 @@ public class UserServiceImpl implements UserService {
             }
         };
     }
-    
 }

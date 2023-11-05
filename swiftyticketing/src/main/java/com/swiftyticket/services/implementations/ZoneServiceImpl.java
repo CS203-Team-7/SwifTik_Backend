@@ -1,11 +1,12 @@
 package com.swiftyticket.services.implementations;
 
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;
+
+import com.swiftyticket.dto.zone.PreRegisterRequest;
 import com.swiftyticket.dto.zone.ZoneRequest;
 import com.swiftyticket.models.Event;
 import com.swiftyticket.models.User;
@@ -30,11 +31,18 @@ import com.swiftyticket.exceptions.ZoneNotFoundException;
 @Slf4j
 public class ZoneServiceImpl implements ZoneService {
     private final ZoneRepository zoneRepository;
-    private final JwtServiceImpl jwtService;
+    //private final JwtServiceImpl jwtService;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final SmsServiceImpl smsServ;
 
+    /**
+     * Adds a new zone to a specified event.
+     * @param zoneReq -> ZoneRequest object containing the zone details
+     * @param event -> Event object that the zone should be assigned to
+     * @throws EventNotFoundException -> if the event ID does not exist in the DB
+     * @return Zone -> Zone object that was added to the DB
+     */
     public Zones addZone(ZoneRequest zoneReq, Event event){
         //check if event has a date for the zone's date. If event does not have a date for that zone, throw an error (wrong date!)
         if( !(event.getDates().contains(zoneReq.getZoneDate())) ){
@@ -51,27 +59,45 @@ public class ZoneServiceImpl implements ZoneService {
         return newZone;
     }
 
+    /**
+     * Returns a list of all zones in the DB corresponding to the specified event.
+     * @param event -> Event object that the zones should be retrieved from
+     * @throws EventNotFoundException -> if the event ID does not exist in the DB
+     * @return List<Zones> -> List of Zone objects that belong to the specified event
+     */
     public List<Zones> listZones(Event event){
         return event.getZoneList();
     }
 
-    public String joinRaffle(String bearerToken, Integer eventId, Integer zoneID){
-        String jwtToken = bearerToken.substring(7);
-        String userEmail = jwtService.extractUserName(jwtToken);
+    /**
+     * Allows a user to join the raffle for a specified zone.
+     * @param bearerToken -> the token of the user who's trying to join the raffle
+     * @param eventId -> the event id of the zone the user is trying to join the raffle for
+     * @param zoneID -> the zone id of the zone the user is trying to join the raffle for
+     * @throws EventNotFoundException -> if the event ID does not exist in the DB
+     * @throws UserNotFoundException -> if the user does not exist in the DB
+     * @throws ZoneNotFoundException -> if the zone ID does not exist in the DB
+     * @throws AlreadyPreRegisteredException -> if the user has already pre-registered for the event
+     * @throws EventClosedException -> if the event is not open for pre-registration
+     * @return String message to indicate success or failure
+     */
+    public String joinRaffle(PreRegisterRequest registerRequest, Integer eventId, Integer zoneID){
         // get Event and user respectively.
         Event joinEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
-        User joiningUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException());
         //we search for zone using both event and zoneid to make sure the zone is in the specified event.
         Zones joinZone = zoneRepository.findByZoneIdAndEvent(zoneID, joinEvent).orElseThrow(() -> new ZoneNotFoundException("Invalid zone for " + joinEvent.getEventName()));
 
         if(!joinEvent.getOpenStatus()){
             log.info("User tried to join when pre-registration was closed, Denied.");
-            //return "The Pre-egistration has not yet opened, or Pre-registration has closed, join us next time!";
+            //return "The Pre-registration has not yet opened, or Pre-registration has closed, join us next time!";
             throw new EventClosedException();
         }
 
+        log.info(registerRequest.getEmail());
+        User joiningUser = userRepository.findByEmail(registerRequest.getEmail()).orElseThrow(() -> new UserNotFoundException());
+
         if(joinEvent.getPreRegisteredUsers4Event().contains(joiningUser)){
-            log.info("User tried to join when already pre-registrated, Denied.");
+            log.info("User tried to join when already pre-registered, Denied.");
             //return "You have already pre-registered for this event!";
             throw new AlreadyPreRegisteredException(joinEvent);
             
@@ -96,6 +122,12 @@ public class ZoneServiceImpl implements ZoneService {
         
     }
 
+    /**
+     * This function is to perform the raffling of each zone in the event once pre-registration is closed.
+     * @param zone -> Zone object that the raffle should be performed on
+     *             -> This function is called by the EventService class
+     * @throws EventNotFoundException -> if the event ID does not exist in the DB
+     */
     public void raffle(Zones zone){
         //get associated event with zone
         Event event = zone.getEvent();
@@ -190,5 +222,4 @@ public class ZoneServiceImpl implements ZoneService {
 
         return;
     }
-    
 }

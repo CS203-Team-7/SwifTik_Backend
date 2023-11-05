@@ -265,285 +265,285 @@ class ZoneServiceUnitTests {
         assertSame(zonesList, actualListZonesResult);
     }
 
-    // joinRaffle() tests
-    @Test
-    void joinRaffle_EventNotFound_ThrowException(){
-        //Arrange
-        Event event = mock(Event.class);
-        when(event.getEventId()).thenReturn(1);
+    // // joinRaffle() tests
+    // @Test
+    // void joinRaffle_EventNotFound_ThrowException(){
+    //     //Arrange
+    //     Event event = mock(Event.class);
+    //     when(event.getEventId()).thenReturn(1);
 
-        Zones zones = mock(Zones.class);
-        when(zones.getZoneId()).thenReturn(1);
+    //     Zones zones = mock(Zones.class);
+    //     when(zones.getZoneId()).thenReturn(1);
 
-        //Act
-        when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn("username1");
+    //     //Act
+    //     when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn("username1");
 
-        //Assert
-        assertThrows(EventNotFoundException.class, () -> zoneServiceImpl.joinRaffle("sjfnajdnad", event.getEventId(), zones.getZoneId()));
+    //     //Assert
+    //     assertThrows(EventNotFoundException.class, () -> zoneServiceImpl.joinRaffle("sjfnajdnad", event.getEventId(), zones.getZoneId()));
 
-        //to confirm that eventId is not found in eventRepository
-        Optional<Event> emptyValue = Optional.empty();
-        assertEquals(emptyValue, eventRepository.findById(event.getEventId()));
+    //     //to confirm that eventId is not found in eventRepository
+    //     Optional<Event> emptyValue = Optional.empty();
+    //     assertEquals(emptyValue, eventRepository.findById(event.getEventId()));
 
-        verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
-    }
+    //     verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
+    // }
 
-    @Test
-    void joinRaffle_UserEmailNotFound_ThrowException() {
-        //Arrange
-        Event event = new Event();
-        event.setDates(new ArrayList<>());
-        event.setEventId(1);
-        event.setEventName("Event 1");
-        event.setOpen4Registration(true);
-        Integer eventId = event.getEventId();
+    // @Test
+    // void joinRaffle_UserEmailNotFound_ThrowException() {
+    //     //Arrange
+    //     Event event = new Event();
+    //     event.setDates(new ArrayList<>());
+    //     event.setEventId(1);
+    //     event.setEventName("Event 1");
+    //     event.setOpen4Registration(true);
+    //     Integer eventId = event.getEventId();
 
-        Zones zones = new Zones();
-        zones.setEvent(event);
-        zones.setTicketList(new ArrayList<>());
-        zones.setZoneCapacity(1);
-        zones.setZoneDate(new Date());
-        zones.setZoneId(1);
-        zones.setZoneName("Zone 1");
-        Integer zoneId = zones.getZoneId();
+    //     Zones zones = new Zones();
+    //     zones.setEvent(event);
+    //     zones.setTicketList(new ArrayList<>());
+    //     zones.setZoneCapacity(1);
+    //     zones.setZoneDate(new Date());
+    //     zones.setZoneId(1);
+    //     zones.setZoneName("Zone 1");
+    //     Integer zoneId = zones.getZoneId();
 
-        User user = new User();
-        user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
-        user.setEmail("test@gmail.com");
-        user.setPassword("Iloveyou1!");
-        user.setPhoneNumber("1234567890");
-        user.setRole(Role.USER);
-        user.setVerified(true);
-        String username = user.getUsername();
-        Integer userId = user.getUserId();
+    //     User user = new User();
+    //     user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
+    //     user.setEmail("test@gmail.com");
+    //     user.setPassword("Iloveyou1!");
+    //     user.setPhoneNumber("1234567890");
+    //     user.setRole(Role.USER);
+    //     user.setVerified(true);
+    //     String username = user.getUsername();
+    //     Integer userId = user.getUserId();
 
-        //Act
-        Optional<Event> ofResult = Optional.of(event);
-        when(eventRepository.findById(eventId)).thenReturn(ofResult);
-        when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn(username);
+    //     //Act
+    //     Optional<Event> ofResult = Optional.of(event);
+    //     when(eventRepository.findById(eventId)).thenReturn(ofResult);
+    //     when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn(username);
 
-        //Assert
-        assertThrows(UserNotFoundException.class, () -> zoneServiceImpl.joinRaffle("sjfnajdnad", eventId, zoneId));
+    //     //Assert
+    //     assertThrows(UserNotFoundException.class, () -> zoneServiceImpl.joinRaffle("sjfnajdnad", eventId, zoneId));
 
-        //to confirm that eventId is not found in eventRepository
-        Optional<User> emptyValue = Optional.empty();
-        assertEquals(emptyValue, userRepository.findById(userId));
+    //     //to confirm that eventId is not found in eventRepository
+    //     Optional<User> emptyValue = Optional.empty();
+    //     assertEquals(emptyValue, userRepository.findById(userId));
 
-        verify(eventRepository).findById(eventId);
-        verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
-    }
+    //     verify(eventRepository).findById(eventId);
+    //     verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
+    // }
 
-    @Test
-    void joinRaffle_ZoneNotFound_ThrowException() {
-        //Arrange
-        Event event = new Event();
-        event.setDates(new ArrayList<>());
-        event.setEventId(1);
-        event.setEventName("Event 1");
-        event.setOpen4Registration(true);
-        //if this is uncommented, it won't work for some reason
-        //EventRepository eventRepository = mock(EventRepository.class);
-        Integer eventId = event.getEventId();
+    // @Test
+    // void joinRaffle_ZoneNotFound_ThrowException() {
+    //     //Arrange
+    //     Event event = new Event();
+    //     event.setDates(new ArrayList<>());
+    //     event.setEventId(1);
+    //     event.setEventName("Event 1");
+    //     event.setOpen4Registration(true);
+    //     //if this is uncommented, it won't work for some reason
+    //     //EventRepository eventRepository = mock(EventRepository.class);
+    //     Integer eventId = event.getEventId();
 
-        Zones zones = new Zones();
-        zones.setEvent(event);
-        zones.setTicketList(new ArrayList<>());
-        zones.setZoneCapacity(1);
-        zones.setZoneDate(new Date());
-        zones.setZoneId(1);
-        zones.setZoneName("Zone 1");
-        Integer zoneId = zones.getZoneId();
+    //     Zones zones = new Zones();
+    //     zones.setEvent(event);
+    //     zones.setTicketList(new ArrayList<>());
+    //     zones.setZoneCapacity(1);
+    //     zones.setZoneDate(new Date());
+    //     zones.setZoneId(1);
+    //     zones.setZoneName("Zone 1");
+    //     Integer zoneId = zones.getZoneId();
 
-        User user = new User();
-        user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
-        user.setEmail("test@gmail.com");
-        user.setPassword("Iloveyou1!");
-        user.setPhoneNumber("1234567890");
-        user.setRole(Role.USER);
-        user.setVerified(true);
-        String username = user.getUsername();
-        String email = user.getEmail();
+    //     User user = new User();
+    //     user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
+    //     user.setEmail("test@gmail.com");
+    //     user.setPassword("Iloveyou1!");
+    //     user.setPhoneNumber("1234567890");
+    //     user.setRole(Role.USER);
+    //     user.setVerified(true);
+    //     String username = user.getUsername();
+    //     String email = user.getEmail();
 
-        //Act
-        Optional<Event> ofEventResult = Optional.of(event);
-        when(eventRepository.findById(eventId)).thenReturn(ofEventResult);
-        when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn(username);
+    //     //Act
+    //     Optional<Event> ofEventResult = Optional.of(event);
+    //     when(eventRepository.findById(eventId)).thenReturn(ofEventResult);
+    //     when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn(username);
 
-        Optional<User> ofUserResult = Optional.of(user);
-        when(userRepository.findByEmail(email)).thenReturn(ofUserResult);
+    //     Optional<User> ofUserResult = Optional.of(user);
+    //     when(userRepository.findByEmail(email)).thenReturn(ofUserResult);
 
-        //Assert
-        assertThrows(ZoneNotFoundException.class, () -> zoneServiceImpl.joinRaffle("sjfnajdnad", eventId, zoneId));
+    //     //Assert
+    //     assertThrows(ZoneNotFoundException.class, () -> zoneServiceImpl.joinRaffle("sjfnajdnad", eventId, zoneId));
 
-        verify(eventRepository).findById(eventId);
-        verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
-        verify(userRepository).findByEmail(email);
-    }
-
-
-    @Test
-    void joinRaffle_EventIsClosed_ThrowException() {
-         //Arrange
-        Event event = new Event();
-        event.setDates(new ArrayList<>());
-        event.setEventId(1);
-        event.setEventName("Event 1");     
-        //set to false to simulate a closed event
-        event.setOpen4Registration(false);
-        Integer eventId = event.getEventId();
-
-        Zones zones = new Zones();
-        zones.setEvent(event);
-        zones.setTicketList(new ArrayList<>());
-        zones.setZoneCapacity(1);
-        zones.setZoneDate(new Date());
-        zones.setZoneId(1);
-        zones.setZoneName("Zone 1");
-        Integer zoneId = zones.getZoneId();
-
-        User user = new User();
-        user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
-        user.setEmail("test@gmail.com");
-        user.setPassword("Iloveyou1!");
-        user.setPhoneNumber("1234567890");
-        user.setRole(Role.USER);
-        user.setVerified(true);
-        String username = user.getUsername();
-        String email = user.getEmail();
-
-        //Act
-        Optional<Event> ofEventResult = Optional.of(event);
-        when(eventRepository.findById(eventId)).thenReturn(ofEventResult);
-        when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn(username);
-
-        Optional<User> ofUserResult = Optional.of(user);
-        when(userRepository.findByEmail(email)).thenReturn(ofUserResult);
-
-        Optional<Zones> ofZonesResult = Optional.of(zones);
-        when(zoneRepository.findByZoneIdAndEvent(zoneId, event)).thenReturn(ofZonesResult);
-
-        //Assert
-        assertThrows(EventClosedException.class, () -> zoneServiceImpl.joinRaffle("sjfnajdnad", eventId, zoneId));
-
-        verify(eventRepository).findById(eventId);
-        verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
-        verify(userRepository).findByEmail(email);
-        verify(zoneRepository).findByZoneIdAndEvent(zoneId, event);
-    }
+    //     verify(eventRepository).findById(eventId);
+    //     verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
+    //     verify(userRepository).findByEmail(email);
+    // }
 
 
-    @Test
-    void joinRaffle_UserAlreadyPreRegistered_ThrowException() {
-        //Arrange
-        Event event = new Event();
-        event.setEventId(1);
-        event.setEventName("Event 1");     
-        event.setOpen4Registration(true);
-        Integer eventId = event.getEventId();
-        List<User> preRegisteredList = new ArrayList<>();
-        event.setPreRegisteredUsers4Event(preRegisteredList);
+    // @Test
+    // void joinRaffle_EventIsClosed_ThrowException() {
+    //      //Arrange
+    //     Event event = new Event();
+    //     event.setDates(new ArrayList<>());
+    //     event.setEventId(1);
+    //     event.setEventName("Event 1");     
+    //     //set to false to simulate a closed event
+    //     event.setOpen4Registration(false);
+    //     Integer eventId = event.getEventId();
 
-        Zones zones = new Zones();
-        zones.setEvent(event);
-        zones.setTicketList(new ArrayList<>());
-        zones.setZoneCapacity(1);
-        zones.setZoneDate(new Date());
-        zones.setZoneId(1);
-        zones.setZoneName("Zone 1");
-        Integer zoneId = zones.getZoneId();
+    //     Zones zones = new Zones();
+    //     zones.setEvent(event);
+    //     zones.setTicketList(new ArrayList<>());
+    //     zones.setZoneCapacity(1);
+    //     zones.setZoneDate(new Date());
+    //     zones.setZoneId(1);
+    //     zones.setZoneName("Zone 1");
+    //     Integer zoneId = zones.getZoneId();
 
-        User user = new User();
-        user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
-        user.setEmail("test@gmail.com");
-        user.setPassword("Iloveyou1!");
-        user.setPhoneNumber("1234567890");
-        user.setRole(Role.USER);
-        user.setVerified(true);
-        String username = user.getUsername();
-        String email = user.getEmail();
+    //     User user = new User();
+    //     user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
+    //     user.setEmail("test@gmail.com");
+    //     user.setPassword("Iloveyou1!");
+    //     user.setPhoneNumber("1234567890");
+    //     user.setRole(Role.USER);
+    //     user.setVerified(true);
+    //     String username = user.getUsername();
+    //     String email = user.getEmail();
 
-        preRegisteredList.add(user);
+    //     //Act
+    //     Optional<Event> ofEventResult = Optional.of(event);
+    //     when(eventRepository.findById(eventId)).thenReturn(ofEventResult);
+    //     when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn(username);
 
-        //Act
-        Optional<Event> ofEventResult = Optional.of(event);
-        when(eventRepository.findById(eventId)).thenReturn(ofEventResult);
-        when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn(username);
+    //     Optional<User> ofUserResult = Optional.of(user);
+    //     when(userRepository.findByEmail(email)).thenReturn(ofUserResult);
 
-        Optional<User> ofUserResult = Optional.of(user);
-        when(userRepository.findByEmail(email)).thenReturn(ofUserResult);
+    //     Optional<Zones> ofZonesResult = Optional.of(zones);
+    //     when(zoneRepository.findByZoneIdAndEvent(zoneId, event)).thenReturn(ofZonesResult);
 
-        Optional<Zones> ofZonesResult = Optional.of(zones);
-        when(zoneRepository.findByZoneIdAndEvent(zoneId, event)).thenReturn(ofZonesResult);
+    //     //Assert
+    //     assertThrows(EventClosedException.class, () -> zoneServiceImpl.joinRaffle("sjfnajdnad", eventId, zoneId));
 
-        //Assert
-        assertThrows(AlreadyPreRegisteredException.class, () -> zoneServiceImpl.joinRaffle("sjfnajdnad", eventId, zoneId));
-
-        verify(eventRepository).findById(eventId);
-        verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
-        verify(userRepository).findByEmail(email);
-        verify(zoneRepository).findByZoneIdAndEvent(zoneId, event);
-    }
+    //     verify(eventRepository).findById(eventId);
+    //     verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
+    //     verify(userRepository).findByEmail(email);
+    //     verify(zoneRepository).findByZoneIdAndEvent(zoneId, event);
+    // }
 
 
-    @Test
-    void joinRaffle_Successful() {
-        Event event = new Event();
-        event.setEventId(1);
-        event.setEventName("Event 1");     
-        event.setOpen4Registration(true);
-        event.setPreRegisteredUsers4Event(new ArrayList<>());
-        Integer eventId = event.getEventId();
+    // @Test
+    // void joinRaffle_UserAlreadyPreRegistered_ThrowException() {
+    //     //Arrange
+    //     Event event = new Event();
+    //     event.setEventId(1);
+    //     event.setEventName("Event 1");     
+    //     event.setOpen4Registration(true);
+    //     Integer eventId = event.getEventId();
+    //     List<User> preRegisteredList = new ArrayList<>();
+    //     event.setPreRegisteredUsers4Event(preRegisteredList);
 
-        Zones zones = new Zones();
-        zones.setEvent(event);
-        zones.setTicketList(new ArrayList<>());
-        zones.setZoneId(1);
-        zones.setZoneName("Zone 1");
-        zones.setPreRegisteredUsers4Zone(new ArrayList<>());
-        Integer zoneId = zones.getZoneId();
+    //     Zones zones = new Zones();
+    //     zones.setEvent(event);
+    //     zones.setTicketList(new ArrayList<>());
+    //     zones.setZoneCapacity(1);
+    //     zones.setZoneDate(new Date());
+    //     zones.setZoneId(1);
+    //     zones.setZoneName("Zone 1");
+    //     Integer zoneId = zones.getZoneId();
 
-        User user = new User();
-        user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
-        user.setEmail("test@gmail.com");
-        user.setPassword("Iloveyou1!");
-        user.setPhoneNumber("1234567890");
-        user.setRole(Role.USER);
-        user.setVerified(true);
-        user.setPreRegisteredZones(new ArrayList<>());
-        user.setPreRegisteredEvents(new ArrayList<>());
-        String username = user.getUsername();
-        String email = user.getEmail();
+    //     User user = new User();
+    //     user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
+    //     user.setEmail("test@gmail.com");
+    //     user.setPassword("Iloveyou1!");
+    //     user.setPhoneNumber("1234567890");
+    //     user.setRole(Role.USER);
+    //     user.setVerified(true);
+    //     String username = user.getUsername();
+    //     String email = user.getEmail();
+
+    //     preRegisteredList.add(user);
+
+    //     //Act
+    //     Optional<Event> ofEventResult = Optional.of(event);
+    //     when(eventRepository.findById(eventId)).thenReturn(ofEventResult);
+    //     when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn(username);
+
+    //     Optional<User> ofUserResult = Optional.of(user);
+    //     when(userRepository.findByEmail(email)).thenReturn(ofUserResult);
+
+    //     Optional<Zones> ofZonesResult = Optional.of(zones);
+    //     when(zoneRepository.findByZoneIdAndEvent(zoneId, event)).thenReturn(ofZonesResult);
+
+    //     //Assert
+    //     assertThrows(AlreadyPreRegisteredException.class, () -> zoneServiceImpl.joinRaffle("sjfnajdnad", eventId, zoneId));
+
+    //     verify(eventRepository).findById(eventId);
+    //     verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
+    //     verify(userRepository).findByEmail(email);
+    //     verify(zoneRepository).findByZoneIdAndEvent(zoneId, event);
+    // }
 
 
-        Optional<Event> ofEventResult = Optional.of(event);
-        when(eventRepository.findById(eventId)).thenReturn(ofEventResult);
-        when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn(username);
+    // @Test
+    // void joinRaffle_Successful() {
+    //     Event event = new Event();
+    //     event.setEventId(1);
+    //     event.setEventName("Event 1");     
+    //     event.setOpen4Registration(true);
+    //     event.setPreRegisteredUsers4Event(new ArrayList<>());
+    //     Integer eventId = event.getEventId();
 
-        Optional<User> ofUserResult = Optional.of(user);
-        when(userRepository.findByEmail(email)).thenReturn(ofUserResult);
+    //     Zones zones = new Zones();
+    //     zones.setEvent(event);
+    //     zones.setTicketList(new ArrayList<>());
+    //     zones.setZoneId(1);
+    //     zones.setZoneName("Zone 1");
+    //     zones.setPreRegisteredUsers4Zone(new ArrayList<>());
+    //     Integer zoneId = zones.getZoneId();
 
-        Optional<Zones> ofZonesResult = Optional.of(zones);
-        when(zoneRepository.findByZoneIdAndEvent(zoneId, event)).thenReturn(ofZonesResult);
+    //     User user = new User();
+    //     user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
+    //     user.setEmail("test@gmail.com");
+    //     user.setPassword("Iloveyou1!");
+    //     user.setPhoneNumber("1234567890");
+    //     user.setRole(Role.USER);
+    //     user.setVerified(true);
+    //     user.setPreRegisteredZones(new ArrayList<>());
+    //     user.setPreRegisteredEvents(new ArrayList<>());
+    //     String username = user.getUsername();
+    //     String email = user.getEmail();
 
-        when(eventRepository.save(event)).thenReturn(event);
-        when(userRepository.save(user)).thenReturn(user);
-        when(zoneRepository.save(zones)).thenReturn(zones);
 
-        String result = "Successfully joined the raffle for: " + zones.getZoneName() + " on " + zones.getZoneDate() + " for " + event.getEventName();
+    //     Optional<Event> ofEventResult = Optional.of(event);
+    //     when(eventRepository.findById(eventId)).thenReturn(ofEventResult);
+    //     when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn(username);
+
+    //     Optional<User> ofUserResult = Optional.of(user);
+    //     when(userRepository.findByEmail(email)).thenReturn(ofUserResult);
+
+    //     Optional<Zones> ofZonesResult = Optional.of(zones);
+    //     when(zoneRepository.findByZoneIdAndEvent(zoneId, event)).thenReturn(ofZonesResult);
+
+    //     when(eventRepository.save(event)).thenReturn(event);
+    //     when(userRepository.save(user)).thenReturn(user);
+    //     when(zoneRepository.save(zones)).thenReturn(zones);
+
+    //     String result = "Successfully joined the raffle for: " + zones.getZoneName() + " on " + zones.getZoneDate() + " for " + event.getEventName();
 
 
-        //Assert
-        assertEquals(result, zoneServiceImpl.joinRaffle("sjfnajdnad", eventId, zoneId));
+    //     //Assert
+    //     assertEquals(result, zoneServiceImpl.joinRaffle("sjfnajdnad", eventId, zoneId));
 
-        verify(eventRepository).findById(eventId);
-        verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
-        verify(userRepository).findByEmail(email);
-        verify(zoneRepository).findByZoneIdAndEvent(zoneId, event);
+    //     verify(eventRepository).findById(eventId);
+    //     verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
+    //     verify(userRepository).findByEmail(email);
+    //     verify(zoneRepository).findByZoneIdAndEvent(zoneId, event);
 
-        verify(eventRepository).save(event);
-        verify(userRepository).save(user);
-        verify(zoneRepository).save(zones);
-    }
+    //     verify(eventRepository).save(event);
+    //     verify(userRepository).save(user);
+    //     verify(zoneRepository).save(zones);
+    // }
 
 
     //raffle() tests

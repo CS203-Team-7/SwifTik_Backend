@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,6 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.swiftyticket.services.UserService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -33,14 +39,18 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                     jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/auth/**","/otp/*").permitAll();
-                    request.requestMatchers( "/users/**","/events/*/open",
-                    "/events/*/close","/events/create","/events/{id}/createZone","/events/{id}/raffle")
-                    .hasAuthority("ADMIN")
+                    request.requestMatchers("/users/**").hasAuthority("ADMIN");
+                    request.requestMatchers("/events/*/open").hasAuthority("ADMIN");
+                    request.requestMatchers("/events/*/close").hasAuthority("ADMIN");
+                    request.requestMatchers("/events/create").hasAuthority("ADMIN");
+                    request.requestMatchers("/events/{id}/createZone").hasAuthority("ADMIN");
+                    request.requestMatchers("/events/{id}/raffle").hasAuthority("ADMIN")
                     .anyRequest().authenticated();
                 })
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -67,5 +77,55 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
         return config.getAuthenticationManager();
+    }
+
+    // Cors configuration:
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(
+                List.of(
+                        // The links that are allowed to access the API:
+                        "http://localhost:3000",
+                        "https://www.twilio.com"
+
+                )
+        );
+        // Now we allow particular methods to be used:
+        corsConfiguration.setAllowedMethods(
+                List.of(
+                        "HEAD",
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE",
+                        "PATCH"
+                )
+        );
+        // Now to expose the headers to enable JWT tokens to be sent back and forth:
+        corsConfiguration.setExposedHeaders(
+                List.of(
+                        "Access-Control-Allow-Headers",
+                        "Authorization, x-xsrf-token, " +
+                                "Access-Control-Allow-Headers, " +
+                                "Origin, Accept, X-Requested-With, " +
+                                "Content-Type, Access-Control-Request-Method, " +
+                                "Access-Control-Request-Headers"
+                )
+        );
+
+        // Now we allow credentials to be sent back and forth as well:
+        corsConfiguration.setAllowCredentials(true);
+        // Now we allow certain headers to be sent back and forth:
+        corsConfiguration.setAllowedHeaders(
+                List.of(
+                        "Authorization",
+                        "Cache-Control",
+                        "Content-Type"
+                )
+        );
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
     }
 }

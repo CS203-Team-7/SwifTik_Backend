@@ -3,8 +3,6 @@ package com.swiftyticket.services.implementations;
 import com.swiftyticket.exceptions.AccountNotVerifiedException;
 import com.swiftyticket.exceptions.DuplicateUserException;
 import com.swiftyticket.exceptions.IncorrectUserPasswordException;
-import com.swiftyticket.exceptions.UserNotFoundException;
-
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,6 +32,12 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final SmsServiceImpl smsServ;
 
+    /**
+    *  Creates a new user in the DB and sends an OTP to their phone number for verification.
+     * @param request -> SignUpRequest object containing the user's details
+     * @throws DuplicateUserException -> if the user already exists in the DB
+     * @return String message to indicate success
+    */
     @Override
     public String signup(SignUpRequest request) {
         // Creating a new user in the DB and making a JWT Token for them:
@@ -50,20 +54,27 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // Create OTP request object to send the SMS
-        OtpRequest otpReq = new OtpRequest( request.getEmail(), request.getPhoneNumber() );
+        OtpRequest otpReq = new OtpRequest(request.getEmail(), request.getPhoneNumber());
         smsServ.sendSMS(otpReq);
 
 
         return "Sign up successful, please check your phone for the OTP code.";
     }
 
+    /**
+     * Authenticates the user and if successful returns a JWT Token and the user's public details.
+     * @param request -> SignInRequest object containing the user's email and password
+     * @return AuthResponse object containing the JWT Token and the user's public details
+     * @throws IncorrectUserPasswordException -> if the user's email or password is incorrect
+     * @throws AccountNotVerifiedException -> if the user has not verified their account through OTP yet
+     */
     @Override
     public AuthResponse signIn(SignInRequest request) throws IncorrectUserPasswordException,  AccountNotVerifiedException{
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IncorrectUserPasswordException());
+                .orElseThrow(IncorrectUserPasswordException::new);
         // We check if they have verified using OTP yet
         if(!user.isVerified()){
-            System.out.println("Entered here");
+            System.out.println("Unverified user spotted");
             throw new AccountNotVerifiedException();
         }
 

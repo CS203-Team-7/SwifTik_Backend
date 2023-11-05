@@ -2,16 +2,18 @@ package com.swiftyticket.controllers;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.swiftyticket.dto.zone.PreRegisterRequest;
 import com.swiftyticket.dto.zone.ZoneRequest;
 import com.swiftyticket.models.Event;
 import com.swiftyticket.models.Zones;
@@ -19,9 +21,10 @@ import com.swiftyticket.services.EventService;
 import com.swiftyticket.services.ZoneService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class ZoneController {
-    private ZoneService zoneService;
-    private EventService eventService;
+    private final ZoneService zoneService;
+    private final EventService eventService;
     
 
     public ZoneController(ZoneService zoneService, EventService eventService) {
@@ -30,7 +33,7 @@ public class ZoneController {
     }
 
     @PostMapping("/events/{id}/createZone")
-    public ResponseEntity<Zones> addEvent(@RequestBody ZoneRequest zoneReq, @PathVariable Integer id){
+    public ResponseEntity<Zones> addZone(@RequestBody @Valid ZoneRequest zoneReq, @PathVariable Integer id){
         Event event = eventService.getEvent(id);
         return new ResponseEntity<Zones> (zoneService.addZone(zoneReq, event), HttpStatus.CREATED);
     }
@@ -42,8 +45,8 @@ public class ZoneController {
     }
 
     @PutMapping("/events/{id}/zone={zoneID}/preRegister")
-    public ResponseEntity<String> preRegister(@RequestHeader("Authorization") String bearerToken, @PathVariable Integer id, @PathVariable Integer zoneID){
-        return new ResponseEntity<String> (zoneService.joinRaffle(bearerToken, id, zoneID), HttpStatus.OK);
+    public ResponseEntity<String> preRegister(@RequestBody @Valid PreRegisterRequest registerRequest, @PathVariable Integer id, @PathVariable Integer zoneID){
+        return new ResponseEntity<String> (zoneService.joinRaffle(registerRequest, id, zoneID), HttpStatus.OK);
     }
     
 }
