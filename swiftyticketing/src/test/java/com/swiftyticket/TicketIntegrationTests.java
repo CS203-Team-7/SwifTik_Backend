@@ -231,13 +231,13 @@ public class TicketIntegrationTests {
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-            //ticket with id 999 shouldnt exist here
-                createURLWithPort("/tickets/" + 999),
+            //ticket with id -1 shouldnt exist here
+                createURLWithPort("/tickets/-1"),
                 HttpMethod.GET, entity, String.class
         );
             
         assertEquals(404, responseEntity.getStatusCode().value());
-        assertEquals("Could not find ticket 999",responseEntity.getBody());
+        assertEquals("Could not find ticket -1",responseEntity.getBody());
     }
 
     @Test
