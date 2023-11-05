@@ -43,7 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Slf4j
-
 public class EventIntegrationTest {
 
     @LocalServerPort
@@ -267,13 +266,16 @@ public class EventIntegrationTest {
         assertEquals(200, responseEntity.getStatusCode().value());
     }
 
-    // ########################### BROKEN TEST ###########################
+        // ############################################### BROKEN TEST ################################################
     @Test
     public void deleteEvent_EventNotFoundException_failure() throws Exception {
         // setup header with adminToken
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + adminToken);
         headers.add("Content-Type", "application/json");
+
+        //DEBUGGING
+        log.info("DEBUG: BEFORE RESPONSE ENTITY");
 
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
             // there is no event with id 999
@@ -283,7 +285,13 @@ public class EventIntegrationTest {
             Void.class
         );
 
+        //DEBUGGING
+        log.info("DEBUG: AFTER RESPONSE ENTITY");
+
         assertEquals(404, responseEntity.getStatusCode().value());
+
+        //DEBUGGING
+        log.info("DEBUG: AFTER ASSERT");
         // can't get expected 404, keep getting 403 :(
         // ############################################### PLEASE ASSIST ################################################
     }
@@ -311,7 +319,7 @@ public class EventIntegrationTest {
         assertEquals(200, responseEntity.getStatusCode().value());
     }
 
-    // ########################### BROKEN TEST ###########################
+        // ############################################### BROKEN TEST ################################################
     @Test
     public void closeRegistration_EventNotFoundException_failure() throws Exception {
         // setup header with adminToken
@@ -355,7 +363,7 @@ public class EventIntegrationTest {
         assertEquals(200, responseEntity.getStatusCode().value());
     }
 
-    // ########################### BROKEN TEST ###########################
+        // ############################################### BROKEN TEST ################################################
     @Test
     public void openRegistration_EventNotFoundException_failure() throws Exception {
         // setup header with adminToken

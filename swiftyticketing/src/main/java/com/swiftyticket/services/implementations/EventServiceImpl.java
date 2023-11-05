@@ -12,8 +12,10 @@ import com.swiftyticket.models.Event;
 import com.swiftyticket.repositories.EventRepository;
 import com.swiftyticket.services.EventService;
 
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 @Service
 public class EventServiceImpl implements EventService{
     private EventRepository eventRepository;
@@ -59,10 +61,22 @@ public class EventServiceImpl implements EventService{
     @Override
     public void deleteEvent(Integer id) {
         Optional<Event> e = eventRepository.findById(id);
+        // DEBUGGING
+        log.info("DEBUG: entering deleteEvent method in EventServiceImpl, before if statement");
+
         if (e == null) throw new EventNotFoundException(id);
 
+        // DEBUGGING
+        log.info("DEBUG: passed if statement in deleteEvent method in EventServiceImpl");
+
+        // DEBUGGING
+        log.info("DEBUG: starting deleteById in deleteEvent method in EventServiceImpl");
+        
         Event event = e.get();
         eventRepository.deleteById(event.getEventId());
+
+        // DEBUGGING
+        log.info("DEBUG: exiting deleteById in deleteEvent method in EventServiceImpl");
     }
 
     public void openEvent(Integer id){
