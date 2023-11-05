@@ -60,21 +60,10 @@ public class EventController {
     @DeleteMapping("/events/{id}")
     public ResponseEntity<String> deleteEvent(@PathVariable Integer id) {
         try {
-            // DEBUGGING
-            log.info("DEBUG: entering try block in deleteEvent method in EventController");
-
             eventService.deleteEvent(id);
-
-            // DEUBUGGING
-            log.info("DEBUG: passed try block in deleteEvent method in EventController");
         } catch(Exception e) {
-            // DEUBUGGING
-            log.info("DEBUG: entering catch block in deleteEvent method in EventController");
-
             throw new EventNotFoundException(id);
         }
-        // DEUBUGGING
-        log.info("DEBUG: exiting deleteEvent method in EventController");
 
         return new ResponseEntity<String>("Event #" + id + " has been deleted.", HttpStatus.OK);
     }

@@ -273,9 +273,6 @@ public class EventIntegrationTest {
         headers.set("Authorization", "Bearer " + adminToken);
         headers.add("Content-Type", "application/json");
 
-        //DEBUGGING
-        log.info("DEBUG: BEFORE RESPONSE ENTITY");
-
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
             // there is no event with id 999
             createURLWithPort("/events/" + 999),
@@ -284,13 +281,7 @@ public class EventIntegrationTest {
             Void.class
         );
 
-        //DEBUGGING
-        log.info("DEBUG: AFTER RESPONSE ENTITY");
-
         assertEquals(404, responseEntity.getStatusCode().value());
-
-        //DEBUGGING
-        log.info("DEBUG: AFTER ASSERT");
     }
 
     @Test
@@ -323,9 +314,6 @@ public class EventIntegrationTest {
         headers.set("Authorization", "Bearer " + adminToken);
         headers.add("Content-Type", "application/json");
 
-        //DEBUGGING
-        log.info("DEBUG: BEFORE RESPONSE ENTITY");
-
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
             // there is no event with id 999
             createURLWithPort("/events/" + 999 +"/close"),
@@ -334,13 +322,7 @@ public class EventIntegrationTest {
             Void.class
         );
 
-        //DEBUGGING
-        log.info("DEBUG: AFTER RESPONSE ENTITY");
-
         assertEquals(404, responseEntity.getStatusCode().value());
-
-        //DEBUGGING
-        log.info("DEBUG: AFTER ASSERT");
     }
 
     @Test
