@@ -1,10 +1,11 @@
 package com.swiftyticket;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+// import static org.junit.jupiter.api.Assertions.assertEquals;
+// import static org.junit.jupiter.api.Assertions.assertFalse;
+// import static org.junit.jupiter.api.Assertions.assertNotNull;
+// import static org.junit.jupiter.api.Assertions.assertNull;
+// import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -22,7 +23,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -32,13 +32,11 @@ import com.swiftyticket.dto.auth.SignInRequest;
 import com.swiftyticket.models.Event;
 import com.swiftyticket.models.Role;
 import com.swiftyticket.models.User;
-import com.swiftyticket.models.Zones;
 import com.swiftyticket.repositories.EventRepository;
 import com.swiftyticket.repositories.UserRepository;
 import com.swiftyticket.services.EventService;
 import com.swiftyticket.services.implementations.AuthServiceImpl;
 import com.swiftyticket.services.implementations.EventServiceImpl;
-import com.swiftyticket.services.implementations.SmsServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -105,44 +103,13 @@ public class EventIntegrationTest {
         String[] artists = new String[]{"people","more people"};
         Arrays.asList(artists);
 
-        openEvent = eventServ.addEvent(new Event(port, "concert", Arrays.asList(artists), Arrays.asList(dates), "some stage", 50, false, port, null, null, port));
+        openEvent = eventServ.addEvent(new Event(port, "open concert", Arrays.asList(artists), Arrays.asList(dates), "some stage", 50, false, port, null, null, port));
         //eventRepo.save(openEvent);
         
-        closedEvent = eventServ.addEvent(new Event(port, "concert", Arrays.asList(artists), Arrays.asList(dates), "some stage", 50, false, port, null, null, port));
+        closedEvent = eventServ.addEvent(new Event(port, "closed concert", Arrays.asList(artists), Arrays.asList(dates), "some stage", 50, false, port, null, null, port));
         //eventRepo.save(closedEvent);
     }
-    
-    // void createUsers(){
-    //     String encodedPassowrd = new BCryptPasswordEncoder().encode("GoodPassword123!");
 
-    //     User user = new User("newUser@email.com", encodedPassowrd, new Date(), "+6582887066", Role.USER, true);
-    //     userRepo.save(user);
-
-    //     User admin = new User("newAdmin@email.com", encodedPassowrd, new Date(), "+6887662344", Role.ADMIN, true);
-    //     userRepo.save(admin);
-    // }
-
-    // void createEvents(){
-    //     List<String> artists = new ArrayList<>();
-    //     artists.add("Taylor Swift");
-    //     artists.add("Ed Sheeran");
-    //     artists.add("Ariana Grande");
-    //     artists.add("BTS");
-
-    //     List<Date> dates = new ArrayList<>();
-    //     dates.add(new Date(2021, 10, 10));
-    //     dates.add(new Date(2021, 10, 11));
-    //     dates.add(new Date(2021, 10, 12));
-    //     dates.add(new Date(2021, 10, 13));
-
-    //     Event openEvent = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, true, port, null, null, port);
-    //     eventRepo.save(openEvent);
-
-    //     Event closedEvent = new Event(port, "Swifty Concert 2", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-    //     eventRepo.save(closedEvent);
-    // }
-
-    
     @AfterEach
     void tearDown(){
         userRepo.deleteAll();
@@ -156,28 +123,12 @@ public class EventIntegrationTest {
 
     @Test
     public void getEvents_allEventsListed_successful() throws Exception {
-        // user login
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newUser@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-        
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        // Send login request and get jwt token
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
-        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, AuthResponse.class
-            );
-        String jwtToken = authResponse.getBody().getToken();
-
-        // carry out request with jwt token
+        // setup header with userToken
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + jwtToken);
+        headers.set("Authorization", "Bearer " + userToken);
         headers.add("Content-Type", "application/json");
 
-
+        // carry out request with jwt token
         ResponseEntity<List<Event>> responseEntity = testRestTemplate.exchange(
             createURLWithPort("/events"),
             HttpMethod.GET,
@@ -190,43 +141,19 @@ public class EventIntegrationTest {
 
     @Test
     public void findEvent_eventWithIdListed_successful() throws Exception {
-        // user login
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newUser@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-        
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        // Send login request and get jwt token
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
-        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, AuthResponse.class
-            );
-        String jwtToken = authResponse.getBody().getToken();
-
-        // create test event
-        List<String> artists = new ArrayList<>();
-        artists.add("Taylor Swift");
-        List<Date> dates = new ArrayList<>();
-        dates.add(new Date(2021, 10, 10));
-
-        Event event = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-        Event testEvent = eventRepo.saveAndFlush(event);
-
-        // carry out request with jwt token
+        // setup header with userToken
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtToken);
+        headers.set("Authorization", "Bearer " + userToken);
         headers.add("Content-Type", "application/json");
 
+        // create test event
+        Event testEvent = eventRepo.saveAndFlush(openEvent);
 
         ResponseEntity<Event> responseEntity = testRestTemplate.exchange(
-            createURLWithPort("/events/{id}"),
+            createURLWithPort("/events/" + testEvent.getEventId()),
             HttpMethod.GET,
             new HttpEntity<>(headers),
-            Event.class,
-            testEvent.getEventId()
+            Event.class
         );
 
         assertEquals(responseEntity.getBody().getEventId(), testEvent.getEventId());
@@ -235,45 +162,17 @@ public class EventIntegrationTest {
 
     @Test
     public void findEvent_throwEventNotFoundException_failure() throws Exception {
-        // user login
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newUser@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-        
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        // Send login request and get jwt token
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
-        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, AuthResponse.class
-            );
-        String jwtToken = authResponse.getBody().getToken();
-
-        // create test event
-        List<String> artists = new ArrayList<>();
-        artists.add("Taylor Swift");
-        List<Date> dates = new ArrayList<>();
-        dates.add(new Date(2021, 10, 10));
-
-        Event event = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-        Event testEvent = eventRepo.saveAndFlush(event);
-        Integer eventId = testEvent.getEventId();
-        eventRepo.delete(testEvent);
-
-        // carry out request with jwt token
+        // setup header with userToken
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtToken);
+        headers.set("Authorization", "Bearer " + userToken);
         headers.add("Content-Type", "application/json");
 
-
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
-            createURLWithPort("/events/{id}"),
+            // there is no event with id 999
+            createURLWithPort("/events/" + 999),
             HttpMethod.GET,
             new HttpEntity<>(headers),
-            Void.class,
-            eventId
+            Void.class
         );
 
         assertEquals(404, responseEntity.getStatusCode().value());
@@ -281,35 +180,15 @@ public class EventIntegrationTest {
 
     @Test
     public void createEvent_EventCreated_successful() throws Exception {
-        // admin login
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newAdmin@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-        
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        // Send login request and get jwt token
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
-        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, AuthResponse.class
-            );
-        String jwtToken = authResponse.getBody().getToken();
-
-        // create test event
-        List<String> artists = new ArrayList<>();
-        artists.add("Taylor Swift");
-        List<Date> dates = new ArrayList<>();
-        dates.add(new Date(2021, 10, 10));
-        Event event = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-
-        // carry out request with jwt token
+        // setup header with adminToken
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtToken);
+        headers.set("Authorization", "Bearer " + adminToken);
         headers.add("Content-Type", "application/json");
 
-        HttpEntity<Event> request = new HttpEntity<>(event, headers);
+        // create test event
+        Event testEvent = eventRepo.saveAndFlush(openEvent);
+
+        HttpEntity<Event> request = new HttpEntity<>(testEvent, headers);
         ResponseEntity<Event> responseEntity = testRestTemplate.exchange(
             createURLWithPort("/events/create"),
             HttpMethod.POST,
@@ -325,94 +204,43 @@ public class EventIntegrationTest {
     // UPDATE EVENT TESTS (eventupdated success, eventnotfoundexception failure)
     @Test
     public void updateEvent_EventFoundAndUpdated_successful() throws Exception {
-        // admin login
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newAdmin@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-        
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        // Send login request and get jwt token
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
-        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, AuthResponse.class
-            );
-        String jwtToken = authResponse.getBody().getToken();
-
-        // create test event
-        List<String> artists = new ArrayList<>();
-        artists.add("Taylor Swift");
-        List<Date> dates = new ArrayList<>();
-        dates.add(new Date(2021, 10, 10));
-
-        Event event = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-        Event testEvent = eventRepo.saveAndFlush(event);
-
-        Event event2 = new Event(port, "Swifty Concert 2", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-
-        // carry out request with jwt token
+        // setup header with adminToken
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtToken);
+        headers.set("Authorization", "Bearer " + adminToken);
         headers.add("Content-Type", "application/json");
 
+        // create test event
+        Event testEventBefore = eventRepo.saveAndFlush(openEvent);
+        Integer eventId = testEventBefore.getEventId();
+        Event testEventAfter = eventRepo.saveAndFlush(closedEvent);
 
         ResponseEntity<Event> responseEntity = testRestTemplate.exchange(
-            createURLWithPort("/events/{id}"),
+            createURLWithPort("/events/" + eventId),
             HttpMethod.PUT,
-            new HttpEntity<>(event2, headers),
-            Event.class,
-            testEvent.getEventId()
+            new HttpEntity<>(testEventAfter, headers),
+            Event.class
         );
 
-        assertEquals(responseEntity.getBody().getEventId(), testEvent.getEventId());
+        assertEquals(responseEntity.getBody().getEventId(), eventId);
         assertEquals(200, responseEntity.getStatusCode().value());
     }
 
     @Test
     public void updateEvent_EventNotFoundException_failure() throws Exception {
-        // admin login
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newAdmin@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-        
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        // Send login request and get jwt token
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
-        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, AuthResponse.class
-            );
-        String jwtToken = authResponse.getBody().getToken();
-
-        // create test event
-        List<String> artists = new ArrayList<>();
-        artists.add("Taylor Swift");
-        List<Date> dates = new ArrayList<>();
-        dates.add(new Date(2021, 10, 10));
-
-        Event event = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-        Event testEvent = eventRepo.saveAndFlush(event);
-        Integer eventId = testEvent.getEventId();
-        eventRepo.delete(testEvent);
-
-        Event event2 = new Event(port, "Swifty Concert 2", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-
-        // carry out request with jwt token
+        // setup header with adminToken
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtToken);
+        headers.set("Authorization", "Bearer " + adminToken);
         headers.add("Content-Type", "application/json");
 
+        // create test event
+        Event testEvent = eventRepo.saveAndFlush(closedEvent);
 
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
-            createURLWithPort("/events/{id}"),
+            // there is no event with id 999
+            createURLWithPort("/events/" + 999),
             HttpMethod.PUT,
-            new HttpEntity<>(event2, headers),
-            Void.class,
-            eventId
+            new HttpEntity<>(testEvent, headers),
+            Void.class
         );
 
         assertEquals(404, responseEntity.getStatusCode().value());
@@ -420,82 +248,14 @@ public class EventIntegrationTest {
 
     @Test
     public void deleteEvent_EventFoundAndDeleted_successful() throws Exception {
-        // admin login
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newAdmin@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-        
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        // Send login request and get jwt token
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
-        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, AuthResponse.class
-            );
-        String jwtToken = authResponse.getBody().getToken();
-
-        // create test event
-        List<String> artists = new ArrayList<>();
-        artists.add("Taylor Swift");
-        List<Date> dates = new ArrayList<>();
-        dates.add(new Date(2021, 10, 10));
-
-        Event event = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-        Event testEvent = eventRepo.saveAndFlush(event);
-
-        // carry out request with jwt token
+        // setup header with adminToken
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtToken);
+        headers.set("Authorization", "Bearer " + adminToken);
         headers.add("Content-Type", "application/json");
 
-
-        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
-            createURLWithPort("/events/{id}"),
-            HttpMethod.DELETE,
-            new HttpEntity<>(headers),
-            Void.class,
-            testEvent.getEventId()
-        );
-
-        assertEquals(200, responseEntity.getStatusCode().value());
-    }
-
-    @Test
-    public void deleteEvent_EventNotFoundException_failure() throws Exception {
-        // admin login
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newAdmin@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-        
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        // Send login request and get jwt token
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
-        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, AuthResponse.class
-            );
-        String jwtToken = authResponse.getBody().getToken();
-
         // create test event
-        List<String> artists = new ArrayList<>();
-        artists.add("Taylor Swift");
-        List<Date> dates = new ArrayList<>();
-        dates.add(new Date(2021, 10, 10));
-
-        Event event = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-        Event testEvent = eventRepo.saveAndFlush(event);
+        Event testEvent = eventRepo.saveAndFlush(openEvent);
         Integer eventId = testEvent.getEventId();
-        eventRepo.delete(testEvent);
-
-        // carry out request with jwt token
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtToken);
-        headers.add("Content-Type", "application/json");
-
 
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
             createURLWithPort("/events/" + eventId),
@@ -504,46 +264,16 @@ public class EventIntegrationTest {
             Void.class
         );
 
-        assertEquals(404, responseEntity.getStatusCode().value());
-        // can't get expected 404, keep getting 403 :(
-        // ############################################### PLEASE ASSIST ################################################
+        assertEquals(200, responseEntity.getStatusCode().value());
     }
 
-    // ############################################### DUPLICATED METHOD TO TEST ################################################
+    // ########################### BROKEN TEST ###########################
     @Test
-    public void deleteEvent_EventNotFoundException_failure_v2() throws Exception {
-        // admin login
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newAdmin@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-        
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        // Send login request and get jwt token
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
-        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, AuthResponse.class
-            );
-        String jwtToken = authResponse.getBody().getToken();
-
-        // create test event
-        // List<String> artists = new ArrayList<>();
-        // artists.add("Taylor Swift");
-        // List<Date> dates = new ArrayList<>();
-        // dates.add(new Date(2021, 10, 10));
-
-        // Event event = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-        // Event testEvent = eventRepo.saveAndFlush(event);
-        // Integer eventId = testEvent.getEventId();
-        // eventRepo.delete(testEvent);
-
-        // carry out request with jwt token
+    public void deleteEvent_EventNotFoundException_failure() throws Exception {
+        // setup header with adminToken
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtToken);
+        headers.set("Authorization", "Bearer " + adminToken);
         headers.add("Content-Type", "application/json");
-
 
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
             // there is no event with id 999
@@ -560,89 +290,41 @@ public class EventIntegrationTest {
 
     @Test
     public void closeRegistration_EventFoundRegClosed_successful() throws Exception {
-        // admin login
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newAdmin@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-        
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        // Send login request and get jwt token
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
-        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, AuthResponse.class
-            );
-        String jwtToken = authResponse.getBody().getToken();
-
-        // create test event
-        List<String> artists = new ArrayList<>();
-        artists.add("Taylor Swift");
-        List<Date> dates = new ArrayList<>();
-        dates.add(new Date(2021, 10, 10));
-
-        Event event = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, true, port, null, null, port);
-        Event testEvent = eventRepo.saveAndFlush(event);
-
-        // carry out request with jwt token
+        // setup header with adminToken
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtToken);
+        headers.set("Authorization", "Bearer " + adminToken);
         headers.add("Content-Type", "application/json");
 
+        // create test event
+        Event testOpenEvent = eventRepo.saveAndFlush(openEvent);
+        Integer eventId = testOpenEvent.getEventId();
+
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-            createURLWithPort("/events/{id}/close"),
+            createURLWithPort("/events/" + eventId +"/close"),
             HttpMethod.PUT,
             new HttpEntity<>(headers),
-            String.class,
-            testEvent.getEventId()
+            String.class
         );
-        Event updatedEvent = eventRepo.findById(testEvent.getEventId()).orElse(null);
+        Event updatedEvent = eventRepo.findById(eventId).orElse(null);
 
-        assertEquals(false, updatedEvent.getOpenStatus());
+        assertFalse(updatedEvent.getOpenStatus());
         assertEquals(200, responseEntity.getStatusCode().value());
     }
 
+    // ########################### BROKEN TEST ###########################
     @Test
     public void closeRegistration_EventNotFoundException_failure() throws Exception {
-        // admin login
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newAdmin@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-        
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        // Send login request and get jwt token
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
-        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, AuthResponse.class
-            );
-        String jwtToken = authResponse.getBody().getToken();
-
-        // create test event
-        List<String> artists = new ArrayList<>();
-        artists.add("Taylor Swift");
-        List<Date> dates = new ArrayList<>();
-        dates.add(new Date(2021, 10, 10));
-
-        Event event = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, true, port, null, null, port);
-        Event testEvent = eventRepo.saveAndFlush(event);
-        Integer eventId = testEvent.getEventId();
-        eventRepo.delete(testEvent);
-
-        // carry out request with jwt token
+        // setup header with adminToken
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtToken);
+        headers.set("Authorization", "Bearer " + adminToken);
         headers.add("Content-Type", "application/json");
 
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
-            createURLWithPort("/events/{id}/close"),
+            // there is no event with id 999
+            createURLWithPort("/events/" + 999 +"/close"),
             HttpMethod.PUT,
             new HttpEntity<>(headers),
-            Void.class,
-            eventId
+            Void.class
         );
 
         assertEquals(404, responseEntity.getStatusCode().value());
@@ -652,89 +334,41 @@ public class EventIntegrationTest {
 
     @Test
     public void openRegistration_EventFoundRegOpened_successful() throws Exception {
-        // admin login
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newAdmin@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-        
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        // Send login request and get jwt token
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
-        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, AuthResponse.class
-            );
-        String jwtToken = authResponse.getBody().getToken();
-
-        // create test event
-        List<String> artists = new ArrayList<>();
-        artists.add("Taylor Swift");
-        List<Date> dates = new ArrayList<>();
-        dates.add(new Date(2021, 10, 10));
-
-        Event event = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-        Event testEvent = eventRepo.saveAndFlush(event);
-
-        // carry out request with jwt token
+        // setup header with adminToken
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtToken);
+        headers.set("Authorization", "Bearer " + adminToken);
         headers.add("Content-Type", "application/json");
 
+        // create test event
+        Event testClosedEvent = eventRepo.saveAndFlush(closedEvent);
+        Integer eventId = testClosedEvent.getEventId();
+
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-            createURLWithPort("/events/{id}/open"),
+            createURLWithPort("/events/" + eventId +"/open"),
             HttpMethod.PUT,
             new HttpEntity<>(headers),
-            String.class,
-            testEvent.getEventId()
+            String.class
         );
-        Event updatedEvent = eventRepo.findById(testEvent.getEventId()).orElse(null);
+        Event updatedEvent = eventRepo.findById(eventId).orElse(null);
 
-        assertEquals(true, updatedEvent.getOpenStatus());
+        assertTrue(updatedEvent.getOpenStatus());
         assertEquals(200, responseEntity.getStatusCode().value());
     }
 
+    // ########################### BROKEN TEST ###########################
     @Test
     public void openRegistration_EventNotFoundException_failure() throws Exception {
-        // admin login
-        SignInRequest loginRequest = new SignInRequest();
-        loginRequest.setEmail("newAdmin@email.com");
-        loginRequest.setPassword("GoodPassword123!");
-        
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        // Send login request and get jwt token
-        HttpEntity<SignInRequest> entity = new HttpEntity<>(loginRequest, authHeaders);
-        ResponseEntity<AuthResponse> authResponse = testRestTemplate.exchange(
-                createURLWithPort("/auth/signin"),
-                HttpMethod.POST, entity, AuthResponse.class
-            );
-        String jwtToken = authResponse.getBody().getToken();
-
-        // create test event
-        List<String> artists = new ArrayList<>();
-        artists.add("Taylor Swift");
-        List<Date> dates = new ArrayList<>();
-        dates.add(new Date(2021, 10, 10));
-
-        Event event = new Event(port, "Swifty Concert", artists, dates, "Singapore Indoor Stadium", 10000, false, port, null, null, port);
-        Event testEvent = eventRepo.saveAndFlush(event);
-        Integer eventId = testEvent.getEventId();
-        eventRepo.delete(testEvent);
-
-        // carry out request with jwt token
+        // setup header with adminToken
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtToken);
+        headers.set("Authorization", "Bearer " + adminToken);
         headers.add("Content-Type", "application/json");
 
-        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
-            createURLWithPort("/events/{id}/open"),
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+            // there is no event with id 999
+            createURLWithPort("/events/" + 999 +"/open"),
             HttpMethod.PUT,
             new HttpEntity<>(headers),
-            Void.class,
-            eventId
+            String.class
         );
 
         assertEquals(404, responseEntity.getStatusCode().value());
