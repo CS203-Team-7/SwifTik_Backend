@@ -26,6 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -68,9 +69,6 @@ public class ZoneIntegrationTest {
     private EventRepository eventRepo;
 
     @Autowired
-    private TicketRepository ticketRepo;
-
-    @Autowired
     private UserRepository userRepo;
 
     @Autowired
@@ -84,35 +82,20 @@ public class ZoneIntegrationTest {
 
     private String adminToken;
     private String userToken;
-    private Event event;
+    private Event openEvent;
     private Event closedEvent;
-    private Date date;
     private Date[] dates;
+    private Date date;
  
     HttpHeaders headers = new HttpHeaders();
     TestRestTemplate testRestTemplate = new TestRestTemplate();
 
 
     @BeforeEach
-    void createEvent() {
-        //create date
-        Date date = new Date();
-        Date[] dates = new Date[]{date};
-
-        event = new Event(1, "event1", new ArrayList<>(),
-        Arrays.asList(dates), "venue1", 12,
-        true, 2, new ArrayList<>(), new ArrayList<>(), 1);
-        eventRepo.save(event);
-
-        closedEvent = new Event(3, "eventClosed", new ArrayList<>(),
-        Arrays.asList(dates), "venue1", 12,
-        false, 2, new ArrayList<>(), new ArrayList<>(), 1);
-        eventRepo.save(closedEvent);
-    }
-
-    @BeforeEach
-    void createUsers(){
-        String encodedPassword = new BCryptPasswordEncoder().encode("GoodPassword123!");
+    void setUp() throws Exception{
+        log.info("starting setup");
+        String password = "GoodPassword123!";
+        String encodedPassword = new BCryptPasswordEncoder().encode(password);
 
         User newUser = new User("newUser@email.com", encodedPassword, new Date(), "+6582887066", Role.USER, true);
         userRepo.save(newUser);
@@ -120,20 +103,36 @@ public class ZoneIntegrationTest {
         User newAdmin = new User("newAdmin@email.com", encodedPassword, new Date(), "+6887662344", Role.ADMIN, true);
         userRepo.save(newAdmin);
 
-        AuthResponse adminLogin = authService.signIn(new SignInRequest("newAdmin@email.com", "GoodPassword123!"));
+        AuthResponse adminLogin = authService.signIn(new SignInRequest("newAdmin@email.com", password));
         adminToken = adminLogin.getToken();
 
-        AuthResponse userLogin = authService.signIn(new SignInRequest("newUser@email.com", "GoodPassword123!"));
+        AuthResponse userLogin = authService.signIn(new SignInRequest("newUser@email.com", password));
         userToken = userLogin.getToken();
 
         log.info(""+userToken);
         log.info(""+adminToken);
+
+        //create events
+        //create date array for the creation of event.
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  
+        date = sdf.parse("07/03/2023");
+        dates = new Date[]{date};
+
+        //create events.
+        List<String> artists = new ArrayList<>();
+        artists.add("Taylor Swift");
+
+        openEvent = new Event("Swifty Concert", artists, Arrays.asList(dates), "Singapore Indoor Stadium", 10000);
+        openEvent.setOpen4Registration(true);
+        eventRepo.save(openEvent);
+
+        closedEvent = new Event("Swifty Concert 2 Electric Boogalo", artists, Arrays.asList(dates), "Singapore Indoor Stadium", 10000);
+        eventRepo.save(closedEvent);
     }
 
     @AfterEach
     void tearDown() {
         eventRepo.deleteAll();
-        ticketRepo.deleteAll();
         userRepo.deleteAll();
         zoneRepo.deleteAll();
     }
@@ -145,25 +144,16 @@ public class ZoneIntegrationTest {
 
     @Test
     void addEvent_UserNotAuthorized_Return403() {
-        // SignInRequest loginRequest = new SignInRequest();
-        // loginRequest.setEmail("newUser@email.com");
-        // loginRequest.setPassword("GoodPassword123!");
-
-        // SignInRequest loginRequest = new SignInRequest();
-        // loginRequest.setEmail("newUser@email.com");
-        // loginRequest.setPassword("GoodPassword123!");
-        // AuthResponse loginResponse = testRestTemplate.postForObject(createURLWithPort("/auth/signup"), loginRequest, AuthResponse.class);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
         headers.add("Authorization", "Bearer " + userToken);
 
 
-        ZoneRequest zoneRequest = new ZoneRequest(10, "zone1", date, 12);
+        ZoneRequest zoneRequest = new ZoneRequest(10, "testZone", date, 12);
 
         ResponseEntity<Zones> responseEntity = testRestTemplate.exchange(
-                createURLWithPort("/events/1/createZone"),
+                createURLWithPort("/events/" + openEvent.getEventId() + "/createZone"),
                 HttpMethod.POST,
                 new HttpEntity<>(headers),
                 Zones.class
@@ -173,25 +163,26 @@ public class ZoneIntegrationTest {
     }
 
     @Test
-    void addEvent_EventNotFound_ThrowException() {
+    void addZone_EventNotFound_ThrowException() {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
         headers.add("Authorization", "Bearer " + adminToken);
 
 
-        ZoneRequest zoneRequest = new ZoneRequest(10, "zone1", date, 12);
+        ZoneRequest zoneRequest = new ZoneRequest(10, "testZone", date, 12);
 
         HttpEntity<ZoneRequest> entity = new HttpEntity<>(zoneRequest, headers);
 
-        ResponseEntity<Zones> responseEntity = testRestTemplate.exchange(
-                createURLWithPort("/events/2/createZone"),
+        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
+            //id with -1 will never exist
+                createURLWithPort("/events/-1/createZone"),
                 HttpMethod.POST,
                 entity,
-                Zones.class
+                Void.class
                 );
 
-        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
     @Test
@@ -203,12 +194,12 @@ public class ZoneIntegrationTest {
         headers.add("Authorization", "Bearer " + adminToken);
 
 
-        ZoneRequest zoneRequest = new ZoneRequest(10, "zone1", new Date(), 12);
+        ZoneRequest zoneRequest = new ZoneRequest(10, "testZone", date, 12);
 
-        HttpEntity<Zones> entity = new HttpEntity<>(headers);
+        HttpEntity<ZoneRequest> entity = new HttpEntity<>(zoneRequest, headers);
 
         ResponseEntity<Zones> responseEntity = testRestTemplate.exchange(
-                createURLWithPort("/events/1/createZone"),
+                createURLWithPort("/events/" + openEvent.getEventId() + "/createZone"),
                 HttpMethod.POST,
                 entity,
                 Zones.class
@@ -219,17 +210,15 @@ public class ZoneIntegrationTest {
 
     @Test
     void getZones_Successful() {
-        //Zones zone = new Zones(12, "test", new Date(), 12, event);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
         headers.add("Authorization", "Bearer " + userToken);
         
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<Zones> responseEntity = testRestTemplate.exchange(
-                createURLWithPort("/events/" + event.getEventId() + "/zones"),
-                HttpMethod.GET, entity, Zones.class
+        ResponseEntity<List<Zones>> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/events/" + openEvent.getEventId() + "/zones"),
+                HttpMethod.GET, entity, new ParameterizedTypeReference<List<Zones>>(){}
         );
 
         // Check the HTTP status code
@@ -239,29 +228,29 @@ public class ZoneIntegrationTest {
     
     @Test
     void getZones_EventNotFound_Return404() {
-        //Zones zone = new Zones(12, "test", new Date(), 12, event);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
+        headers.add("Authorization", "Bearer " + userToken);
         
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<Zones> responseEntity = testRestTemplate.exchange(
-                createURLWithPort("/events/2/zones"),
-                HttpMethod.GET, entity, Zones.class
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+            //negative id does not exist
+            createURLWithPort("/events/-1/zones"),
+            HttpMethod.GET, entity, String.class
         );
 
         // Check the HTTP status code
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-        assertEquals("Could not find ",responseEntity.getBody());
+        assertEquals("Event ID " + (-1) + " could not be found.", responseEntity.getBody());
     }
 
-    //preRegister tests
 
+    //preRegister tests
     //when the event is closed, is it supposed to return 403?
     @Test
     void preRegister_EventClosed_Return403() {
-        Zones zone = new Zones(12, "test", new Date(), 12, closedEvent);
+        Zones zone = new Zones(12, "test", date, 12, closedEvent);
         zoneRepo.save(zone);
         
         HttpHeaders headers = new HttpHeaders();
@@ -269,23 +258,21 @@ public class ZoneIntegrationTest {
         headers.add("Content-Type", "application/json");
         headers.add("Authorization", "Bearer " + userToken);
 
-
-        //ZoneRequest zoneRequest = new ZoneRequest(10, "zone1", new Date(), 12);
-
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-                createURLWithPort("/events/1/zone=" + zone.getZoneId() + "/preRegister"),
-                HttpMethod.POST,
+                createURLWithPort("/events/" + closedEvent.getEventId() + "/zone=" + zone.getZoneId() + "/preRegister"),
+                HttpMethod.PUT,
                 new HttpEntity<>(headers),
                 String.class
                 );
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
+        assertEquals("The Pre-egistration has not yet opened, or Pre-registration has closed, join us next time!", responseEntity.getBody());
     }
 
 
     @Test
     void preRegister_EventIDNotFound_Return404() {
-        Zones zone = new Zones(12, "test", new Date(), 12, event);
+        Zones zone = new Zones(12, "test", date, 12, openEvent);
         zoneRepo.save(zone);
         
         HttpHeaders headers = new HttpHeaders();
@@ -293,23 +280,21 @@ public class ZoneIntegrationTest {
         headers.add("Content-Type", "application/json");
         headers.add("Authorization", "Bearer " + userToken);
 
-
-        //ZoneRequest zoneRequest = new ZoneRequest(10, "zone1", new Date(), 12);
-
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-                createURLWithPort("/events/2/zone=" + zone.getZoneId() + "/preRegister"),
-                HttpMethod.POST,
+            //negative id will never exist
+                createURLWithPort("/events/-1/zone=" + zone.getZoneId() + "/preRegister"),
+                HttpMethod.PUT,
                 new HttpEntity<>(headers),
-                String.class,
-                zone.getZoneId()
+                String.class
                 );
 
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals("Event ID " + (-1) + " could not be found.", responseEntity.getBody());
     }
 
     @Test
     void preRegister_ZoneIDNotFound_Return404() {
-        Zones zone = new Zones(12, "test", new Date(), 12, event);
+        Zones zone = new Zones(12, "test", date, 12, openEvent);
         zoneRepo.save(zone);
         
         HttpHeaders headers = new HttpHeaders();
@@ -317,23 +302,21 @@ public class ZoneIntegrationTest {
         headers.add("Content-Type", "application/json");
         headers.add("Authorization", "Bearer " + userToken);
 
-
-        //ZoneRequest zoneRequest = new ZoneRequest(10, "zone1", new Date(), 12);
-
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-                createURLWithPort("/events/1/zone=" + zone.getZoneId() + 1 + "/preRegister"),
-                HttpMethod.POST,
+            //negative id for zone will never exist
+                createURLWithPort("/events/" + openEvent.getEventId() + "/zone=-1/preRegister"),
+                HttpMethod.PUT,
                 new HttpEntity<>(headers),
-                String.class,
-                zone.getZoneId()
+                String.class
                 );
 
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
     }
 
     @Test
     void preRegister_Successful() {
-        Zones zone = new Zones(12, "test", new Date(), 12, event);
+        Zones zone = new Zones(12, "test", date, 12, openEvent);
         zoneRepo.save(zone);
         
         HttpHeaders headers = new HttpHeaders();
@@ -341,15 +324,11 @@ public class ZoneIntegrationTest {
         headers.add("Content-Type", "application/json");
         headers.add("Authorization", "Bearer " + userToken);
 
-
-        //ZoneRequest zoneRequest = new ZoneRequest(10, "zone1", new Date(), 12);
-
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-                createURLWithPort("/events/1/zone=" + zone.getZoneId() + "/preRegister"),
-                HttpMethod.POST,
+                createURLWithPort("/events/" + openEvent.getEventId() + "/zone=" + zone.getZoneId() + "/preRegister"),
+                HttpMethod.PUT,
                 new HttpEntity<>(headers),
-                String.class,
-                zone.getZoneId()
+                String.class
                 );
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
