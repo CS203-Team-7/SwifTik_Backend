@@ -316,7 +316,6 @@ public class EventIntegrationTest {
         assertEquals(200, responseEntity.getStatusCode().value());
     }
 
-        // ############################################### BROKEN TEST ################################################
     @Test
     public void closeRegistration_EventNotFoundException_failure() throws Exception {
         // setup header with adminToken
@@ -342,8 +341,6 @@ public class EventIntegrationTest {
 
         //DEBUGGING
         log.info("DEBUG: AFTER ASSERT");
-        // why tf am i getting 403???
-        // ############################################### PLEASE ASSIST ################################################
     }
 
     @Test
@@ -369,7 +366,6 @@ public class EventIntegrationTest {
         assertEquals(200, responseEntity.getStatusCode().value());
     }
 
-        // ############################################### BROKEN TEST ################################################
     @Test
     public void openRegistration_EventNotFoundException_failure() throws Exception {
         // setup header with adminToken
@@ -386,7 +382,5 @@ public class EventIntegrationTest {
         );
 
         assertEquals(404, responseEntity.getStatusCode().value());
-        // why tf am i getting 403???
-        // ############################################### PLEASE ASSIST ################################################
     }
 }
