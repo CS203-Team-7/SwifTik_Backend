@@ -1,11 +1,6 @@
 package com.swiftyticket;
 
 import static org.junit.jupiter.api.Assertions.*;
-// import static org.junit.jupiter.api.Assertions.assertEquals;
-// import static org.junit.jupiter.api.Assertions.assertFalse;
-// import static org.junit.jupiter.api.Assertions.assertNotNull;
-// import static org.junit.jupiter.api.Assertions.assertNull;
-// import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -198,9 +193,6 @@ public class EventIntegrationTest {
         assertEquals(201, responseEntity.getStatusCode().value());
     }
 
-    //################################### POSSIBLY ADD MORE FOR CREATE EVENT? ##############################
-
-    // UPDATE EVENT TESTS (eventupdated success, eventnotfoundexception failure)
     @Test
     public void updateEvent_EventFoundAndUpdated_successful() throws Exception {
         // setup header with adminToken
