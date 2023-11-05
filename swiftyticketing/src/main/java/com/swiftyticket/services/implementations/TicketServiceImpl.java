@@ -1,5 +1,6 @@
 package com.swiftyticket.services.implementations;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,11 +93,8 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public void deleteTicket(Integer id) {
-        Optional<Ticket> t = ticketRepo.findById(id);
-        if (t == null) throw new TicketNotFoundException(id);
-
-        Ticket ticket = t.get();
-        ticketRepo.deleteById(ticket.getTicketId());
+    public List<Ticket> getAllUserTickets(Integer userId){
+        return new ArrayList<>();
     }
+
 }
