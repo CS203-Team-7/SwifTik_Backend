@@ -572,7 +572,7 @@ Authorization: Bearer
 
 ###
 #a non-winner tries to purchase a ticket
-POST http://localhost:8080/tickets/purchase/eventId=1,zoneId=2
+POST http://localhost:8080/tickets/purchase/eventId=1,zoneId=1
 Content-Type: application/json
 Authorization: Bearer 
 

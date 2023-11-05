@@ -74,7 +74,7 @@ public class Event {
     private int user_count;
 
     @OneToMany(mappedBy = "event",
-                fetch = FetchType.EAGER,
+               fetch = FetchType.EAGER,
                 cascade = CascadeType.ALL)
     private List<Zones> zoneList;
 

@@ -60,7 +60,7 @@ public class Zones {
     @Column(name = "ticket_price")
     private double ticket_price;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "events_id", nullable = false)
     @JsonIgnore
     private Event event;
@@ -75,7 +75,7 @@ public class Zones {
     @Column(name = "preRegistered_users")
     private List<User> preRegisteredUsers4Zone = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinTable(name = "zones_winners",
             joinColumns=
@@ -88,6 +88,7 @@ public class Zones {
 
     @JsonIgnore
     @OneToMany(mappedBy = "forZone",
+                fetch = FetchType.EAGER,
                cascade = CascadeType.ALL)
     private List<Ticket> ticketList;
 

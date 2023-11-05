@@ -59,9 +59,13 @@ public class TicketServiceImpl implements TicketService {
 
         //create the ticket object, give it to respective zone & user.
         //begin by checking if the user who's trying to buy the ticket is a winner for the zone
+        log.info(purchase4Zone.getWinnerList().toString());
+        log.info(""+purchase4Zone.getWinnerList().get(0).getUserId());
+        log.info("" + purchasingUser);
+        log.info(""+purchasingUser.getUserId());
         if( !( purchase4Zone.getWinnerList().contains(purchasingUser) ) ){
             log.info("user tried to purchase ticket for zone they didn't win. get outta here!");
-            //to do: throw exception!
+            
             throw new PurchaseException();
         }
         //if reach this part of the code, means the user is a winner, we can continue with the purchase.

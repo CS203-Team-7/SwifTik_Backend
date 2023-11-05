@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -37,7 +38,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "_user")
-@Transactional
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 // We implement UserDetails from Spring Security to match all the requirements we need for authenticatons purposes
 public class User implements UserDetails { 
 
@@ -61,25 +62,25 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
     //lock users until they verify with OTP (set it to false)
-    private boolean verified;
+    private boolean verified = false;
 
 
     @ManyToMany(mappedBy = "preRegisteredUsers4Zone", fetch = FetchType.EAGER)
-    private List<Zones> preRegisteredZones;
+    private List<Zones> preRegisteredZones = new ArrayList<>();
 
 
     @ManyToMany(mappedBy = "preRegisteredUsers4Event", fetch = FetchType.EAGER)
-    private List<Event> preRegisteredEvents;
+    private List<Event> preRegisteredEvents = new ArrayList<>();
 
 
     @ManyToMany(mappedBy = "winnerList", fetch = FetchType.EAGER)
-    private List<Zones> zonesWon;
+    private List<Zones> zonesWon = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "forUser",
                cascade = CascadeType.ALL,
                fetch = FetchType.EAGER)
-    private List<Ticket> ticketsBought;
+    private List<Ticket> ticketsBought = new ArrayList<>();
 
     //List<Integer> ticketsBought;
 
@@ -137,5 +138,15 @@ public class User implements UserDetails {
     @JsonIgnore
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean equals(Object other){
+        if( !(other instanceof User) ){
+            return false;
+        }
+
+        return this.userId == ((User)other).userId;
     }
 }

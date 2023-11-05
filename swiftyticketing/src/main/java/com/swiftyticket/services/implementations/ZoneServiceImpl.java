@@ -177,7 +177,7 @@ public class ZoneServiceImpl implements ZoneService {
             log.info("winner no." + i + " preRegisteredEvent" + u.getPreRegisteredEvents());
 
         //now we want to message the winners who won
-        String congratz = "Congratulations! You have won the raffle for the event: " + event.getEventName() + ", for the zone: " + zone.getZoneName();
+        String congratz = "Congratulations " + u.getEmail() + "! You have won the raffle for the event: " + event.getEventName() + ", for the zone: " + zone.getZoneName();
         smsServ.sendCongratz(congratz, u.getPhoneNumber());
         }
 

@@ -1,7 +1,7 @@
 spring:
     datasource:
-        url: jdbc:postgresql://localhost:5433/swiftyticketing
-        username: postgres
+        url: jdbc:postgresql://localhost:5432/swiftyticketing
+        username: zj
         password: postgres
         driver-class-name: org.postgresql.Driver
     jpa:
@@ -12,6 +12,8 @@ spring:
             hibernate:
                 dialect: org.hibernate.dialect.PostgreSQLDialect
                 format_sql: true
+                
+
 twilio:
     AccountSID: ${TW_SID}
     AuthToken: ${TW_AUTHTOKEN}

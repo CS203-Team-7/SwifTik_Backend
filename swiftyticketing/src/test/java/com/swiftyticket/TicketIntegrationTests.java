@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,12 +27,17 @@ import com.swiftyticket.models.Ticket;
 import com.swiftyticket.models.User;
 import com.swiftyticket.models.Zones;
 import com.swiftyticket.repositories.EventRepository;
+import com.swiftyticket.repositories.TicketRepository;
 import com.swiftyticket.repositories.UserRepository;
 import com.swiftyticket.repositories.ZoneRepository;
 import com.swiftyticket.services.EventService;
+import com.swiftyticket.services.TicketService;
 import com.swiftyticket.services.ZoneService;
 import com.swiftyticket.services.implementations.AuthServiceImpl;
 import com.swiftyticket.services.implementations.SmsServiceImpl;
+import com.swiftyticket.services.implementations.TicketServiceImpl;
+
+import jakarta.transaction.Transactional;
 
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -67,6 +73,9 @@ public class TicketIntegrationTests {
 
     @Autowired
     private ZoneRepository zoneRepo;
+
+    @Autowired
+    private TicketRepository ticketRepo;
     
     @Autowired
     private AuthServiceImpl authServ;
@@ -77,15 +86,18 @@ public class TicketIntegrationTests {
     @Autowired 
     private ZoneService zoneServ;
 
+    @Autowired
+    private TicketServiceImpl tickServ;
+
     private String adminToken;
     private String userToken;
     private Event event;
     private Zones zone;
 
+
     @BeforeEach
     void setUp() throws Exception{
         //create users
-        
         log.info("starting set up");
         String password = "GoodPassword123!";
         String encodedPassowrd = new BCryptPasswordEncoder().encode(password);
@@ -138,9 +150,12 @@ public class TicketIntegrationTests {
 
     @AfterEach
     void tearDown(){
-        zoneRepo.deleteAll();
+        ticketRepo.deleteAll();
         eventRepo.deleteAll();
+        zoneRepo.deleteAll();
         userRepo.deleteAll();
+        
+
     }
 
     private String createURLWithPort(String uri)
@@ -166,7 +181,7 @@ public class TicketIntegrationTests {
     }
 
     @Test
-    public void ticketPurchase_Invalid_ReturnError() throws Exception {
+    public void ticketPurchase_Invalid_Return403() throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");
@@ -182,4 +197,63 @@ public class TicketIntegrationTests {
         assertEquals(403, responseEntity.getStatusCode().value());
         assertEquals("Either you have not won a raffle for this zone, or you have already bought a ticket.",responseEntity.getBody());
     }
+
+    @Test
+    public void getTicket_Valid_ReturnTicket() throws Exception {
+        //generate a ticket by making the winner buy a ticket.
+        Ticket ticket = tickServ.purchaseTicket("Bearer " + userToken, event.getEventId(), zone.getZoneId());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+        headers.add("Authorization", "Bearer " + userToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Ticket> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/tickets/" + ticket.getTicketId()),
+                HttpMethod.GET, entity, Ticket.class
+        );
+            
+        assertEquals(200, responseEntity.getStatusCode().value());
+        assertNotNull(responseEntity.getBody());
+    }
+
+
+    @Test
+    public void getTicket_Invalid_Return404() throws Exception {
+        //generate a ticket by making the winner buy a ticket.
+        Ticket ticket = tickServ.purchaseTicket("Bearer " + userToken, event.getEventId(), zone.getZoneId());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+        headers.add("Authorization", "Bearer " + adminToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+            //ticket with id 999 shouldnt exist here
+                createURLWithPort("/tickets/" + 999),
+                HttpMethod.GET, entity, String.class
+        );
+            
+        assertEquals(404, responseEntity.getStatusCode().value());
+        assertEquals("Could not find ticket 999",responseEntity.getBody());
+    }
+
+    @Test
+    public void getAllTickets_Valid_ReturnTickets() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+        headers.add("Authorization", "Bearer " + adminToken);
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/tickets"),
+                HttpMethod.GET, entity, Void.class
+        );
+            
+        assertEquals(200, responseEntity.getStatusCode().value());
+    }
+    
 }
