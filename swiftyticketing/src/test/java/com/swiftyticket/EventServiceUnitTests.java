@@ -299,16 +299,6 @@ class EventServiceUnitTests {
         verify(eventRepository).findById(Mockito.<Integer>any());
     }
 
-    // @Test
-    // void deleteEvent_NullInput_ThrowException() {
-    //     // Arrange and Act
-    //     when(eventRepository.findById(Mockito.<Integer>any())).thenReturn(null);
-
-    //     // Assert
-    //     assertThrows(EventNotFoundException.class, () -> eventServiceImpl.deleteEvent(1));
-    //     verify(eventRepository).findById(Mockito.<Integer>any());
-    // }
-
     // openEvent() tests
     @Test
     void openEvent_ValidEvent_Successful() {
@@ -343,16 +333,6 @@ class EventServiceUnitTests {
         verify(eventRepository).save(Mockito.<Event>any());
     }
 
-    //@Test
-    // void openEvent_NullInput_ThrowException() {
-    //     // Arrange and Act
-    //     when(eventRepository.findById(Mockito.<Integer>any())).thenReturn(null);
-
-    //     // Assert
-    //     assertThrows(EventNotFoundException.class, () -> eventServiceImpl.openEvent(1));
-    //     verify(eventRepository).findById(Mockito.<Integer>any());
-    // }
-
     // closeEvent() tests
     @Test
     void closeEvent_ValidEvent_Successful() {
@@ -386,16 +366,6 @@ class EventServiceUnitTests {
         verify(eventRepository).findById(Mockito.<Integer>any());
         verify(eventRepository).save(Mockito.<Event>any());
     }
-
-    // @Test
-    // void closeEvent_NullInput_ThrowException() {
-    //     // Arrange and Act
-    //     when(eventRepository.findById(Mockito.<Integer>any())).thenReturn(null);
-
-    //     // Assert
-    //     assertThrows(EventNotFoundException.class, () -> eventServiceImpl.closeEvent(1));
-    //     verify(eventRepository).findById(Mockito.<Integer>any());
-    // }
 
     @Test
     void raffle_OpenEvent_ThrowException() {

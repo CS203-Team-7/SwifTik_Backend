@@ -41,6 +41,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.swiftyticket.controllers.ZoneController;
 import com.swiftyticket.dto.auth.AuthResponse;
 import com.swiftyticket.dto.auth.SignInRequest;
+import com.swiftyticket.dto.zone.PreRegisterRequest;
 import com.swiftyticket.dto.zone.ZoneRequest;
 import com.swiftyticket.models.Event;
 import com.swiftyticket.models.Role;
@@ -247,91 +248,110 @@ public class ZoneIntegrationTest {
 
 
     //preRegister tests
-    //when the event is closed, is it supposed to return 403?
-    // @Test
-    // void preRegister_EventClosed_Return403() {
-    //     Zones zone = new Zones(12, "test", date, 12, closedEvent);
-    //     zoneRepo.save(zone);
+     @Test
+     void preRegister_EventClosed_Return403() {
+         Zones zone = new Zones(12, "test", date, 12, closedEvent);
+         zoneRepo.save(zone);
+
+         PreRegisterRequest pRegReq = new PreRegisterRequest();
+         pRegReq.setEmail("newUser@email.com");
         
-    //     HttpHeaders headers = new HttpHeaders();
-    //     headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-    //     headers.add("Content-Type", "application/json");
-    //     headers.add("Authorization", "Bearer " + userToken);
+         HttpHeaders headers = new HttpHeaders();
+         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+         headers.add("Content-Type", "application/json");
+         headers.add("Authorization", "Bearer " + userToken);
 
-    //     ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-    //             createURLWithPort("/events/" + closedEvent.getEventId() + "/zone=" + zone.getZoneId() + "/preRegister"),
-    //             HttpMethod.PUT,
-    //             new HttpEntity<>(headers),
-    //             String.class
-    //             );
+         HttpEntity<PreRegisterRequest> entity = new HttpEntity<>(pRegReq, headers);
 
-    //     assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
-    //     assertEquals("The Pre-egistration has not yet opened, or Pre-registration has closed, join us next time!", responseEntity.getBody());
-    // }
+         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+                 createURLWithPort("/events/" + closedEvent.getEventId() + "/zone=" + zone.getZoneId() + "/preRegister"),
+                 HttpMethod.PUT,
+                 entity,
+                 String.class
+                 );
+
+         assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
+         assertEquals("The Pre-egistration has not yet opened, or Pre-registration has closed, join us next time!", responseEntity.getBody());
+     }
 
 
-    // @Test
-    // void preRegister_EventIDNotFound_Return404() {
-    //     Zones zone = new Zones(12, "test", date, 12, openEvent);
-    //     zoneRepo.save(zone);
+     @Test
+     void preRegister_EventIDNotFound_Return404() {
+         Zones zone = new Zones(12, "test", date, 12, openEvent);
+         zoneRepo.save(zone);
         
-    //     HttpHeaders headers = new HttpHeaders();
-    //     headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-    //     headers.add("Content-Type", "application/json");
-    //     headers.add("Authorization", "Bearer " + userToken);
+         PreRegisterRequest pRegReq = new PreRegisterRequest();
+         pRegReq.setEmail("newUser@email.com");
 
-    //     ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-    //         //negative id will never exist
-    //             createURLWithPort("/events/-1/zone=" + zone.getZoneId() + "/preRegister"),
-    //             HttpMethod.PUT,
-    //             new HttpEntity<>(headers),
-    //             String.class
-    //             );
+         HttpHeaders headers = new HttpHeaders();
+         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+         headers.add("Content-Type", "application/json");
+         headers.add("Authorization", "Bearer " + userToken);
 
-    //     assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-    //     assertEquals("Event ID " + (-1) + " could not be found.", responseEntity.getBody());
-    // }
+         HttpEntity<PreRegisterRequest> entity = new HttpEntity<>(pRegReq, headers);
 
-    // @Test
-    // void preRegister_ZoneIDNotFound_Return404() {
-    //     Zones zone = new Zones(12, "test", date, 12, openEvent);
-    //     zoneRepo.save(zone);
+         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+             //negative id will never exist
+                 createURLWithPort("/events/-1/zone=" + zone.getZoneId() + "/preRegister"),
+                 HttpMethod.PUT,
+                 entity,
+                 String.class
+                 );
+
+         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+         assertEquals("Event ID " + (-1) + " could not be found.", responseEntity.getBody());
+     }
+
+     @Test
+     void preRegister_ZoneIDNotFound_Return404() {
+         Zones zone = new Zones(12, "test", date, 12, openEvent);
+         zoneRepo.save(zone);
+
+         PreRegisterRequest pRegReq = new PreRegisterRequest();
+         pRegReq.setEmail("newUser@email.com");
         
-    //     HttpHeaders headers = new HttpHeaders();
-    //     headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-    //     headers.add("Content-Type", "application/json");
-    //     headers.add("Authorization", "Bearer " + userToken);
+         HttpHeaders headers = new HttpHeaders();
+         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+         headers.add("Content-Type", "application/json");
+         headers.add("Authorization", "Bearer " + userToken);
 
-    //     ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-    //         //negative id for zone will never exist
-    //             createURLWithPort("/events/" + openEvent.getEventId() + "/zone=-1/preRegister"),
-    //             HttpMethod.PUT,
-    //             new HttpEntity<>(headers),
-    //             String.class
-    //             );
+         HttpEntity<PreRegisterRequest> entity = new HttpEntity<>(pRegReq, headers);
 
-    //     assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-    //     assertNotNull(responseEntity.getBody());
-    // }
+         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+             //negative id for zone will never exist
+                 createURLWithPort("/events/" + openEvent.getEventId() + "/zone=-1/preRegister"),
+                 HttpMethod.PUT,
+                 entity,
+                 String.class
+                 );
 
-    // @Test
-    // void preRegister_Successful() {
-    //     Zones zone = new Zones(12, "test", date, 12, openEvent);
-    //     zoneRepo.save(zone);
+         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+         assertNotNull(responseEntity.getBody());
+     }
+
+    @Test
+    void preRegister_Successful() {
+        Zones zone = new Zones(12, "test", date, 12, openEvent);
+        zoneRepo.save(zone);
+
+        PreRegisterRequest pRegReq = new PreRegisterRequest();
+        pRegReq.setEmail("newUser@email.com");
         
-    //     HttpHeaders headers = new HttpHeaders();
-    //     headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-    //     headers.add("Content-Type", "application/json");
-    //     headers.add("Authorization", "Bearer " + userToken);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+        headers.add("Authorization", "Bearer " + userToken);
 
-    //     ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-    //             createURLWithPort("/events/" + openEvent.getEventId() + "/zone=" + zone.getZoneId() + "/preRegister"),
-    //             HttpMethod.PUT,
-    //             new HttpEntity<>(headers),
-    //             String.class
-    //             );
+        HttpEntity<PreRegisterRequest> entity = new HttpEntity<>(pRegReq, headers);
 
-    //     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-    // }
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/events/" + openEvent.getEventId() + "/zone=" + zone.getZoneId() + "/preRegister"),
+                HttpMethod.PUT,
+                entity,
+                String.class
+                );
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
 
 }
