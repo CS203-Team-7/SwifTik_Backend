@@ -1,6 +1,8 @@
 package com.swiftyticket.services.implementations;
 
 import java.util.List;
+
+import com.swiftyticket.dto.ticket.TicketForUserDTO;
 import org.springframework.stereotype.Service;
 import com.swiftyticket.exceptions.EventNotFoundException;
 import com.swiftyticket.exceptions.PurchaseException;
@@ -129,19 +131,14 @@ public class TicketServiceImpl implements TicketService {
     }
 
     /**
-     * Deletes a ticket from the DB based on the ticket ID.
-     * @param id -> Integer ticket ID (Unique identifier)
-     * @throws TicketNotFoundException -> if the ticket ID does not exist in the DB
-     */
-    /**
-     * Deletes a ticket from the DB based on the ticket ID.
-     * @param id -> Integer ticket ID (Unique identifier)
-     * @throws TicketNotFoundException -> if the ticket ID does not exist in the DB
+     * Gets all the tickets that a user has purchased.
+     * @param userId -> the user ID of the user whose tickets we want to get
+     * @throws UserNotFoundException -> if the user does not exist in the DB
      */
     @Override
-    public List<Ticket> getAllUserTickets(Integer userId){
-        User uzer = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
-        return uzer.getTicketsBought();
+    public List<Ticket> getAllUserTickets(TicketForUserDTO ticketRequest){
+        User user = userRepository.findByEmail(ticketRequest.getEmail()).orElseThrow(UserNotFoundException::new);
+        return user.getTicketsBought();
     }
 
 }
