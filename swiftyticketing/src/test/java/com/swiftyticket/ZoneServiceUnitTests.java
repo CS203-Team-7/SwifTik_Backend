@@ -96,7 +96,7 @@ class ZoneServiceUnitTests {
     }
 
     @Test
-    void addZone_CorrectDate_Successful() {
+    void addZone_CorrectDate_Successful() throws Exception{
         // Arrange
         Event event = new Event();
         event.setDates(new ArrayList<>());
@@ -105,11 +105,16 @@ class ZoneServiceUnitTests {
         event.setOpen4Registration(true);
         event.setZoneList(new ArrayList<>());
 
+        //set up zone date and event3 date
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  
+        Date date = sdf.parse("07/03/2023");
+        Date[] dates = new Date[]{date};
+
         Zones zones = new Zones();
         zones.setEvent(event);
         zones.setPreRegisteredUsers4Zone(new ArrayList<>());
         zones.setZoneCapacity(1);
-        zones.setZoneDate(new Date());
+        zones.setZoneDate(date);
         zones.setZoneId(1);
         zones.setZoneName("Zone 1");
         when(zoneRepository.save(Mockito.any())).thenReturn(zones);
@@ -132,7 +137,7 @@ class ZoneServiceUnitTests {
         Event event3 = mock(Event.class);
         when(event3.getZoneList()).thenReturn(new ArrayList<>());
         when(event3.getDates()).thenReturn(dateList);
-        doNothing().when(event3).setDates(Mockito.any());
+        doNothing().when(event3).setDates(Arrays.asList(dates));
         doNothing().when(event3).setEventId(Mockito.<Integer>any());
         doNothing().when(event3).setEventName(Mockito.any());
         doNothing().when(event3).setOpen4Registration(anyBoolean());
