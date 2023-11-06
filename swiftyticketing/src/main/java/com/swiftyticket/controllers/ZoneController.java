@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.swiftyticket.dto.zone.JoinedZonesRequest;
 import com.swiftyticket.dto.zone.PreRegisterRequest;
 import com.swiftyticket.dto.zone.ZoneRequest;
 import com.swiftyticket.models.Event;
@@ -48,5 +50,16 @@ public class ZoneController {
     public ResponseEntity<String> preRegister(@RequestBody @Valid PreRegisterRequest registerRequest, @PathVariable Integer id, @PathVariable Integer zoneID){
         return new ResponseEntity<String> (zoneService.joinRaffle(registerRequest, id, zoneID), HttpStatus.OK);
     }
+
+    @GetMapping("/joinedZones")
+        public ResponseEntity<List<Zones>> getJoinedZones(@RequestBody JoinedZonesRequest joinedZonesReq){
+            return new ResponseEntity<>(zoneService.userJoinedZones(joinedZonesReq.getEmail()), HttpStatus.OK);
+        }
+    
+
+    @GetMapping("/zone={zoneID}/linkedEvent")
+        public ResponseEntity<Event> getLinkedEvent(@PathVariable Integer zoneID){
+            return new ResponseEntity<Event>(zoneService.getCorrespondingEvent(zoneID), HttpStatus.OK);
+        }
     
 }

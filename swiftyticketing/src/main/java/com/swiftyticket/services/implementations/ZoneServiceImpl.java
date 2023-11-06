@@ -222,4 +222,14 @@ public class ZoneServiceImpl implements ZoneService {
 
         return;
     }
+
+    public List<Zones> userJoinedZones(String email){
+        User uzer = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException());
+        return uzer.getPreRegisteredZones();
+    }
+
+    public Event getCorrespondingEvent(Integer zoneID){
+        Zones zone = zoneRepository.findById(zoneID).orElseThrow( () -> new ZoneNotFoundException("invalid zone") );
+        return zone.getEvent();
+    }
 }

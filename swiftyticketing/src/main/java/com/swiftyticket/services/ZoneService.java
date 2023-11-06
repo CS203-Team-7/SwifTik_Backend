@@ -12,4 +12,6 @@ public interface ZoneService {
     public List<Zones> listZones(Event event);
     public String joinRaffle(PreRegisterRequest registerRequest, Integer id, Integer zoneID);
     public void raffle(Zones zone);
+    public List<Zones> userJoinedZones(String userEmail);
+    public Event getCorrespondingEvent(Integer zoneID);
 }
