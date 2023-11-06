@@ -51,9 +51,9 @@ public class ZoneController {
         return new ResponseEntity<String> (zoneService.joinRaffle(registerRequest, id, zoneID), HttpStatus.OK);
     }
 
-    @GetMapping("/joinedZones")
-        public ResponseEntity<List<Zones>> getJoinedZones(@RequestBody JoinedZonesRequest joinedZonesReq){
-            return new ResponseEntity<>(zoneService.userJoinedZones(joinedZonesReq.getEmail()), HttpStatus.OK);
+    @GetMapping("/{email}/joinedZones")
+        public ResponseEntity<List<Zones>> getJoinedZones(@PathVariable String email){
+            return new ResponseEntity<>(zoneService.userJoinedZones(email), HttpStatus.OK);
         }
     
 
