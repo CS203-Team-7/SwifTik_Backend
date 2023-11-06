@@ -20,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.swiftyticket.dto.auth.AuthResponse;
 import com.swiftyticket.dto.auth.SignInRequest;
+import com.swiftyticket.dto.ticket.PurchaseTicketDTO;
 import com.swiftyticket.dto.zone.PreRegisterRequest;
 import com.swiftyticket.dto.zone.ZoneRequest;
 import com.swiftyticket.models.Event;
@@ -167,82 +168,94 @@ public class TicketIntegrationTests {
         return baseUrl + port + uri;
     }
 
-    // @Test
-    // public void ticketPurchase_Valid_ReturnTicket() throws Exception {
-    //     HttpHeaders headers = new HttpHeaders();
-    //     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-    //     headers.add("Content-Type", "application/json");
-    //     headers.add("Authorization", "Bearer " + userToken);
+    @Test
+    public void ticketPurchase_Valid_ReturnTicket() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+        headers.add("Authorization", "Bearer " + userToken);
 
-    //     HttpEntity<String> entity = new HttpEntity<>(headers);
-    //     ResponseEntity<Ticket> responseEntity = testRestTemplate.exchange(
-    //             createURLWithPort("/tickets/purchase/eventId=" + event.getEventId() + ",zoneId=" + zone.getZoneId()),
-    //             HttpMethod.POST, entity, Ticket.class
-    //     );
+        PurchaseTicketDTO req = new PurchaseTicketDTO();
+        req.setEmail("newUser@email.com");
+
+        HttpEntity<PurchaseTicketDTO> entity = new HttpEntity<>(req, headers);
+        ResponseEntity<Ticket> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/tickets/purchase/eventId=" + event.getEventId() + "/zoneId=" + zone.getZoneId()),
+                HttpMethod.POST, entity, Ticket.class
+        );
             
-    //     assertEquals(201, responseEntity.getStatusCode().value());
-    //     assertNotNull(responseEntity.getBody());
-    // }
+        assertEquals(201, responseEntity.getStatusCode().value());
+        assertNotNull(responseEntity.getBody());
+    }
 
-    // @Test
-    // public void ticketPurchase_Invalid_Return403() throws Exception {
-    //     HttpHeaders headers = new HttpHeaders();
-    //     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-    //     headers.add("Content-Type", "application/json");
-    //     //admin isnt a winner as he didn't participate. should fail. 
-    //     headers.add("Authorization", "Bearer " + adminToken);
+    @Test
+    public void ticketPurchase_Invalid_Return403() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+        //admin isnt a winner as he didn't participate. should fail. 
+        headers.add("Authorization", "Bearer " + adminToken);
 
-    //     HttpEntity<String> entity = new HttpEntity<>(headers);
-    //     ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-    //             createURLWithPort("/tickets/purchase/eventId=" + event.getEventId() + ",zoneId=" + zone.getZoneId()),
-    //             HttpMethod.POST, entity, String.class
-    //     );
+        PurchaseTicketDTO req = new PurchaseTicketDTO();
+        req.setEmail("newAdmin@email.com");
+
+        HttpEntity<PurchaseTicketDTO> entity = new HttpEntity<>(req, headers);
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/tickets/purchase/eventId=" + event.getEventId() + "/zoneId=" + zone.getZoneId()),
+                HttpMethod.POST, entity, String.class
+        );
             
-    //     assertEquals(403, responseEntity.getStatusCode().value());
-    //     assertEquals("Either you have not won a raffle for this zone, or you have already bought a ticket.",responseEntity.getBody());
-    // }
+        assertEquals(403, responseEntity.getStatusCode().value());
+        assertEquals("Either you have not won a raffle for this zone, or you have already bought a ticket.",responseEntity.getBody());
+    }
 
-    // @Test
-    // public void getTicket_Valid_ReturnTicket() throws Exception {
-    //     //generate a ticket by making the winner buy a ticket.
-    //     Ticket ticket = tickServ.purchaseTicket("Bearer " + userToken, event.getEventId(), zone.getZoneId());
+    @Test
+    public void getTicket_Valid_ReturnTicket() throws Exception {
+        //generate a ticket by making the winner buy a ticket.
+        PurchaseTicketDTO req = new PurchaseTicketDTO();
+        req.setEmail("newUser@email.com");
 
-    //     HttpHeaders headers = new HttpHeaders();
-    //     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-    //     headers.add("Content-Type", "application/json");
-    //     headers.add("Authorization", "Bearer " + userToken);
+        Ticket ticket = tickServ.purchaseTicket(req, event.getEventId(), zone.getZoneId());
 
-    //     HttpEntity<String> entity = new HttpEntity<>(headers);
-    //     ResponseEntity<Ticket> responseEntity = testRestTemplate.exchange(
-    //             createURLWithPort("/tickets/" + ticket.getTicketId()),
-    //             HttpMethod.GET, entity, Ticket.class
-    //     );
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+        headers.add("Authorization", "Bearer " + userToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Ticket> responseEntity = testRestTemplate.exchange(
+                createURLWithPort("/tickets/" + ticket.getTicketId()),
+                HttpMethod.GET, entity, Ticket.class
+        );
             
-    //     assertEquals(200, responseEntity.getStatusCode().value());
-    //     assertNotNull(responseEntity.getBody());
-    // }
+        assertEquals(200, responseEntity.getStatusCode().value());
+        assertNotNull(responseEntity.getBody());
+    }
 
 
-    // @Test
-    // public void getTicket_Invalid_Return404() throws Exception {
-    //     //generate a ticket by making the winner buy a ticket.
-    //     Ticket ticket = tickServ.purchaseTicket("Bearer " + userToken, event.getEventId(), zone.getZoneId());
+    @Test
+    public void getTicket_Invalid_Return404() throws Exception {
+        //generate a ticket by making the winner buy a ticket.
+        PurchaseTicketDTO req = new PurchaseTicketDTO();
+        req.setEmail("newUser@email.com");
 
-    //     HttpHeaders headers = new HttpHeaders();
-    //     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-    //     headers.add("Content-Type", "application/json");
-    //     headers.add("Authorization", "Bearer " + adminToken);
+        Ticket ticket = tickServ.purchaseTicket(req, event.getEventId(), zone.getZoneId());
 
-    //     HttpEntity<String> entity = new HttpEntity<>(headers);
-    //     ResponseEntity<String> responseEntity = testRestTemplate.exchange(
-    //         //ticket with id -1 shouldnt exist here
-    //             createURLWithPort("/tickets/-1"),
-    //             HttpMethod.GET, entity, String.class
-    //     );
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("Content-Type", "application/json");
+        headers.add("Authorization", "Bearer " + adminToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+            //ticket with id -1 shouldnt exist here
+                createURLWithPort("/tickets/-1"),
+                HttpMethod.GET, entity, String.class
+        );
             
-    //     assertEquals(404, responseEntity.getStatusCode().value());
-    //     assertEquals("Could not find ticket -1",responseEntity.getBody());
-    // }
+        assertEquals(404, responseEntity.getStatusCode().value());
+        assertEquals("Could not find ticket -1",responseEntity.getBody());
+    }
 
     @Test
     public void getAllTickets_Valid_ReturnTickets() throws Exception {
