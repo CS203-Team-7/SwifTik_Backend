@@ -429,4 +429,61 @@ public class EventIntegrationTest {
         assertEquals(403, responseEntity.getStatusCode().value());
         assertEquals(true, updatedEvent.getOpenStatus());
     }
+
+    //eventRaffle tests
+    @Test
+    public void eventRaffle_Successful() {
+        // carry out request with jwt token
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + adminToken);
+        headers.add("Content-Type", "application/json");
+
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+            createURLWithPort("/events/"+ closedEvent.getEventId() +"/raffle"),
+            HttpMethod.PUT,
+            new HttpEntity<>(headers),
+            String.class
+        );
+
+        assertEquals(200, responseEntity.getStatusCode().value());
+        assertEquals("Event #" + closedEvent.getEventId() + "'s raffle has been done", responseEntity.getBody());
+    }
+
+    @Test
+    public void eventRaffle_EventNotFoundException_failure() {
+        // carry out request with jwt token
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + adminToken);
+        headers.add("Content-Type", "application/json");
+
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+            //event with id -1 should not exist
+            createURLWithPort("/events/-1/raffle"),
+            HttpMethod.PUT,
+            new HttpEntity<>(headers),
+            String.class
+        );
+
+        assertEquals(404, responseEntity.getStatusCode().value());
+    }
+
+    @Test
+    public void eventRaffle_EventOpened_Return403() {
+        // carry out request with jwt token
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + adminToken);
+        headers.add("Content-Type", "application/json");
+
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+            createURLWithPort("/events/" + openEvent.getEventId() + "/raffle"),
+            HttpMethod.PUT,
+            new HttpEntity<>(headers),
+            String.class
+        );
+
+        assertEquals(403, responseEntity.getStatusCode().value());
+        assertEquals("please close the event before raffling.", responseEntity.getBody());
+    }
+
+
 }
