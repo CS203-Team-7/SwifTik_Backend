@@ -1,8 +1,8 @@
 spring:
     datasource:
-        url: jdbc:postgresql://localhost:5433/swiftyticketing
+        url: jdbc:postgresql://swiftikdb.cfgwfchgtvar.ap-southeast-1.rds.amazonaws.com:5432/swiftikDB
         username: postgres
-        password: postgres
+        password: password
         driver-class-name: org.postgresql.Driver
     jpa:
         show-sql: true
@@ -13,6 +13,9 @@ spring:
                 dialect: org.hibernate.dialect.PostgreSQLDialect
                 format_sql: true
                 
+
+server:
+    port: 8080
 
 twilio:
     AccountSID: ${TW_SID}
