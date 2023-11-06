@@ -14,6 +14,8 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+
+import com.swiftyticket.dto.zone.PreRegisterRequest;
 import com.swiftyticket.dto.zone.ZoneRequest;
 import com.swiftyticket.exceptions.WrongZoneDateException;
 import com.swiftyticket.models.Event;
@@ -341,8 +343,6 @@ class ZoneServiceUnitTests {
     //     event.setEventId(1);
     //     event.setEventName("Event 1");
     //     event.setOpen4Registration(true);
-    //     //if this is uncommented, it won't work for some reason
-    //     //EventRepository eventRepository = mock(EventRepository.class);
     //     Integer eventId = event.getEventId();
 
     //     Zones zones = new Zones();
@@ -485,65 +485,64 @@ class ZoneServiceUnitTests {
     // }
 
 
-    // @Test
-    // void joinRaffle_Successful() {
-    //     Event event = new Event();
-    //     event.setEventId(1);
-    //     event.setEventName("Event 1");     
-    //     event.setOpen4Registration(true);
-    //     event.setPreRegisteredUsers4Event(new ArrayList<>());
-    //     Integer eventId = event.getEventId();
+    @Test
+    void joinRaffle_Successful() {
+        Event event = new Event();
+        event.setEventId(1);
+        event.setEventName("Event 1");     
+        event.setOpen4Registration(true);
+        event.setPreRegisteredUsers4Event(new ArrayList<>());
+        Integer eventId = event.getEventId();
 
-    //     Zones zones = new Zones();
-    //     zones.setEvent(event);
-    //     zones.setTicketList(new ArrayList<>());
-    //     zones.setZoneId(1);
-    //     zones.setZoneName("Zone 1");
-    //     zones.setPreRegisteredUsers4Zone(new ArrayList<>());
-    //     Integer zoneId = zones.getZoneId();
+        Zones zones = new Zones();
+        zones.setEvent(event);
+        zones.setTicketList(new ArrayList<>());
+        zones.setZoneId(1);
+        zones.setZoneName("Zone 1");
+        zones.setPreRegisteredUsers4Zone(new ArrayList<>());
+        Integer zoneId = zones.getZoneId();
 
-    //     User user = new User();
-    //     user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
-    //     user.setEmail("test@gmail.com");
-    //     user.setPassword("Iloveyou1!");
-    //     user.setPhoneNumber("1234567890");
-    //     user.setRole(Role.USER);
-    //     user.setVerified(true);
-    //     user.setPreRegisteredZones(new ArrayList<>());
-    //     user.setPreRegisteredEvents(new ArrayList<>());
-    //     String username = user.getUsername();
-    //     String email = user.getEmail();
+        User user = new User();
+        user.setDateOfBirth(Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
+        user.setEmail("test@gmail.com");
+        user.setPassword("Iloveyou1!");
+        user.setPhoneNumber("1234567890");
+        user.setRole(Role.USER);
+        user.setVerified(true);
+        user.setPreRegisteredZones(new ArrayList<>());
+        user.setPreRegisteredEvents(new ArrayList<>());
+        String email = user.getEmail();
 
-
-    //     Optional<Event> ofEventResult = Optional.of(event);
-    //     when(eventRepository.findById(eventId)).thenReturn(ofEventResult);
-    //     when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn(username);
-
-    //     Optional<User> ofUserResult = Optional.of(user);
-    //     when(userRepository.findByEmail(email)).thenReturn(ofUserResult);
-
-    //     Optional<Zones> ofZonesResult = Optional.of(zones);
-    //     when(zoneRepository.findByZoneIdAndEvent(zoneId, event)).thenReturn(ofZonesResult);
-
-    //     when(eventRepository.save(event)).thenReturn(event);
-    //     when(userRepository.save(user)).thenReturn(user);
-    //     when(zoneRepository.save(zones)).thenReturn(zones);
-
-    //     String result = "Successfully joined the raffle for: " + zones.getZoneName() + " on " + zones.getZoneDate() + " for " + event.getEventName();
+        PreRegisterRequest registerRequest = new PreRegisterRequest(email);
 
 
-    //     //Assert
-    //     assertEquals(result, zoneServiceImpl.joinRaffle("sjfnajdnad", eventId, zoneId));
+        Optional<Event> ofEventResult = Optional.of(event);
+        when(eventRepository.findById(eventId)).thenReturn(ofEventResult);
 
-    //     verify(eventRepository).findById(eventId);
-    //     verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
-    //     verify(userRepository).findByEmail(email);
-    //     verify(zoneRepository).findByZoneIdAndEvent(zoneId, event);
+        Optional<User> ofUserResult = Optional.of(user);
+        when(userRepository.findByEmail(email)).thenReturn(ofUserResult);
 
-    //     verify(eventRepository).save(event);
-    //     verify(userRepository).save(user);
-    //     verify(zoneRepository).save(zones);
-    // }
+        Optional<Zones> ofZonesResult = Optional.of(zones);
+        when(zoneRepository.findByZoneIdAndEvent(zoneId, event)).thenReturn(ofZonesResult);
+
+        when(eventRepository.save(event)).thenReturn(event);
+        when(userRepository.save(user)).thenReturn(user);
+        when(zoneRepository.save(zones)).thenReturn(zones);
+
+        String result = "Successfully joined the raffle for: " + zones.getZoneName() + " on " + zones.getZoneDate() + " for " + event.getEventName();
+
+
+        //Assert
+        assertEquals(result, zoneServiceImpl.joinRaffle(registerRequest, eventId, zoneId));
+
+        verify(eventRepository).findById(eventId);
+        verify(userRepository).findByEmail(email);
+        verify(zoneRepository).findByZoneIdAndEvent(zoneId, event);
+
+        verify(eventRepository).save(event);
+        verify(userRepository).save(user);
+        verify(zoneRepository).save(zones);
+    }
 
 
     //raffle() tests
