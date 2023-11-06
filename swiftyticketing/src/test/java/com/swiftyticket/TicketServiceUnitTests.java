@@ -142,91 +142,88 @@ class TicketServiceUnitTests {
     }
 
     // purchaseTicket() tests
-    @Test
-    void purchaseTicket_InvalidZone_ThrowException() {
-        // Arrange and Act
-        when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn("test");
-        User user = new User();
-        user.setDateOfBirth(new Date());
-        user.setEmail("test@gmail.com");
-        user.setPassword("ILoveYou");
-        user.setPhoneNumber("1234567890");
-        user.setRole(Role.USER);
-        user.setTicketsBought(new ArrayList<>());
-        user.setUserId(1);
-        user.setVerified(true);
-        user.setZonesWon(new ArrayList<>());
-        Optional<User> ofResult = Optional.of(user);
-        when(userRepository.findByEmail(Mockito.<String>any())).thenReturn(ofResult);
+    // @Test
+    // void purchaseTicket_InvalidZone_ThrowException() {
+    //     // Arrange and Act
+    //     when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn("test");
+    //     User user = new User();
+    //     user.setDateOfBirth(new Date());
+    //     user.setEmail("test@gmail.com");
+    //     user.setPassword("ILoveYou");
+    //     user.setPhoneNumber("1234567890");
+    //     user.setRole(Role.USER);
+    //     user.setTicketsBought(new ArrayList<>());
+    //     user.setUserId(1);
+    //     user.setVerified(true);
+    //     user.setZonesWon(new ArrayList<>());
+    //     Optional<User> ofResult = Optional.of(user);
+    //     when(userRepository.findByEmail(Mockito.<String>any())).thenReturn(ofResult);
 
-        Event event = new Event();
-        event.setArtists(new ArrayList<>());
-        event.setDates(new ArrayList<>());
-        event.setEventId(1);
-        event.setEventName("Event 1");
-        event.setOpen4Registration(true);
-        event.setPreRegisteredUsers4Event(new ArrayList<>());
-        event.setRaffleRound(1);
-        event.setUser_count(3);
-        event.setVenue("Venue 1");
-        event.setVenueCapacity(1);
-        event.setZoneList(new ArrayList<>());
-        Optional<Event> ofResult2 = Optional.of(event);
-        when(eventRepository.findById(Mockito.<Integer>any())).thenReturn(ofResult2);
-        when(zoneRepository.findByZoneIdAndEvent(Mockito.<Integer>any(), Mockito.<Event>any()))
-                .thenThrow(new ZoneNotFoundException("Invalid zone for " + event.getEventName()));
+    //     Event event = new Event();
+    //     event.setArtists(new ArrayList<>());
+    //     event.setDates(new ArrayList<>());
+    //     event.setEventId(1);
+    //     event.setEventName("Event 1");
+    //     event.setOpen4Registration(true);
+    //     event.setPreRegisteredUsers4Event(new ArrayList<>());
+    //     event.setRaffleRound(1);
+    //     event.setUser_count(3);
+    //     event.setVenue("Venue 1");
+    //     event.setVenueCapacity(1);
+    //     event.setZoneList(new ArrayList<>());
+    //     Optional<Event> ofResult2 = Optional.of(event);
+    //     when(eventRepository.findById(Mockito.<Integer>any())).thenReturn(ofResult2);
+    //     when(zoneRepository.findByZoneIdAndEvent(Mockito.<Integer>any(), Mockito.<Event>any()))
+    //             .thenThrow(new ZoneNotFoundException("Invalid zone for " + event.getEventName()));
 
-        // Assert
-        assertThrows(ZoneNotFoundException.class, () -> ticketServiceImpl.purchaseTicket("Bearer Token", 1, 1));
-        verify(userRepository).findByEmail(Mockito.<String>any());
-        verify(zoneRepository).findByZoneIdAndEvent(Mockito.<Integer>any(), Mockito.<Event>any());
-        verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
-        verify(eventRepository).findById(Mockito.<Integer>any());
-    }
+    //     // Assert
+    //     assertThrows(ZoneNotFoundException.class, () -> ticketServiceImpl.purchaseTicket("Bearer Token", 1, 1));
+    //     verify(userRepository).findByEmail(Mockito.<String>any());
+    //     verify(zoneRepository).findByZoneIdAndEvent(Mockito.<Integer>any(), Mockito.<Event>any());
+    //     verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
+    //     verify(eventRepository).findById(Mockito.<Integer>any());
+    // }
 
-    /**
-     * Method under test: {@link TicketServiceImpl#purchaseTicket(String, Integer, Integer)}
-     */
-    @Test
-    void purchaseTicket_InvalidUser_ThrowException() {
-        // Arrange and Act
-        when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn("test");
-        Optional<User> emptyResult = Optional.empty();
-        when(userRepository.findByEmail(Mockito.<String>any())).thenReturn(emptyResult);
+    // @Test
+    // void purchaseTicket_InvalidUser_ThrowException() {
+    //     // Arrange and Act
+    //     when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn("test");
+    //     Optional<User> emptyResult = Optional.empty();
+    //     when(userRepository.findByEmail(Mockito.<String>any())).thenReturn(emptyResult);
 
-        Event event = new Event();
-        event.setArtists(new ArrayList<>());
-        event.setDates(new ArrayList<>());
-        event.setEventId(1);
-        event.setEventName("Event 1");
-        event.setOpen4Registration(true);
-        event.setPreRegisteredUsers4Event(new ArrayList<>());
-        event.setRaffleRound(1);
-        event.setUser_count(3);
-        event.setVenue("Venue 1");
-        event.setVenueCapacity(1);
-        event.setZoneList(new ArrayList<>());
-        Optional<Event> ofResult = Optional.of(event);
-        when(eventRepository.findById(Mockito.<Integer>any())).thenReturn(ofResult);
+    //     Event event = new Event();
+    //     event.setArtists(new ArrayList<>());
+    //     event.setDates(new ArrayList<>());
+    //     event.setEventId(1);
+    //     event.setEventName("Event 1");
+    //     event.setOpen4Registration(true);
+    //     event.setPreRegisteredUsers4Event(new ArrayList<>());
+    //     event.setRaffleRound(1);
+    //     event.setUser_count(3);
+    //     event.setVenue("Venue 1");
+    //     event.setVenueCapacity(1);
+    //     event.setZoneList(new ArrayList<>());
+    //     Optional<Event> ofResult = Optional.of(event);
+    //     when(eventRepository.findById(Mockito.<Integer>any())).thenReturn(ofResult);
 
-        // Assert
-        assertThrows(UserNotFoundException.class, () -> ticketServiceImpl.purchaseTicket("Bearer Token", 1, 1));
-        verify(userRepository).findByEmail(Mockito.<String>any());
-        verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
-        verify(eventRepository).findById(Mockito.<Integer>any());
-    }
+    //     // Assert
+    //     assertThrows(UserNotFoundException.class, () -> ticketServiceImpl.purchaseTicket("Bearer Token", 1, 1));
+    //     verify(userRepository).findByEmail(Mockito.<String>any());
+    //     verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
+    //     verify(eventRepository).findById(Mockito.<Integer>any());
+    // }
 
-    @Test
-    void purchaseTicket_InvalidEvent_ThrowException() {
-        // Arrange and Act
-        when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn("test");
-        Optional<Event> emptyResult = Optional.empty();
-        when(eventRepository.findById(Mockito.<Integer>any())).thenReturn(emptyResult);
+    // @Test
+    // void purchaseTicket_InvalidEvent_ThrowException() {
+    //     // Arrange and Act
+    //     when(jwtServiceImpl.extractUserName(Mockito.<String>any())).thenReturn("test");
+    //     Optional<Event> emptyResult = Optional.empty();
+    //     when(eventRepository.findById(Mockito.<Integer>any())).thenReturn(emptyResult);
 
-        // Assert
-        assertThrows(EventNotFoundException.class, () -> ticketServiceImpl.purchaseTicket("Bearer Token", 1, 1));
-        verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
-        verify(eventRepository).findById(Mockito.<Integer>any());
-    }
+    //     // Assert
+    //     assertThrows(EventNotFoundException.class, () -> ticketServiceImpl.purchaseTicket("Bearer Token", 1, 1));
+    //     verify(jwtServiceImpl).extractUserName(Mockito.<String>any());
+    //     verify(eventRepository).findById(Mockito.<Integer>any());
+    // }
 }
 

@@ -51,6 +51,7 @@ public class Ticket {
     
 
     private String userEmail;
+    private String tiedPhoneNumber;
 
     @JsonIgnore
     public Ticket(Zones zone, User user){
@@ -64,6 +65,7 @@ public class Ticket {
         
         this.zonename = zone.getZoneName();
         this.userEmail = user.getEmail();
+        this.tiedPhoneNumber = user.getPhoneNumber();
     }
 
     @Override

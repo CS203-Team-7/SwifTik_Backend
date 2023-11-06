@@ -2,6 +2,7 @@ package com.swiftyticket.services.implementations;
 
 import java.util.List;
 
+import com.swiftyticket.dto.ticket.PurchaseTicketDTO;
 import com.swiftyticket.dto.ticket.TicketForUserDTO;
 import org.springframework.stereotype.Service;
 import com.swiftyticket.exceptions.EventNotFoundException;
@@ -64,18 +65,7 @@ public class TicketServiceImpl implements TicketService {
 
     /**
      * This function is to allow a user to purchase a ticket for an event.
-     * @param bearerToken -> the token of the user who's trying to purchase the ticket
-     * @param eventId -> the event id of the zone the user is trying to purchase the ticket for
-     * @param zoneId -> the zone id of the zone the user is trying to purchase the ticket for
-     * @throws PurchaseException -> if the user is not a winner for the zone
-     * @throws EventNotFoundException -> if the event ID does not exist in the DB
-     * @throws UserNotFoundException -> if the user does not exist in the DB
-     * @throws ZoneNotFoundException -> if the zone ID does not exist in the DB
-     * @return Ticket -> the ticket that was purchased
-     */
-    /**
-     * This function is to allow a user to purchase a ticket for an event.
-     * @param bearerToken -> the token of the user who's trying to purchase the ticket
+     * @param purchaseTickerRequest -> the email of the user who's trying to purchase the ticket
      * @param eventId -> the event id of the zone the user is trying to purchase the ticket for
      * @param zoneId -> the zone id of the zone the user is trying to purchase the ticket for
      * @throws PurchaseException -> if the user is not a winner for the zone
@@ -85,10 +75,9 @@ public class TicketServiceImpl implements TicketService {
      * @return Ticket -> the ticket that was purchased
      */
     @Override
-    public Ticket purchaseTicket(String bearerToken, Integer eventId, Integer zoneId) {
-        //get event and corresponding zones. 
-        String jwtToken = bearerToken.substring(7);
-        String userEmail = jwtService.extractUserName(jwtToken);
+    public Ticket purchaseTicket(PurchaseTicketDTO purchaseTicketRequest, Integer eventId, Integer zoneId) {
+        log.info(purchaseTicketRequest.getEmail());
+        String userEmail = purchaseTicketRequest.getEmail();
         // get Event and user respectively.
         Event purchase4Event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         User purchasingUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException());
@@ -97,8 +86,8 @@ public class TicketServiceImpl implements TicketService {
 
         //create the ticket object, give it to respective zone & user.
         //begin by checking if the user who's trying to buy the ticket is a winner for the zone
-        log.info(purchase4Zone.getWinnerList().toString());
-        log.info(""+purchase4Zone.getWinnerList().get(0).getUserId());
+        // log.info(purchase4Zone.getWinnerList().toString());
+        // log.info(""+purchase4Zone.getWinnerList().get(0).getUserId());
         log.info("" + purchasingUser);
         log.info(""+purchasingUser.getUserId());
         if( !( purchase4Zone.getWinnerList().contains(purchasingUser) ) ){

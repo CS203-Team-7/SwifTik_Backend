@@ -2,8 +2,11 @@ package com.swiftyticket.controllers;
 
 import java.util.List;
 
+import com.swiftyticket.dto.ticket.PurchaseTicketDTO;
 import com.swiftyticket.dto.ticket.TicketForUserDTO;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,7 @@ import com.swiftyticket.services.TicketService;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
+@Slf4j
 public class TicketController {
     
     private final TicketService ticketService;
@@ -36,9 +40,10 @@ public class TicketController {
         return ticket;
     }
     
-    @PostMapping("/tickets/purchase/eventId={eventId},zoneId={zoneId}")
-    public ResponseEntity<Ticket> addTicket(@RequestHeader("Authorization") String bearerToken, @PathVariable Integer eventId, @PathVariable Integer zoneId){
-        return new ResponseEntity<Ticket>(ticketService.purchaseTicket(bearerToken, eventId, zoneId), HttpStatus.CREATED);
+    @PostMapping("/tickets/purchase/eventId={eventId}/zoneId={zoneId}")
+    public ResponseEntity<Ticket> addTicket(@RequestBody @Valid PurchaseTicketDTO purchaseTicketRequest, @PathVariable Integer eventId, @PathVariable Integer zoneId){
+        log.info("Purchase ticket request: {}", purchaseTicketRequest);
+        return new ResponseEntity<Ticket>(ticketService.purchaseTicket(purchaseTicketRequest, eventId, zoneId), HttpStatus.CREATED);
     }
 
     @GetMapping("/tickets/user/{email}")
