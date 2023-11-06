@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -36,8 +35,6 @@ import com.swiftyticket.services.implementations.JwtServiceImpl;
 import com.swiftyticket.services.implementations.SmsServiceImpl;
 import com.swiftyticket.services.implementations.ZoneServiceImpl;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -59,7 +56,6 @@ import com.swiftyticket.models.User;
 
 @ContextConfiguration(classes = {ZoneServiceImpl.class})
 @ExtendWith(SpringExtension.class)
-@Slf4j
 class ZoneServiceUnitTests {
     @MockBean
     private EventRepository eventRepository;

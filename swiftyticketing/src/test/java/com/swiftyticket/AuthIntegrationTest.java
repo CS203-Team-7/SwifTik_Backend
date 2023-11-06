@@ -3,8 +3,6 @@ package com.swiftyticket;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.*;
 
 import org.junit.jupiter.api.AfterEach;
@@ -33,7 +31,6 @@ import com.swiftyticket.exceptions.UserNotFoundException;
 import com.swiftyticket.models.Role;
 import com.swiftyticket.models.User;
 import com.swiftyticket.repositories.UserRepository;
-import com.swiftyticket.services.implementations.SmsServiceImpl;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class AuthIntegrationTest {
@@ -48,9 +45,6 @@ public class AuthIntegrationTest {
     @Autowired
     private UserRepository userRepo;
     
-    @Autowired
-    private SmsServiceImpl smsServ;
-
     @BeforeEach
     void createUsers(){
         String encodedPassword = new BCryptPasswordEncoder().encode("GoodPassword123!");

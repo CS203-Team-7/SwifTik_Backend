@@ -3,7 +3,6 @@ package com.swiftyticket.controllers;
 import java.util.List;
 
 import com.swiftyticket.dto.ticket.PurchaseTicketDTO;
-import com.swiftyticket.dto.ticket.TicketForUserDTO;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 

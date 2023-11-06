@@ -4,7 +4,6 @@ import java.util.List;
 
 
 import com.swiftyticket.dto.ticket.PurchaseTicketDTO;
-import com.swiftyticket.dto.ticket.TicketForUserDTO;
 import com.swiftyticket.models.Ticket;
 
 public interface TicketService {

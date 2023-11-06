@@ -3,20 +3,15 @@ package com.swiftyticket;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.hibernate.Hibernate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.swiftyticket.dto.auth.AuthResponse;
 import com.swiftyticket.dto.auth.SignInRequest;
@@ -33,13 +28,9 @@ import com.swiftyticket.repositories.TicketRepository;
 import com.swiftyticket.repositories.UserRepository;
 import com.swiftyticket.repositories.ZoneRepository;
 import com.swiftyticket.services.EventService;
-import com.swiftyticket.services.TicketService;
 import com.swiftyticket.services.ZoneService;
 import com.swiftyticket.services.implementations.AuthServiceImpl;
-import com.swiftyticket.services.implementations.SmsServiceImpl;
 import com.swiftyticket.services.implementations.TicketServiceImpl;
-
-import jakarta.transaction.Transactional;
 
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -48,13 +39,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import lombok.extern.slf4j.Slf4j;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Slf4j
 

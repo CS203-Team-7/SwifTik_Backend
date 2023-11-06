@@ -3,25 +3,15 @@ package com.swiftyticket;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -34,30 +24,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import com.swiftyticket.controllers.ZoneController;
 import com.swiftyticket.dto.auth.AuthResponse;
 import com.swiftyticket.dto.auth.SignInRequest;
 import com.swiftyticket.dto.zone.PreRegisterRequest;
 import com.swiftyticket.dto.zone.ZoneRequest;
 import com.swiftyticket.models.Event;
 import com.swiftyticket.models.Role;
-import com.swiftyticket.models.Ticket;
 import com.swiftyticket.models.User;
 import com.swiftyticket.models.Zones;
 import com.swiftyticket.repositories.EventRepository;
-import com.swiftyticket.repositories.TicketRepository;
 import com.swiftyticket.repositories.UserRepository;
 import com.swiftyticket.repositories.ZoneRepository;
 import com.swiftyticket.services.AuthService;
-import com.swiftyticket.services.EventService;
-
 import lombok.extern.slf4j.Slf4j;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Slf4j
 public class ZoneIntegrationTest {
@@ -74,9 +54,6 @@ public class ZoneIntegrationTest {
 
     @Autowired
     private ZoneRepository zoneRepo;
-
-    @Autowired
-    private EventService eventService;
 
     @Autowired
     private AuthService authService;

@@ -3,7 +3,6 @@ package com.swiftyticket.services.implementations;
 import java.util.List;
 
 import com.swiftyticket.dto.ticket.PurchaseTicketDTO;
-import com.swiftyticket.dto.ticket.TicketForUserDTO;
 import org.springframework.stereotype.Service;
 import com.swiftyticket.exceptions.EventNotFoundException;
 import com.swiftyticket.exceptions.PurchaseException;
@@ -28,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TicketServiceImpl implements TicketService {
     private final TicketRepository ticketRepo;
-    private final JwtServiceImpl jwtService;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final ZoneRepository zoneRepository;
