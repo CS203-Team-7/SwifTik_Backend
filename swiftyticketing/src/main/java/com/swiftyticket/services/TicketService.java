@@ -10,5 +10,5 @@ public interface TicketService {
     List<Ticket> listTickets();
     Ticket getTicket(Integer id);
     Ticket purchaseTicket(String bearerToken, Integer eventId, Integer zoneId);
-    List<Ticket> getAllUserTickets(TicketForUserDTO ticketRequest);
+    List<Ticket> getAllUserTickets(String email);
 }

@@ -132,12 +132,12 @@ public class TicketServiceImpl implements TicketService {
 
     /**
      * Gets all the tickets that a user has purchased.
-     * @param userId -> the user ID of the user whose tickets we want to get
+     * @param email -> the email of the user
      * @throws UserNotFoundException -> if the user does not exist in the DB
      */
     @Override
-    public List<Ticket> getAllUserTickets(TicketForUserDTO ticketRequest){
-        User user = userRepository.findByEmail(ticketRequest.getEmail()).orElseThrow(UserNotFoundException::new);
+    public List<Ticket> getAllUserTickets(String email){
+        User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         return user.getTicketsBought();
     }
 

@@ -41,9 +41,9 @@ public class TicketController {
         return new ResponseEntity<Ticket>(ticketService.purchaseTicket(bearerToken, eventId, zoneId), HttpStatus.CREATED);
     }
 
-    @GetMapping("/tickets/userid={userid}")
-    public ResponseEntity<List<Ticket>> getUserTickets(@RequestBody @Valid TicketForUserDTO ticketRequest){
-        return new ResponseEntity<List<Ticket>>(ticketService.getAllUserTickets(ticketRequest), HttpStatus.OK);
+    @GetMapping("/tickets/user/{email}")
+    public ResponseEntity<List<Ticket>> getUserTickets(@PathVariable String email){
+        return new ResponseEntity<List<Ticket>>(ticketService.getAllUserTickets(email), HttpStatus.OK);
     }
 
 }
