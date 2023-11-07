@@ -458,7 +458,6 @@ class ZoneServiceUnitTests {
         user.setPhoneNumber("1234567890");
         user.setRole(Role.USER);
         user.setVerified(true);
-        String username = user.getUsername();
         String email = user.getEmail();
 
         //add user to the preRegisteredList for testing

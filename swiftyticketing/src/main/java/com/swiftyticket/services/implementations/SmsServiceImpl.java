@@ -68,7 +68,7 @@ public class SmsServiceImpl {
 			PhoneNumber to = new PhoneNumber(otpRequest.getPhoneNumber());// to
 			PhoneNumber from = new PhoneNumber(twilioConfig.getPhoneNumber()); // from
 
-			//check if email and phone numbers match. If not, throw exception. 
+			// check if email and phone numbers match. If not, throw exception. 
 			User toSend = userRepo.findByEmail(otpRequest.getEmail()).orElseThrow(() -> new UserNotFoundException());
 
 			if( !( toSend.getPhoneNumber().equals(otpRequest.getPhoneNumber()) )){
@@ -121,6 +121,11 @@ public class SmsServiceImpl {
 		}
 	}
 
+	/**
+	 * This method sends a congratulatory SMS to the user's phone number if they have won a raffle.
+	 * @param message -> String message to be sent
+	 * @param phoneNumber -> String phone number of the user
+	 */
 	public void sendCongratz(String message, String phoneNumber) {
 		try {
 			// get the to and from number for the message function later
@@ -136,9 +141,8 @@ public class SmsServiceImpl {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			//if message failed to send to number, just ignore. (they can still check their zones won online) itsok. 
+			// if message failed to send to number, just ignore. (they can still check their zones won online)  
 		}
 		return;
 	}
-
 }

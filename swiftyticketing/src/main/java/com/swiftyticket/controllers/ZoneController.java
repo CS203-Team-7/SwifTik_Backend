@@ -26,7 +26,8 @@ public class ZoneController {
     private final ZoneService zoneService;
     private final EventService eventService;
     
-
+    // Since zone is a child of event, we need to inject eventService into zoneService
+    
     public ZoneController(ZoneService zoneService, EventService eventService) {
         this.zoneService = zoneService;
         this.eventService = eventService;

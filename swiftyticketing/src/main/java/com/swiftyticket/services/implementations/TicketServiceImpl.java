@@ -35,20 +35,11 @@ public class TicketServiceImpl implements TicketService {
      * Returns a list of all tickets in the DB irrespective of zones.
      * @return List<Ticket>
      */
-    /**
-     * Returns a list of all tickets in the DB irrespective of zones.
-     * @return List<Ticket>
-     */
     @Override
     public List<Ticket> listTickets() {
         return ticketRepo.findAll();
     }
 
-    /**
-     * Returns a single ticket based on the ticket ID.
-     * @param id -> Integer ticket ID (Unique identifier)
-     * @return Ticket -> Ticket object with the specified ID
-     */
     /**
      * Returns a single ticket based on the ticket ID.
      * @param id -> Integer ticket ID (Unique identifier)
@@ -79,13 +70,11 @@ public class TicketServiceImpl implements TicketService {
         // get Event and user respectively.
         Event purchase4Event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         User purchasingUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException());
-        //we search for zone using both event and zoneid to make sure the zone is in the specified event.
+        // we search for zone using both event and zoneid to make sure the zone is in the specified event.
         Zones purchase4Zone = zoneRepository.findByZoneIdAndEvent(zoneId, purchase4Event).orElseThrow(() -> new ZoneNotFoundException("Invalid zone for " + purchase4Event.getEventName()));
 
-        //create the ticket object, give it to respective zone & user.
-        //begin by checking if the user who's trying to buy the ticket is a winner for the zone
-        // log.info(purchase4Zone.getWinnerList().toString());
-        // log.info(""+purchase4Zone.getWinnerList().get(0).getUserId());
+        // create the ticket object, give it to respective zone & user.
+        // begin by checking if the user who's trying to buy the ticket is a winner for the zone
         log.info("" + purchasingUser);
         log.info(""+purchasingUser.getUserId());
         if( !( purchase4Zone.getWinnerList().contains(purchasingUser) ) ){
@@ -93,22 +82,22 @@ public class TicketServiceImpl implements TicketService {
             
             throw new PurchaseException();
         }
-        //if reach this part of the code, means the user is a winner, we can continue with the purchase.
+        // if reach this part of the code, means the user is a winner, we can continue with the purchase.
         Ticket purchasedTicket = new Ticket(purchase4Zone, purchasingUser);
         ticketRepo.save(purchasedTicket);
-        //assign to corresponding zone and user for the relationship
+        // assign to corresponding zone and user for the relationship
         purchasingUser.getTicketsBought().add(purchasedTicket);
         purchase4Zone.getTicketList().add(purchasedTicket);
 
-        //reduce the amount of tickets available for purchase in that zone by 1.
+        // reduce the amount of tickets available for purchase in that zone by 1.
         purchase4Zone.setTicketsLeft(purchase4Zone.getTicketsLeft() - 1);
 
-        //now that they have purchased a ticket, remove them from the winnerList for zone and zonesWon for user.
-        //this is to prevent them from purchasing another ticket again.
+        // now that they have purchased a ticket, remove them from the winnerList for zone and zonesWon for user.
+        // this is to prevent them from purchasing another ticket again.
         purchase4Zone.getWinnerList().remove(purchasingUser);
         purchasingUser.getZonesWon().remove(purchase4Zone);
 
-        //now save em in the repo and we gucci
+        // now save em in the repo and we gucci
         userRepository.save(purchasingUser);
         zoneRepository.save(purchase4Zone);
 
@@ -126,5 +115,4 @@ public class TicketServiceImpl implements TicketService {
         User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         return user.getTicketsBought();
     }
-
 }

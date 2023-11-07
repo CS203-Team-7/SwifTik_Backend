@@ -127,9 +127,6 @@ public class ZoneIntegrationTest {
         headers.add("Content-Type", "application/json");
         headers.add("Authorization", "Bearer " + userToken);
 
-
-        ZoneRequest zoneRequest = new ZoneRequest(10, "testZone", date, 12);
-
         ResponseEntity<Zones> responseEntity = testRestTemplate.exchange(
                 createURLWithPort("/events/" + openEvent.getEventId() + "/createZone"),
                 HttpMethod.POST,

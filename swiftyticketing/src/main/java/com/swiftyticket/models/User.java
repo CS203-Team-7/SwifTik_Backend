@@ -80,8 +80,6 @@ public class User implements UserDetails {
                fetch = FetchType.EAGER)
     private List<Ticket> ticketsBought = new ArrayList<>();
 
-    //List<Integer> ticketsBought;
-
     // Below are all the methods that need to be implemented for Spring Security to actually be able to authorize this User:
 
     @JsonIgnore
@@ -92,13 +90,10 @@ public class User implements UserDetails {
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.verified = verified;
-
         this.preRegisteredZones = new ArrayList<>();;
         this.preRegisteredEvents = new ArrayList<>();
         this.ticketsBought = new ArrayList<>();
-
         this.zonesWon = new ArrayList<>();
-
     }
 
     @JsonIgnore
@@ -113,7 +108,6 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
-    // For now I've set these to true but later we can add the necessary business logic if need be:
     @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {

@@ -28,8 +28,6 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    // Possible improvements: get by artist, event name, date, venue, genre (genre would need a new attribute in Event)
-
     @GetMapping("/events")
     public ResponseEntity<List<Event>> getEvents() {
         return new ResponseEntity<List<Event>> (eventService.listEvents(), HttpStatus.OK);

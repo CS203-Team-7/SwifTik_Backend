@@ -45,15 +45,10 @@ public class Event {
     @NonNull
     private String eventName;
 
-    // still unsure how to properly record multi-valued attributes, code may break
-    // make a artist class? with name, surname, genre, gender, age?
     @Column(name = "artists")
     @NonNull
     private List<String> artists;
-    
-    // still unsure how to properly record multi-valued attributes, code may break
-    // have to use LocalDate.of() method, unsure of how to input the arguements for the method right now
-    // how to incorporate time? cant just make a list of time because the a specific time should be linked to specific date
+
     @NonNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "event_dates")
@@ -74,7 +69,7 @@ public class Event {
     private int user_count;
 
     @OneToMany(mappedBy = "event",
-               fetch = FetchType.EAGER,
+                fetch = FetchType.EAGER,
                 cascade = CascadeType.ALL)
     private List<Zones> zoneList;
 
@@ -123,20 +118,4 @@ public class Event {
     
             return this.eventId == ((Event)other).eventId;
         }
-
-
-
-    // custom constructor to account for use of LocalDate.of(yyyy, mm, dd) method
-    // public Event(Integer eventId, @NonNull List<String> artists,
-    //   @NonNull int year, @NonNull int month, @NonNull int date, @NonNull String venue,
-    //   @NonNull Integer venueCapacity) {
-    //     this.eventId = eventId;
-    //     this.artists = artists;
-    //     this.dates = new ArrayList<>();
-    //     this.dates.add(LocalDate.of(year, month, date));
-    //     this.venue = venue;
-    //     this.venueCapacity = venueCapacity;
-    // }
-
-    
 }

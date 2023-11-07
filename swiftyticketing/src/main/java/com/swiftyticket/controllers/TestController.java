@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     @GetMapping
     public String testGet(){
+        // This is a test endpoint to check if the server is running
         return "User access level";
     }
     

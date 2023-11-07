@@ -228,8 +228,6 @@ public class TicketIntegrationTests {
         PurchaseTicketDTO req = new PurchaseTicketDTO();
         req.setEmail("newUser@email.com");
 
-        Ticket ticket = tickServ.purchaseTicket(req, event.getEventId(), zone.getZoneId());
-
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.add("Content-Type", "application/json");

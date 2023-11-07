@@ -85,7 +85,7 @@ public class EventServiceImpl implements EventService{
     public void deleteEvent(Integer id) {
         //check that event exists
         Event e = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id));
-        // if exists error won't be thrown and we can proceed to delete (yipee)
+        // if exists error won't be thrown and we can proceed to delete
         eventRepository.deleteById(id);
     }
 
@@ -95,7 +95,7 @@ public class EventServiceImpl implements EventService{
      * @throws EventNotFoundException -> if the event ID does not exist in the DB
      */
     public void openEvent(Integer id){
-        //check the event exists
+        // check the event exists
         Event e = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id));
         // if exists error won't be thrown and we can proceed to update (yipee)
         e.setOpen4Registration(true);
@@ -108,7 +108,7 @@ public class EventServiceImpl implements EventService{
      * @throws EventNotFoundException -> if the event ID does not exist in the DB
      */
     public void closeEvent(Integer id){
-        //check the event exists
+        // check the event exists
         Event e = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id));
         // if exists error won't be thrown and we can proceed to update (yipee)
         e.setOpen4Registration(false);
@@ -124,21 +124,17 @@ public class EventServiceImpl implements EventService{
     public void raffle(Integer id){
         Event event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id));
 
-        //to do: make sure event is closed before raffle is commenced.
+        // to do: make sure event is closed before raffle is commenced.
         if(event.getOpenStatus()){
             throw new OpenRegistrationRaffleException("please close the event before raffling.");
         }
 
         for(int i=0; i<event.getZoneList().size(); i++){
             zoneService.raffle(event.getZoneList().get(i));
-            //log.info("entered event raffle's for loop");
         }
 
         event.setRaffleRound(event.getRaffleRound() + 1);
-        //log.info("event's raffle round: " + event.getRaffleRound());
-
         eventRepository.save(event);
-
         return;
     }
 }

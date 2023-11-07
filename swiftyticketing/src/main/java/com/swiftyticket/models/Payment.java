@@ -30,7 +30,4 @@ public class Payment {
 
     @NonNull
     private Double amountPaid;
-
-    //haven't linked payment with ticket and pre reg
-
 }

@@ -2,7 +2,6 @@ package com.swiftyticket.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-// import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -85,7 +84,7 @@ public class SecurityConfiguration {
         final CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(
                 List.of(
-                        // The links that are allowed to access the API:
+                        // The links that are allowed to access the backend:
                         "http://localhost:3000",
                         "https://www.twilio.com"
 

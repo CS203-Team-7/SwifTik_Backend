@@ -38,30 +38,18 @@ public class Ticket {
     @JoinColumn(name = "zonet_id", nullable = false)
     private Zones forZone;
 
-    //private Integer zoneId;
-
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "usert_id", nullable = false)
     private User forUser;
-
-    //private Integer userId;
-    
 
     private String userEmail;
     private String tiedPhoneNumber;
 
     @JsonIgnore
     public Ticket(Zones zone, User user){
-
         this.forZone = zone;
         this.forUser = user;
-        //this.zoneId = zone.getZoneId();
-        //this.userId = user.getUserId();
-
-
-        
         this.zonename = zone.getZoneName();
         this.userEmail = user.getEmail();
         this.tiedPhoneNumber = user.getPhoneNumber();

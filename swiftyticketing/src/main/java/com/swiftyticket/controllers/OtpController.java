@@ -35,7 +35,7 @@ public class OtpController {
 
 	@PostMapping("/send")
 	public ResponseEntity<OtpResponseDto> sendOtp(@RequestBody @Valid OtpRequest otpRequest) {
-		//log will print to console when this command is executed
+		// log will print to console when this command is executed
 		log.info("inside sendOtp to "+otpRequest.getEmail());
 		OtpResponseDto response = smsService.sendSMS(otpRequest);
 		log.info(""+response.getStatus().equals(OtpStatus.DELIVERED));

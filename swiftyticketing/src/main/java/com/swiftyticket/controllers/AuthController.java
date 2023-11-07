@@ -38,7 +38,7 @@ public class AuthController {
 
     // Sign in endpoint:
     @PostMapping("/signin")
-    public ResponseEntity<?> signIn(@Nonnull @Valid @RequestBody SignInRequest signInRequest){
+    public ResponseEntity<?> signIn(@Nonnull @Valid @RequestBody SignInRequest signInRequest) throws MethodArgumentNotValidException{
         AuthResponse response = authService.signIn(signInRequest);
         return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, response.getToken()).body(response);
     }

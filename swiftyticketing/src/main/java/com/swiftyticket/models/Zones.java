@@ -89,10 +89,8 @@ public class Zones {
     @JsonIgnore
     @OneToMany(mappedBy = "forZone",
                 fetch = FetchType.EAGER,
-               cascade = CascadeType.ALL)
+                cascade = CascadeType.ALL)
     private List<Ticket> ticketList;
-
-    //private List<Integer> ticketList;
 
     @JsonIgnore
     public Zones(Integer zoneCapacity, String zoneName, Date date, double ticketPrice, Event event){
@@ -101,11 +99,9 @@ public class Zones {
         this.event = event;
         this.zoneDate = date;
         this.ticket_price = ticketPrice;
-        
         this.ticketsLeft = zoneCapacity;
         this.winnerList = new ArrayList<>();
         this.ticketList = new ArrayList<>();
-
         this.user_count = 0;
     }
 
@@ -115,8 +111,6 @@ public class Zones {
         if( !(other instanceof Zones) ){
             return false;
         }
-
         return this.zoneId == ((Zones)other).zoneId;
     }
-
 }
