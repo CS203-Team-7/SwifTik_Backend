@@ -102,7 +102,6 @@ public class TicketServiceImpl implements TicketService {
 
         //reduce the amount of tickets available for purchase in that zone by 1.
         purchase4Zone.setTicketsLeft(purchase4Zone.getTicketsLeft() - 1);
-        purchase4Zone.setTicketsLeft(purchase4Zone.getTicketsLeft() - 1);
 
         //now that they have purchased a ticket, remove them from the winnerList for zone and zonesWon for user.
         //this is to prevent them from purchasing another ticket again.
