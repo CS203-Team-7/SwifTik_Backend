@@ -8,14 +8,14 @@
 #admin creates an event
 POST http://localhost:8080/events/create
 Content-Type: application/json
-Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpc3MiOiJTd2lmVGlrLmNvbSIsImlhdCI6MTY5OTI2MjA2OCwiZXhwIjoxNjk5MzE1MjAwfQ.MVUmOuA5RZuBxWkmwdokOR-v0zXyBJWkwdnG6CV5djQ
+Authorization: Bearer 
 
 {
-    "eventName": "concert",
-    "artists": ["people", "more people"],
+    "eventName": "Taylor: Eras Tour",
+    "artists": ["Taylor Swift", "Ed Sheeran"],
     "dates": ["2001-05-06"],
-    "venue": "some stage",
-    "venueCapacity": 50
+    "venue": "Las Vegas",
+    "venueCapacity": 150
 }
 ###
 
@@ -23,13 +23,13 @@ Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.e
 #admin create a zone for event 1
 POST http://localhost:8080/events/1/createZone
 Content-Type: application/json
-Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpc3MiOiJTd2lmVGlrLmNvbSIsImlhdCI6MTY5OTI2MjA2OCwiZXhwIjoxNjk5MzE1MjAwfQ.MVUmOuA5RZuBxWkmwdokOR-v0zXyBJWkwdnG6CV5djQ
+Authorization: Bearer 
 
 {
-    "zoneCapacity": 2,
-    "zoneName": "testZone",
+    "zoneCapacity": 50,
+    "zoneName": "Cat A",
     "zoneDate": "2001-05-06",
-    "ticketPrice": 450
+    "ticketPrice": 500
 }
 ###
 
@@ -38,11 +38,11 @@ Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.e
 #admin creates another zone for event 1
 POST http://localhost:8080/events/1/createZone
 Content-Type: application/json
-Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpc3MiOiJTd2lmVGlrLmNvbSIsImlhdCI6MTY5OTI2MjA2OCwiZXhwIjoxNjk5MzE1MjAwfQ.MVUmOuA5RZuBxWkmwdokOR-v0zXyBJWkwdnG6CV5djQ
+Authorization: Bearer 
 
 {
-    "zoneCapacity": 10,
-    "zoneName": "testZone2",
+    "zoneCapacity": 100,
+    "zoneName": "Cat B",
     "zoneDate": "2001-05-06",
     "ticketPrice": 350
 }
@@ -52,7 +52,7 @@ Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.e
 #admin raffles all the zones in event 1.
 PUT http://localhost:8080/events/1/raffle
 Content-Type: application/json
-Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpc3MiOiJTd2lmVGlrLmNvbSIsImlhdCI6MTY5OTI2MjA2OCwiZXhwIjoxNjk5MzE1MjAwfQ.MVUmOuA5RZuBxWkmwdokOR-v0zXyBJWkwdnG6CV5djQ
+Authorization: Bearer 
 
 ###
 
@@ -60,7 +60,7 @@ Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.e
 #admin closes the pre-registration for an event.
 PUT http://localhost:8080/events/1/close
 Content-Type: application/json
-Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpc3MiOiJTd2lmVGlrLmNvbSIsImlhdCI6MTY5OTI2MjA2OCwiZXhwIjoxNjk5MzE1MjAwfQ.MVUmOuA5RZuBxWkmwdokOR-v0zXyBJWkwdnG6CV5djQ
+Authorization: Bearer 
 
 ###
 
@@ -68,14 +68,14 @@ Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.e
 #admin creates another event
 POST http://localhost:8080/events/create
 Content-Type: application/json
-Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpc3MiOiJTd2lmVGlrLmNvbSIsImlhdCI6MTY5OTI2MjA2OCwiZXhwIjoxNjk5MzE1MjAwfQ.MVUmOuA5RZuBxWkmwdokOR-v0zXyBJWkwdnG6CV5djQ
+Authorization: Bearer 
 
 {
-    "eventName": "concert2",
-    "artists": ["people", "more people"],
+    "eventName": "Ed Sheeran: Divide Tour",
+    "artists": ["Ed Sheeran", "Ariana Grande"],
     "dates": ["2001-05-06"],
-    "venue": "some stage",
-    "venueCapacity": 50
+    "venue": "Singapore",
+    "venueCapacity": 250
 }
 ###
 
@@ -83,14 +83,21 @@ Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.e
 #admin creates a zone for new event
 POST http://localhost:8080/events/2/createZone
 Content-Type: application/json
-Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpc3MiOiJTd2lmVGlrLmNvbSIsImlhdCI6MTY5OTI2MjA2OCwiZXhwIjoxNjk5MzE1MjAwfQ.MVUmOuA5RZuBxWkmwdokOR-v0zXyBJWkwdnG6CV5djQ
+Authorization: Bearer 
 
 {
-    "zoneCapacity": 10,
-    "zoneName": "testZonez",
-    "zoneDate": "2001-05-06"
+    "zoneCapacity": 200,
+    "zoneName": "Alpha Zone",
+    "zoneDate": "2001-05-06",
+    "ticketPrice": 100
 }
 ###
+
+###
+#admin opens the pre-registration for an event.
+PUT http://localhost:8080/events/1/open
+Content-Type: application/json
+Authorization: Bearer 
 
 ###
 POST http://localhost:8080/auth/signup
@@ -210,12 +217,6 @@ Content-Type: application/json
 Authorization: Bearer 
 
 ###
-
-###
-#admin opens the pre-registration for an event.
-PUT http://localhost:8080/events/1/open
-Content-Type: application/json
-Authorization: Bearer eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpc3MiOiJTd2lmVGlrLmNvbSIsImlhdCI6MTY5OTI2MjA2OCwiZXhwIjoxNjk5MzE1MjAwfQ.MVUmOuA5RZuBxWkmwdokOR-v0zXyBJWkwdnG6CV5djQ
 
 ###
 

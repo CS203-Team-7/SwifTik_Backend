@@ -15,9 +15,9 @@ spring:
                 
 
 twilio:
-    AccountSID: ${TW_SID}
+    AccountSID: AC903ce11e967c1bcc7bfbf81b91a423ac
     AuthToken: ${TW_AUTHTOKEN}
-    phoneNumber: ${TW_PHONENUMBER}
+    phoneNumber: +12562861504
 token:
     signing:
         key: 413F4428472B4B6250655368566D5970337336763979244226452948404D6351
